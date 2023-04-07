@@ -55,6 +55,8 @@ To run the script, first you need to make it executable:
 
 ## Usage
 
+### Set up
+
 While using the script for the first time, the user will be asked for his preferences:
 * __Prefered web browser__, the cookies of which will be used by magic-tape in order to extract data from YouTube.
 Supported browsers by yt-dlp are brave, chrome, chromium, edge, firefox, opera, vivaldi.
@@ -64,6 +66,11 @@ Supported browsers by yt-dlp are brave, chrome, chromium, edge, firefox, opera, 
 *Toggle __multi-color__ terminal messages.
 
 The user can always alter these preferences using the __P option__ of the __Miscellaneous Menu__.
+
+### Import Subscribed channels
+
+When the script is run for the first time, it would be advisable for the user to __import their subcsribed channels from YouTube__.
+The user user can do that by navigating to the Miscellaneous Menu _(option m)_, then selecting __Import Subscriptions from YouTube__ _(option I)_.
 
 ### Main Menu
 Once the program is run, the user is presented with the __Main Menu:__
