@@ -34,6 +34,11 @@ Instructions on installing yt-dlp can be found here:
 
 [https://github.com/yt-dlp/yt-dlp#installation](https://github.com/yt-dlp/yt-dlp#installation)
 
+Easily install yt-dlp using pip:
+
+    $ pip install yt-dlp
+
+
 Other dependencies include:
 * [kitty terminal](https://sw.kovidgoyal.net/kitty/)
 * [cURL](https://curl.se/)
@@ -49,9 +54,21 @@ To install these dependencies, run the following command:
 
 ## Install
 
+    $ mkdir git&&cd git
+
+    $ git clone https://gitlab.com/christosangel/magic-tape.git
+
+
 To run the script, first you need to make it executable:
 
-    $ chmod +x
+    $ cd magic-tape
+
+    $ chmod +x magic-tape
+
+Then, run with kitty:
+
+    $ kitty -T magic-tape ./magic-tape.sh
+
 
 ## Usage
 
@@ -70,6 +87,7 @@ The user can always alter these preferences using the __P option__ of the __Misc
 ### Import Subscribed channels
 
 When the script is run for the first time, it would be advisable for the user to __import their subcsribed channels from YouTube__.
+
 The user user can do that by navigating to the Miscellaneous Menu _(option m)_, then selecting __Import Subscriptions from YouTube__ _(option I)_.
 
 ### Main Menu
