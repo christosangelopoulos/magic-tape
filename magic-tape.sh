@@ -26,7 +26,7 @@ function color_set()
 }
 function setup ()
 {
-	clear;kitty +kitten icat --clear;
+	clear;clear_image;
 	PREF_BROWSER="$(echo -e "brave\nchrome\nchromium\nedge\nfirefox\nopera\nvivaldi"|rofi -dmenu -i -p "SET UP: 🌍 Select browser to login YouTube with" -l 20 -width 40)";
 	if [[ "$PREF_BROWSER" == "" ]];then empty_query;
 	else if [[ $PREF_BROWSER == "brave" ]];then BROWSER=brave-browser-stable;else BROWSER=$PREF_BROWSER;fi;
@@ -39,12 +39,16 @@ function setup ()
 				if [[ "$NOTIF_DELAY" == "" ]];
 				then empty_query;
 				else NOTIF_DELAY=$(($NOTIF_DELAY * 1000));
-				COLOR="$(echo -e "Yes\nNo"|rofi -dmenu -i -p "SET UP: 🕓 Do  you prefer multi-colored terminal output?" -l 20 -width 40)";
-				if [[ "$COLOR" == "" ]];
-				then empty_query;
-				else echo -e "$PREF_BROWSER\n$BROWSER\n$LIST_LENGTH\n$DIALOG_DELAY\n$NOTIF_DELAY\n$COLOR">$HOME/git/magic-tape/config.txt;
-					notify-send -t 5000 "SET UP: 😀 Your preferences are now stored!";
-					echo -e "${Yellow}${bold}SET UP: 😀 Your preferences are now stored!${normal}";	sleep 2;
+				IMAGE_SUPPORT="$(echo -e "kitty\nuberzug\nnone"|rofi -dmenu -i -p "SET UP: 📷 Select image support" -l 20 -width 40)";
+				if [[ "$NOTIF_DELAY" == "" ]];
+					then empty_query;
+					else COLOR="$(echo -e "Yes\nNo"|rofi -dmenu -i -p "SET UP: 🕓 Do  you prefer multi-colored terminal output?" -l 20 -width 40)";
+					if [[ "$COLOR" == "" ]];
+					then empty_query;
+					else echo -e "$PREF_BROWSER\n$BROWSER\n$LIST_LENGTH\n$DIALOG_DELAY\n$NOTIF_DELAY\n$IMAGE_SUPPORT\n$COLOR">$HOME/git/magic-tape/config.txt;
+						notify-send -t 5000 "SET UP: 😀 Your preferences are now stored!";
+						echo -e "${Yellow}${bold}SET UP: 😀 Your preferences are now stored!${normal}";	sleep 2;
+					fi;
 					fi;
 				fi;
 			fi;
@@ -150,7 +154,7 @@ echo -e "╰───────────┴──────────�
 
 function misc_menu ()
 {
-	clear;	kitty icat --transfer-mode file  --clear;
+	clear_image;
 	while [ "$db2" != "q" ] ;
 	do	echo "╭────────────────────────────────────────╮";
 		echo -e "│${Yellow}${bold}Miscellaneous menu${normal}                Enter:│";
@@ -179,11 +183,11 @@ function misc_menu ()
 						picposy=1;
 			;;
 			n) clear;
-						kitty +kitten icat --clear;
-						kitty +kitten icat  --place 6x6@0x0 $HOME/git/magic-tape/png/search.png;
+						clear_image;
+						draw_preview 0 0 6 6 $HOME/git/magic-tape/png/search.png;
 						echo -e "\tEnter keyword/keyphrase\n\tfor a channel\n\tto search for: \n";
 						read  C;
-						kitty +kitten icat --clear;
+						clear_image;
 						if [[ -z "$C" ]];
 						then empty_query;
 						else C=${C// /+};C=${C//\'/%27};
@@ -229,18 +233,16 @@ function misc_menu ()
 							+m \
 							-i \
 							--exact \
-							--preview='height=$(($FZF_PREVIEW_COLUMNS-8));\
-							kitty icat --transfer-mode file  --clear;\
+							--preview='height=$(($FZF_PREVIEW_COLUMNS/2 +2));\
 							i=$(echo {}|sed "s/\\t.*$//g");\
 							echo $i>$HOME/git/magic-tape/search/channels/index.txt;\
 							TITLE="$(cat $HOME/git/magic-tape/search/channels/titles.txt|head -$i|tail +$i)"\
 							ll=0; while [ $ll -le $(($height/2 - 2)) ];do echo "";((ll++));done;\
 							ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
-							if [[ "$TITLE" == "Previous Page" ]];then draw_preview 1 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/previous.png;\
-							elif [[ "$TITLE" == "Next Page" ]];then draw_preview 1 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/next.png;\
-							elif [[ "$TITLE" == "Abort Selection" ]];\
-							then draw_preview draw_preview 1 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/abort.png;\
-							else draw_preview 1 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/jpg/"$(cat $HOME/git/magic-tape/search/channels/ids.txt|head -$i|tail +$i)".jpg;fi;\
+							if [[ "$TITLE" == "Previous Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/previous.png;\
+							elif [[ "$TITLE" == "Next Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/next.png;\
+							elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/abort.png;\
+							else draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/jpg/"$(cat $HOME/git/magic-tape/search/channels/ids.txt|head -$i|tail +$i)".jpg;fi;\
 							echo -e "\n\n$TITLE"|fold -w $FZF_PREVIEW_COLUMNS -s;\
 							ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
 								if [[ $TITLE != "Abort Selection" ]]&&[[ $TITLE != "Next Page" ]]&&[[ $TITLE != "Previous Page" ]];\
@@ -250,7 +252,7 @@ function misc_menu ()
 							DESCRIPTION="$(cat $HOME/git/magic-tape/search/channels/descriptions.txt|head -$i|tail +$i)";\
 							echo -e "\n$DESCRIPTION"|fold -w $FZF_PREVIEW_COLUMNS -s;\
 							fi;')";
-							kitty icat --transfer-mode file  --clear;
+							clear_image;
 							i=$(cat $HOME/git/magic-tape/search/channels/index.txt);
 							NAME=$(head -$i $HOME/git/magic-tape/search/channels/titles.txt|tail +$i);
 							if [[ $CHAN == " " ]]; then echo "ABORT!"; NAME="Abort Selection";clear;fi;
@@ -336,7 +338,7 @@ function misc_menu ()
 			;;
 			q) clear;picposy=1;
 			;;
-			*)kitty +kitten icat --clear;echo -e "\n😕${Yellow}${bold}$db2${normal} is an invalid key, please try again.\n"; sleep $DIALOG_DELAY;clear;
+			*)clear_image;echo -e "\n😕${Yellow}${bold}$db2${normal} is an invalid key, please try again.\n"; sleep $DIALOG_DELAY;clear;
 			;;
 		esac
 	done
@@ -344,9 +346,50 @@ function misc_menu ()
 }
 
 
+
+######################################################
+##   Ueberzug
+######################################################
+declare -r -x UEBERZUG_FIFO="$(mktemp --dry-run )"
+function start_ueberzug {
+    mkfifo "${UEBERZUG_FIFO}"
+    <"${UEBERZUG_FIFO}" \
+        ueberzug layer --parser bash --silent &
+    # prevent EOF
+    3>"${UEBERZUG_FIFO}" \
+        exec
+}
+
+function finalise {
+    3>&- \
+        exec
+    &>/dev/null \
+        rm "${UEBERZUG_FIFO}"
+    &>/dev/null \
+        kill $(jobs -p)
+}
+######################################################
+function clear_image ()
+{
+	if [[ "$IMAGE_SUPPORT" == "kitty" ]];then	kitty icat --transfer-mode file  --clear;fi;
+	if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then	finalise;start_ueberzug;fi;
+}
+
+function draw_uber {
+#sample draw_uber 35 35 90 3 /path/image.jpg
+
+    >"${UEBERZUG_FIFO}" declare -A -p cmd=( \
+        [action]=add [identifier]="preview" \
+        [x]="$1" [y]="$2" \
+        [width]="$3" [height]="$4" \
+        [scaler]=fit_contain [scaling_position_x]=10 [scaling_position_y]=10 \
+        [path]="$5")
+
+}
 function draw_preview {
 	#sample draw_preview 35 35 90 3 /path/image.jpg
-	kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5"
+	if [[ "$IMAGE_SUPPORT" == "kitty" ]];then	kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
+	if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_uber $1 $2 $3 $4 $5;fi;
 }
 
 function get_feed_json ()
@@ -430,20 +473,19 @@ function select_video ()
 	-i \
 	--exact \
 	--preview='height=$(($FZF_PREVIEW_COLUMNS /4 + 1));\
-	kitty icat --transfer-mode file  --clear;\
 	i=$(echo {}|sed "s/\\t.*$//g");echo $i>$HOME/git/magic-tape/search/video/index.txt;\
-	ll=0; while [ $ll -le $height ];do echo "";((ll++));done;\
+	if [[ "$IMAGE_SUPPORT" != "none" ]];then	ll=0; while [ $ll -le $height ];do echo "";((ll++));done;fi;\
 	TITLE="$(cat $HOME/git/magic-tape/search/video/titles.txt|head -$i|tail +$i)";\
 	channel_name="$(cat $HOME/git/magic-tape/search/video/channel_names.txt|head -$i|tail +$i)";\
 	channel_jpg="$(cat $HOME/git/magic-tape/search/video/channel_ids.txt|head -$i|tail +$i)"".jpg";\
-	if [[ "$TITLE" == "Previous Page" ]];then draw_preview 1 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/previous.png;\
-	elif [[ "$TITLE" == "Next Page" ]];then draw_preview 1 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/next.png;\
+	if [[ "$TITLE" == "Previous Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/png/previous.png;\
+	elif [[ "$TITLE" == "Next Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/png/next.png;\
 	elif [[ "$TITLE" == "Abort Selection" ]];\
-		then draw_preview 1 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/abort.png;\
+		then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/png/abort.png;\
 		else draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/jpg/img-"$(cat $HOME/git/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg;\
 		if [ -e $HOME/git/magic-tape/subscriptions/jpg/"$channel_jpg" ];\
-			then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/git/magic-tape/subscriptions/jpg/"$channel_jpg";\
-			else draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/git/magic-tape/png/magic-tape.png;\
+			then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/git/magic-tape/subscriptions/jpg/"$channel_jpg";fi;\
+			else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/git/magic-tape/png/magic-tape.png;fi;\
 		fi;\
 	fi;\
 	ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
@@ -466,7 +508,7 @@ function select_video ()
 			echo -e "\n$DESCRIPTION"|fold -w $FZF_PREVIEW_COLUMNS -s;	\
 		fi;
 	fi;')";
-	kitty icat --transfer-mode file  --clear;
+	clear_image;
 	i=$(cat $HOME/git/magic-tape/search/video/index.txt);
 		notification_img="$HOME/git/magic-tape/jpg/img-"$(cat $HOME/git/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg";
 	play_now="$(head -$i $HOME/git/magic-tape/search/video/urls.txt|tail +$i)";
@@ -521,7 +563,7 @@ function message_audio_video ()
 function select_action ()
 {
 	clear;
-	kitty icat --transfer-mode file  --clear;
+	clear_image;
 	#while [ "$ACTION" != "P" ]  && [ "$ACTION" != "V" ] && [ "$ACTION" != "A" ] && [ "$ACTION" != "W" ] && [ "$ACTION" != "Q" ] ;
 	#do
 	ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nQuit ❌"|rofi -dmenu -i -p "🔎 What do you want to do?" -l 8 -width 22 -selected-row 0)";
@@ -534,9 +576,9 @@ function select_action ()
 		;;
 		"Play ⭐⭐⭐Best Audio") message_audio_video;print_mpv_audio_shortcuts;mpv --ytdl-raw-options=format=ba "$play_now";play_now="";TITLE="";
 		;;
-		"Download Video 🔽") clear;download_video;kitty +kitten icat --clear;echo -e "\n${Yellow}${bold}[Video Download complete.]\n${normal}";
+		"Download Video 🔽") clear;download_video;clear_image;echo -e "\n${Yellow}${bold}[Video Download complete.]\n${normal}";
 		;;
-		"Download Audio 🔽") clear;download_audio;kitty +kitten icat --clear;echo -e "\n${Yellow}${bold}[Audio Download complete.${normal}\n";
+		"Download Audio 🔽") clear;download_audio;clear_image;echo -e "\n${Yellow}${bold}[Audio Download complete.${normal}\n";
 		;;
 		"Like Video ❤️") clear;
 			if [[ -z "$(grep "$play_now" $HOME/git/magic-tape/history/liked.txt)" ]];
@@ -547,7 +589,7 @@ function select_action ()
 		;;
 		"Quit ❌") clear;
 		;;
-		*)kitty +kitten icat --clear;echo -e "\n😕${Yellow}${bold}$db${normal} is an invalid key, please try again.\n"; sleep $DIALOG_DELAY;clear;
+		*)clear_image;echo -e "\n😕${Yellow}${bold}$db${normal} is an invalid key, please try again.\n"; sleep $DIALOG_DELAY;clear;
 		;;
 	esac
 	#done
@@ -557,7 +599,7 @@ function select_action ()
 function select_action1 ()
 {
 	clear;
-	kitty icat --transfer-mode file  --clear;
+	clear_image;
 	while [ "$ACTION" != "P" ]  && [ "$ACTION" != "V" ] && [ "$ACTION" != "A" ] && [ "$ACTION" != "W" ] && [ "$ACTION" != "Q" ] ;
 	do
 		 ACTION="$(echo -e "Play the video/audio ▶️\nWatch livestream 📡\nVideo  download 🔽\nAudio download 🔽\nLike Video ❤️\nQuit ❌"|rofi -dmenu -i -p "🔎 What do you want to do?" -l 5 -width 22 -selected-row 0 |cut -b1)";
@@ -571,9 +613,9 @@ function select_action1 ()
 				;;
 				P) clear;play_video;
 				;;
-				V) clear;download_video;kitty +kitten icat --clear;echo -e "\n${Yellow}${bold}[Video Download complete.]\n${normal}";
+				V) clear;download_video;clear_image;echo -e "\n${Yellow}${bold}[Video Download complete.]\n${normal}";
 				;;
-				A) clear;download_audio;kitty +kitten icat --clear;echo -e "\n${Yellow}${bold}[Audio Download complete.${normal}\n";
+				A) clear;download_audio;clear_image;echo -e "\n${Yellow}${bold}[Audio Download complete.${normal}\n";
 				;;
 				L) clear;
 							if [[ -z "$(grep "$play_now" $HOME/git/magic-tape/history/liked.txt)" ]];
@@ -584,7 +626,7 @@ function select_action1 ()
 				;;
 				Q) clear;
 				;;
-				*)kitty +kitten icat --clear;echo -e "\n😕${Yellow}${bold}$db${normal} is an invalid key, please try again.\n"; sleep $DIALOG_DELAY;clear;
+				*)clear_image;echo -e "\n😕${Yellow}${bold}$db${normal} is an invalid key, please try again.\n"; sleep $DIALOG_DELAY;clear;
 				;;
 			esac
 	done
@@ -598,7 +640,8 @@ function empty_query ()
  sleep $DIALOG_DELAY;
 }
 ###############################################################################
-export -f draw_preview
+export -f draw_preview draw_uber clear_image start_ueberzug finalise
+export IMAGE_SUPPORT UEBERZUG_FIFO
 Yellow="\033[1;33m"
 Green="\033[1;32m"
 Red="\033[1;31m"
@@ -608,7 +651,7 @@ bold=`tput bold`
 normal=`tput sgr0`
 picposy=1;
 db=""
-if [[ ! -e $HOME/git/magic-tape/config.txt ]]||[ $(cat $HOME/git/magic-tape/config.txt|wc -l) -lt 6 ];
+if [[ ! -e $HOME/git/magic-tape/config.txt ]]||[ $(cat $HOME/git/magic-tape/config.txt|wc -l) -lt 7 ];
 then setup;
 fi;
 PREF_BROWSER="$(head -1 $HOME/git/magic-tape/config.txt)";
@@ -616,22 +659,25 @@ BROWSER="$(head -2 $HOME/git/magic-tape/config.txt|tail +2)";
 LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3)";
 DIALOG_DELAY="$(head -4 $HOME/git/magic-tape/config.txt|tail +4)";
 NOTIF_DELAY="$(head -5 $HOME/git/magic-tape/config.txt|tail +5)";
-COLOR="$(head -6 $HOME/git/magic-tape/config.txt|tail +6)";
+IMAGE_SUPPORT="$(head -6 $HOME/git/magic-tape/config.txt|tail +6)";
+COLOR="$(head -7 $HOME/git/magic-tape/config.txt|tail +7)";
+
 color_set;
 while [ "$db" != "q" ]
 do
-	kitty +kitten icat --clear
-	kitty +kitten icat  --place 6x6@1x$picposy $HOME/git/magic-tape/png/magic-tape.png
+	clear_image;
+	if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview 1 $picposy 6 6 $HOME/git/magic-tape/png/logo1.png;fi;
+	if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 $picposy 6 6 $HOME/git/magic-tape/png/magic-tape.png;fi;
  echo "╭──────────────────────────────────────────╮"
- echo -e "│      ${Yellow}${bold}┏┳┓┏━┓┏━╸╻┏━╸   ╺┳╸┏━┓┏━┓┏━╸${normal}        │"
- echo -e "│      ${Yellow}${bold}┃┃┃┣━┫┃╺┓┃┃  ╺━╸ ┃ ┣━┫┣━┛┣╸ ${normal}        │"
- echo -e "│      ${Yellow}${bold}╹ ╹╹ ╹┗━┛╹┗━╸    ╹ ╹ ╹╹  ┗━╸${normal}  Enter:│"
+ echo -e "│       ${Yellow}${bold}┏┳┓┏━┓┏━╸╻┏━╸   ╺┳╸┏━┓┏━┓┏━╸${normal}       │"
+ echo -e "│       ${Yellow}${bold}┃┃┃┣━┫┃╺┓┃┃  ╺━╸ ┃ ┣━┫┣━┛┣╸ ${normal}       │"
+ echo -e "│       ${Yellow}${bold}╹ ╹╹ ╹┗━┛╹┗━╸    ╹ ╹ ╹╹  ┗━╸${normal} Enter:│"
  echo  "├──────────────────────────────────────────┤"
  echo -e "│ ${Yellow}${bold}f ${normal}${Red}to browse Subscriptions Feed.${normal}          │\n│ ${Yellow}${bold}t ${Red}to browse Trending Feed.${normal}               │\n│ ${Yellow}${bold}s${normal} ${Green}to Search for a key word/phrase.${normal}       │\n│ ${Yellow}${bold}r ${Green}to Repeat previous action.${normal}             │\n│ ${Yellow}${bold}c ${Green}to select a Channel Feed.${normal}              │\n│ ${Yellow}${bold}l ${Magenta}to browse your Liked Videos.${normal}           │\n│ ${Yellow}${bold}h ${Magenta}to browse your Watch History${normal}.          │\n│ ${Yellow}${bold}j ${Magenta}to browse your Search History.${normal}         │\n│ ${Yellow}${bold}m ${Cyan}for Miscellaneous Menu.${normal}                │\n│ ${Yellow}${bold}q ${Cyan}to Quit${normal}.                               │"
  echo  "╰──────────────────────────────────────────╯"
  echo -en "Select: ";read -N 1  db
  case $db in
-  f) clear;kitty +kitten icat --clear;
+  f) clear;clear_image;
    		big_loop=1;
    		ITEM=1;
   			FEED="/feed/subscriptions";
@@ -649,7 +695,7 @@ do
 					done;
  	 		picposy=1;clear;
   ;;
-  t) clear;kitty +kitten icat --clear;
+  t) clear;clear_image;
    		big_loop=1;
    		ITEM=1;
   			FEED="/feed/trending";
@@ -668,11 +714,11 @@ do
  	 		picposy=1;clear;
   ;;
   s) clear;
-  			kitty +kitten icat --clear;
-  			kitty +kitten icat  --place 6x6@0x0 $HOME/git/magic-tape/png/search.png;
+  			clear_image;
+  			draw_preview 0 0 6 6 $HOME/git/magic-tape/png/search.png;
   			echo -e "\tEnter keyword/keyphrase\n\tto search for: \n";
   			read  P;
-   		kitty +kitten icat --clear;
+   		clear_image;
    		if [[ -z "$P" ]];
    			then empty_query;
    		else P=${P// /+};
@@ -696,7 +742,7 @@ do
  	 		picposy=1;clear;
   ;;
   r) clear;
-				 kitty +kitten icat --clear;
+				 clear_image;
 				 db="$(head -1 $HOME/git/magic-tape/history/last_action.txt)";
 				 ITEM="$(head -2 $HOME/git/magic-tape/history/last_action.txt|tail +2)";
 				 FEED="$(head -3 $HOME/git/magic-tape/history/last_action.txt|tail +3)";
@@ -719,7 +765,7 @@ do
 				 picposy=1;
 				 clear;
   ;;
-  c) clear;kitty +kitten icat --clear;
+  c) clear;clear_image;
   			C="$(cat $HOME/git/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select channel" -l 20 -width 40)";
   			echo -e "${Yellow}${bold}[Selected channel: $C]"${normal};
   			if [[ -z "$C" ]];
@@ -742,7 +788,7 @@ do
 					done;
 					fi;
   ;;
-  h) clear;kitty +kitten icat --clear;
+  h) clear;clear_image;
   			TITLE="$(tac $HOME/git/magic-tape/history/watch_history.txt|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select previous video" -l 20 -width 40)";
   			if [[ "$TITLE" == "" ]];
    			then empty_query;
@@ -753,7 +799,7 @@ do
   			picposy=1;
   			clear;
   ;;
-  j) clear;kitty +kitten icat --clear;
+  j) clear;clear_image;
   		 P="$(tac $HOME/git/magic-tape/history/search_history.txt|sed 's/+/ /g'|rofi -dmenu -i -p "🔎 Select key word/phrase" -l 20 -width 40)";
   			if [[ -z "$P" ]];
    		then empty_query;
@@ -776,7 +822,7 @@ do
   				fi;
  	 		picposy=1;clear;
   ;;
-  l) clear;kitty +kitten icat --clear;
+  l) clear;clear_image;
   			TITLE="$(tac $HOME/git/magic-tape/history/liked.txt|cut -d' ' -f2-|rofi -dmenu -i -p "❤️ Select liked video" -l 20 -width 40)";
   			if [[ -z "$TITLE" ]];
    		then empty_query;
@@ -787,11 +833,11 @@ do
   			picposy=1;
   			clear;
   ;;
-  m) clear;kitty +kitten icat --clear;misc_menu;
+  m) clear;clear_image;misc_menu;
   ;;
-  q) clear;kitty +kitten icat --clear;notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "Exited magic-tape";
+  q) clear;clear_image;notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "Exited magic-tape";
   ;;
-  *)clear;kitty +kitten icat --clear;echo -e "\n${Yellow}${bold}$db${normal} is an invalid key, please try again.\n";picposy=4;
+  *)clear;clear_image;echo -e "\n${Yellow}${bold}$db${normal} is an invalid key, please try again.\n";picposy=4;
   ;;
  esac
 done

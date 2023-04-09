@@ -1,7 +1,7 @@
 # magic-tape
 Magic-tape is an image supporting fuzzy finder command line interface YouTube client.
 
-This script uses kitty terminal emulator, which supports images.
+Image support is achieved either with kitty terminal, or ueberzug.
 
 
 
@@ -40,17 +40,29 @@ Easily install yt-dlp using pip:
 
 
 Other dependencies include:
-* [kitty terminal](https://sw.kovidgoyal.net/kitty/)
 * [cURL](https://curl.se/)
 * [rofi](https://github.com/davatorium/rofi)
 * [fzf](https://github.com/junegunn/fzf)
 * [mpv](https://github.com/mpv-player/mpv)
 * [jq](https://stedolan.github.io/jq/)
 
+Regarding image support, it can either be achived with
+
+* [kitty terminal](https://sw.kovidgoyal.net/kitty/)
+
+
+    $ sudo apt install kitty
+
+or with
+
+* [ueberzug](https://github.com/seebye/ueberzug)
+
+
+
 
 To install these dependencies, run the following command:
 
-     $ sudo apt install curl kitty fzf rofi mpv jq
+     $ sudo apt install curl fzf rofi mpv jq
 
 ## Install
 
@@ -70,6 +82,11 @@ Then, run with kitty:
     $ kitty -T magic-tape ./magic-tape.sh
 
 
+or any other terminal emulator:
+
+    $ ~/git/magic-tape/magic-tape.sh
+
+
 ## Usage
 
 ### Set up
@@ -80,6 +97,7 @@ Supported browsers by yt-dlp are brave, chrome, chromium, edge, firefox, opera, 
 * __Prefered video list length__ to get in each request. Longer video lists may be more preferable, but take longer to get.
 * __Dialog message delay time__: the time a message in the cli window remains visible, in seconds.
 * __Notification message delay time__: the time a notification remains visible, in seconds.
+* __Image Support__:either __kitty__, __ueberzug__ or __none__.
 *Toggle __multi-color__ terminal messages.
 
 The user can always alter these preferences using the __P option__ of the __Miscellaneous Menu__.
