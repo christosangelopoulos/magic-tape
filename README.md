@@ -74,8 +74,11 @@ To install these dependencies, run the following command:
 To run the script, first you need to make it executable:
 
     $ cd magic-tape
+    $ chmod +x magic-tape.sh
+	$ mkdir -p jpg/ json/ search/video/ search/channels/ subscriptions/ history/ 
+		
+		
 
-    $ chmod +x magic-tape
 
 Then, run with kitty:
 
