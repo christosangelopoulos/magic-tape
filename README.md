@@ -52,6 +52,7 @@ Regarding image support, it can either be achived with
 
 
 
+
     $ sudo apt install kitty
 
 
@@ -65,6 +66,8 @@ or with
 
 
 * [chafa](https://github.com/hpjansson/chafa)
+
+
 
 
     $ sudo apt install kitty
