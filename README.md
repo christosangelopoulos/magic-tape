@@ -75,7 +75,7 @@ To run the script, first you need to make it executable:
 
     $ cd magic-tape
     $ chmod +x magic-tape.sh
-		$ mkdir -p jpg/ json/ search/video/ search/channels/ subscriptions/ history/ 
+	$ mkdir -p jpg/ json/ search/video/ search/channels/ subscriptions/ history/ 
 		
 		
 
