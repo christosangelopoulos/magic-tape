@@ -50,9 +50,6 @@ Regarding image support, it can either be achived with
 
 * [kitty terminal](https://sw.kovidgoyal.net/kitty/)
 
-
-
-
     $ sudo apt install kitty
 
 
@@ -67,10 +64,7 @@ or with
 
 * [chafa](https://github.com/hpjansson/chafa)
 
-
-
-
-    $ sudo apt install kitty
+    $ sudo apt install chafa
 
 
 
