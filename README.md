@@ -1,7 +1,7 @@
 # magic-tape
 Magic-tape is an image supporting fuzzy finder command line interface YouTube client.
 
-Image support is achieved either with kitty terminal, or ueberzug.
+Image support is achieved either with kitty terminal, ueberzug or chafa.
 
 
 
@@ -51,18 +51,26 @@ Regarding image support, it can either be achived with
 * [kitty terminal](https://sw.kovidgoyal.net/kitty/)
 
 
+
     $ sudo apt install kitty
 
-or with
+
+
+with
 
 * [ueberzug](https://github.com/seebye/ueberzug)
 
+
+or with
+
+
+* [chafa](https://github.com/hpjansson/chafa)
 
 
 
 To install these dependencies, run the following command:
 
-     $ sudo apt install curl fzf rofi mpv jq
+     $ sudo apt install curl fzf rofi mpv jq chafa
 
 ## Install
 
@@ -75,9 +83,9 @@ To run the script, first you need to make it executable:
 
     $ cd magic-tape
     $ chmod +x magic-tape.sh
-	$ mkdir -p jpg/ json/ search/video/ search/channels/ subscriptions/ history/ 
-		
-		
+	$ mkdir -p jpg/ json/ search/video/ search/channels/ subscriptions/ history/
+
+
 
 
 Then, run with kitty:

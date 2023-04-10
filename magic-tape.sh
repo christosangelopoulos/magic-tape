@@ -39,7 +39,7 @@ function setup ()
 				if [[ "$NOTIF_DELAY" == "" ]];
 				then empty_query;
 				else NOTIF_DELAY=$(($NOTIF_DELAY * 1000));
-				IMAGE_SUPPORT="$(echo -e "kitty\nuberzug\n\nnone"|rofi -dmenu -i -p "SET UP: 📷 Select image support" -l 20 -width 40)";
+				IMAGE_SUPPORT="$(echo -e "kitty\nuberzug\nchafa\nnone"|rofi -dmenu -i -p "SET UP: 📷 Select image support" -l 20 -width 40)";
 				if [[ "$NOTIF_DELAY" == "" ]];
 					then empty_query;
 					else COLOR="$(echo -e "Yes\nNo"|rofi -dmenu -i -p "SET UP: 🕓 Do  you prefer multi-colored terminal output?" -l 20 -width 40)";
@@ -236,14 +236,14 @@ function misc_menu ()
 							--preview='height=$(($FZF_PREVIEW_COLUMNS/2 +2));\
 							i=$(echo {}|sed "s/\\t.*$//g");\
 							echo $i>$HOME/git/magic-tape/search/channels/index.txt;\
-							TITLE="$(cat $HOME/git/magic-tape/search/channels/titles.txt|head -$i|tail +$i)"\
-							ll=0; while [ $ll -le $(($height/2 - 2)) ];do echo "";((ll++));done;\
+							TITLE="$(cat $HOME/git/magic-tape/search/channels/titles.txt|head -$i|tail +$i)";\
+							if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then	ll=0;while [ $ll -le $(($height/2 - 2)) ];do echo "";((ll++));done;fi;\
 							ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
 							if [[ "$TITLE" == "Previous Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/previous.png;\
 							elif [[ "$TITLE" == "Next Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/next.png;\
 							elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/abort.png;\
 							else draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/jpg/"$(cat $HOME/git/magic-tape/search/channels/ids.txt|head -$i|tail +$i)".jpg;fi;\
-							echo -e "\n\n$TITLE"|fold -w $FZF_PREVIEW_COLUMNS -s;\
+							echo -e "\n$TITLE"|fold -w $FZF_PREVIEW_COLUMNS -s;\
 							ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
 								if [[ $TITLE != "Abort Selection" ]]&&[[ $TITLE != "Next Page" ]]&&[[ $TITLE != "Previous Page" ]];\
 								then SUBS="$(cat $HOME/git/magic-tape/search/channels/subscribers.txt|head -$i|tail +$i)";\
@@ -390,7 +390,7 @@ function draw_preview {
 	#sample draw_preview 35 35 90 3 /path/image.jpg
 	if [[ "$IMAGE_SUPPORT" == "kitty" ]];then	kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
 	if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_uber $1 $2 $3 $4 $5;fi;
-	#if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa -s $3 $5;fi;
+	if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa --format=symbols -c 240 -s  $3 $5;fi;
 }
 
 function get_feed_json ()
@@ -477,7 +477,7 @@ function select_video ()
 	height=$(($FZF_PREVIEW_COLUMNS /4 + 1));\
 	if [[ "$IMAGE_SUPPORT" == "kitty" ]];then clear_image;fi;\
 	i=$(echo {}|sed "s/\\t.*$//g");echo $i>$HOME/git/magic-tape/search/video/index.txt;\
-	if [[ "$IMAGE_SUPPORT" != "none" ]];then	ll=0; while [ $ll -le $height ];do echo "";((ll++));done;fi;\
+	if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then	ll=0; while [ $ll -le $height ];do echo "";((ll++));done;fi;\
 	TITLE="$(cat $HOME/git/magic-tape/search/video/titles.txt|head -$i|tail +$i)";\
 	channel_name="$(cat $HOME/git/magic-tape/search/video/channel_names.txt|head -$i|tail +$i)";\
 	channel_jpg="$(cat $HOME/git/magic-tape/search/video/channel_ids.txt|head -$i|tail +$i)"".jpg";\
