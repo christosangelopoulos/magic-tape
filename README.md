@@ -67,10 +67,13 @@ or with
 * [chafa](https://github.com/hpjansson/chafa)
 
 
+    $ sudo apt install kitty
+
+
 
 To install these dependencies, run the following command:
 
-     $ sudo apt install curl fzf rofi mpv jq chafa
+     $ sudo apt install curl fzf rofi mpv jq
 
 ## Install
 
