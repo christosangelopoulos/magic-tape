@@ -39,7 +39,7 @@ function setup ()
 				if [[ "$NOTIF_DELAY" == "" ]];
 				then empty_query;
 				else NOTIF_DELAY=$(($NOTIF_DELAY * 1000));
-				IMAGE_SUPPORT="$(echo -e "kitty\nuberzug\nnone"|rofi -dmenu -i -p "SET UP: 📷 Select image support" -l 20 -width 40)";
+				IMAGE_SUPPORT="$(echo -e "kitty\nuberzug\nchafa\nnone"|rofi -dmenu -i -p "SET UP: 📷 Select image support" -l 20 -width 40)";
 				if [[ "$NOTIF_DELAY" == "" ]];
 					then empty_query;
 					else COLOR="$(echo -e "Yes\nNo"|rofi -dmenu -i -p "SET UP: 🕓 Do  you prefer multi-colored terminal output?" -l 20 -width 40)";
@@ -69,8 +69,8 @@ function like_video ()
 		if [[ $alv == Y ]] || [[ $alv == y ]];
 		then if [[ -z "$(grep "$LIKE" $HOME/git/magic-tape/history/liked.txt)" ]];
 			then echo "$(grep "$LIKE" $HOME/git/magic-tape/history/watch_history.txt|head -1)" >>	$HOME/git/magic-tape/history/liked.txt;
-				notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "❤️ Video added to Liked Videos.";
-			else notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "❤️ Video already added to Liked Videos.";
+				notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video added to Liked Videos.";
+			else notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video already added to Liked Videos.";
 			fi;
 		fi;alv="";
 	fi;
@@ -288,7 +288,7 @@ function misc_menu ()
 	 						echo -e "Unsubscribe from this channel:\n"${Yellow}${bold}$U"${normal}\nProceed?(Y/y))";
 	 						 read -N 1 uc;echo -e "\n";
 									if [[ $uc == Y ]] || [[ $uc == y ]];
-									then	notification_img="$HOME/git/magic-tape/png/magic-tape.png";
+									then	notification_img="$HOME/git/magic-tape/png/logo1.png";
 										sed -i "/$U/d" $HOME/git/magic-tape/subscriptions/subscriptions.txt;
 										echo -e "${Yellow}${bold}[Unsubscribed from $U ]${normal}";
 										notify-send -t $NOTIF_DELAY -i "$notification_img" "You have unsubscribed from $U";
@@ -302,21 +302,21 @@ function misc_menu ()
 					 read -N 1 cwh;echo -e "\n";
 						if [[ $cwh == Y ]] || [[ $cwh == y ]];
 						then cat /dev/null >	$HOME/git/magic-tape/history/watch_history.txt;
-							notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "Watch history cleared.";
+							notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Watch history cleared.";
 						fi;cwh="";
 			;;
 			S) clear;echo -e "Clear ${Yellow}${bold}search history?${normal}(Y/y))";
 					 read -N 1 csh;echo -e "\n";
 						if [[ $csh == Y ]] || [[ $csh == y ]];
 						then cat /dev/null >	$HOME/git/magic-tape/history/search_history.txt;
-						notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "Search history cleared.";
+						notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Search history cleared.";
 						fi;csh="";
 			;;
 			T) clear;echo -e "Clear ${Yellow}${bold}thumbnail cache?${normal}(Y/y))";
 						 read -N 1 ctc;echo -e "\n";
 							if [[ $ctc == Y ]] || [[ $ctc == y ]];
 							then mv	$HOME/git/magic-tape/jpg/* $HOME/.local/share/Trash/files/
-							notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "Thumbnail cache cleared.";
+							notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Thumbnail cache cleared.";
 							fi;ctc="";
 			;;
 			l) clear;like_video;
@@ -328,7 +328,7 @@ function misc_menu ()
 						else	echo -e "${Yellow}${bold}Unlike video\n"$UNLIKE"?${normal}\n(Y/y))";
 						 read -N 1 uv;echo -e "\n";
 							if [[ $uv == Y ]] || [[ $uv == y ]];
-							then	notification_img="$HOME/git/magic-tape/png/magic-tape.png";
+							then	notification_img="$HOME/git/magic-tape/png/logo1.png";
 								#UNLIKE="$(echo "$UNLIKE"|awk '{print $1}'|sed 's/^.*\///')";
 								sed -i "/$UNLIKE/d" $HOME/git/magic-tape/history/liked.txt;
 								notify-send -t $NOTIF_DELAY -i "$notification_img" "❌ You have unliked $UNLIKE";
@@ -390,6 +390,7 @@ function draw_preview {
 	#sample draw_preview 35 35 90 3 /path/image.jpg
 	if [[ "$IMAGE_SUPPORT" == "kitty" ]];then	kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
 	if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_uber $1 $2 $3 $4 $5;fi;
+	if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa -s $3 $5;fi;
 }
 
 function get_feed_json ()
@@ -472,7 +473,9 @@ function select_video ()
 	+m \
 	-i \
 	--exact \
-	--preview='height=$(($FZF_PREVIEW_COLUMNS /4 + 1));\
+	--preview='
+	height=$(($FZF_PREVIEW_COLUMNS /4 + 1));\
+	if [[ "$IMAGE_SUPPORT" == "kitty" ]];then clear_image;fi;\
 	i=$(echo {}|sed "s/\\t.*$//g");echo $i>$HOME/git/magic-tape/search/video/index.txt;\
 	if [[ "$IMAGE_SUPPORT" != "none" ]];then	ll=0; while [ $ll -le $height ];do echo "";((ll++));done;fi;\
 	TITLE="$(cat $HOME/git/magic-tape/search/video/titles.txt|head -$i|tail +$i)";\
@@ -480,12 +483,11 @@ function select_video ()
 	channel_jpg="$(cat $HOME/git/magic-tape/search/video/channel_ids.txt|head -$i|tail +$i)"".jpg";\
 	if [[ "$TITLE" == "Previous Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/png/previous.png;\
 	elif [[ "$TITLE" == "Next Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/png/next.png;\
-	elif [[ "$TITLE" == "Abort Selection" ]];\
-		then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/png/abort.png;\
+	elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/png/abort.png;\
 		else draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/jpg/img-"$(cat $HOME/git/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg;\
 		if [ -e $HOME/git/magic-tape/subscriptions/jpg/"$channel_jpg" ];\
 			then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/git/magic-tape/subscriptions/jpg/"$channel_jpg";fi;\
-			else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/git/magic-tape/png/magic-tape.png;fi;\
+			else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/git/magic-tape/png/logo1.png;fi;\
 		fi;\
 	fi;\
 	ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
@@ -530,7 +532,7 @@ function download_video ()
 	echo -e "${Yellow}${bold}[Downloading $play_now${normal}...]";
 	notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/download.png "Video Downloading: $TITLE";
 	yt-dlp "$play_now";
-	notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "Video Downloading of $TITLE is now complete.";
+	notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Video Downloading of $TITLE is now complete.";
 	echo -e "${Yellow}${bold}[Video Downloading of $TITLE is now complete.]${normal}";
 	sleep $DIALOG_DELAY;
 	cd ;
@@ -543,7 +545,7 @@ function download_audio ()
 	echo -e "${Yellow}${bold}[Downloading audio  of $play_now...]${normal}";
 	notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/download.png "Audio Downloading: $TITLE";
 	yt-dlp --extract-audio --audio-quality 0 --embed-thumbnail "$play_now";
-	notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "Audio Downloading of $TITLE is now complete.";
+	notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Audio Downloading of $TITLE is now complete.";
 	echo -e "${Yellow}${bold}[Audio Downloading of $TITLE is now complete.]${normal}";
 	sleep $DIALOG_DELAY;
 	cd ;
@@ -583,8 +585,8 @@ function select_action ()
 		"Like Video ❤️") clear;
 			if [[ -z "$(grep "$play_now" $HOME/git/magic-tape/history/liked.txt)" ]];
 			then echo "$play_now"" ""$TITLE">>$HOME/git/magic-tape/history/liked.txt;
-			notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "❤️ Video added to Liked Videos.";
-			else notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "❤️ Video already added to Liked Videos.";
+			notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video added to Liked Videos.";
+			else notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video already added to Liked Videos.";
 			fi;
 		;;
 		"Quit ❌") clear;
@@ -620,8 +622,8 @@ function select_action1 ()
 				L) clear;
 							if [[ -z "$(grep "$play_now" $HOME/git/magic-tape/history/liked.txt)" ]];
 							then echo "$play_now"" ""$TITLE">>$HOME/git/magic-tape/history/liked.txt;
-							notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "❤️ Video added to Liked Videos.";
-							else notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "❤️ Video already added to Liked Videos.";
+							notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video added to Liked Videos.";
+							else notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video already added to Liked Videos.";
 							fi;
 				;;
 				Q) clear;
@@ -835,7 +837,7 @@ do
   ;;
   m) clear;clear_image;misc_menu;
   ;;
-  q) clear;clear_image;notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/magic-tape.png "Exited magic-tape";
+  q) clear;clear_image;notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Exited magic-tape";
   ;;
   *)clear;clear_image;echo -e "\n${Yellow}${bold}$db${normal} is an invalid key, please try again.\n";picposy=4;
   ;;
