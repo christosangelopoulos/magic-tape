@@ -31,7 +31,7 @@ function setup ()
 	if [[ "$PREF_BROWSER" == "" ]];then empty_query;
 	else if [[ $PREF_BROWSER == "brave" ]];then BROWSER=brave-browser-stable;else BROWSER=$PREF_BROWSER;fi;
 	LIST_LENGTH="$(echo -e "10\n15\n20\n25\n30\n35\n40\n45\n50\n55\n60\n65\n70"|rofi -dmenu -i -p "SET UP: 📋 Select video list length" -l 20 -width 40)";
-	if [[ "$LIST_LENGTH" == "" ]];then empty_query;
+	LIST_LENGTH=$(($LIST_LENGTH * 2 ));if [[ "$LIST_LENGTH" == "" ]];then empty_query;
 		else	DIALOG_DELAY="$(echo -e "0\n0.5\n1\n1.5\n2\n2.5\n3\n3.5\n4"|rofi -dmenu -i -p "SET UP: 🕓 Select dialog message duration(sec)" -l 20 -width 40)";
 			if [[ "$DIALOG_DELAY" == "" ]];
 			then empty_query;
@@ -391,6 +391,7 @@ function draw_preview {
 	if [[ "$IMAGE_SUPPORT" == "kitty" ]];then	kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
 	if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_uber $1 $2 $3 $4 $5;fi;
 	if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa --format=symbols -c 240 -s  $3 $5;fi;
+
 }
 
 function get_feed_json ()
@@ -403,6 +404,9 @@ function get_feed_json ()
 
 function get_data ()
 {
+	#fix json problem first seen Apr 12 2023
+	even=2;while [ $even -le $(cat $HOME/git/magic-tape/json/video_search.json|wc -l) ];do echo "$(head -$even $HOME/git/magic-tape/json/video_search.json|tail +$even)">>$HOME/git/magic-tape/json/video_search_temp.json;even=$(($even +2));done;mv $HOME/git/magic-tape/json/video_search_temp.json $HOME/git/magic-tape/json/video_search.json;
+
 	jq '.id' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/ids.txt;
 	jq '.title' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/titles.txt;
 	jq '.duration_string' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/lengths.txt;
