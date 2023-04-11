@@ -31,7 +31,7 @@ function setup ()
 	if [[ "$PREF_BROWSER" == "" ]];then empty_query;
 	else if [[ $PREF_BROWSER == "brave" ]];then BROWSER=brave-browser-stable;else BROWSER=$PREF_BROWSER;fi;
 	LIST_LENGTH="$(echo -e "10\n15\n20\n25\n30\n35\n40\n45\n50\n55\n60\n65\n70"|rofi -dmenu -i -p "SET UP: 📋 Select video list length" -l 20 -width 40)";
-	LIST_LENGTH=$(($LIST_LENGTH * 2 ));if [[ "$LIST_LENGTH" == "" ]];then empty_query;
+	if [[ "$LIST_LENGTH" == "" ]];then empty_query;
 		else	DIALOG_DELAY="$(echo -e "0\n0.5\n1\n1.5\n2\n2.5\n3\n3.5\n4"|rofi -dmenu -i -p "SET UP: 🕓 Select dialog message duration(sec)" -l 20 -width 40)";
 			if [[ "$DIALOG_DELAY" == "" ]];
 			then empty_query;
@@ -398,6 +398,7 @@ function get_feed_json ()
 {
 	echo -e "${Yellow}${bold}[Downloading $FEED...]${normal}";
 	echo -e "$db\n$ITEM\n$FEED\n$fzf_header">$HOME/git/magic-tape/history/last_action.txt;
+	if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH * 2 ));else LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3)";fi;
 	yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --extractor-args youtubetab:approximate_date --playlist-start $ITEM --playlist-end $(($ITEM + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/git/magic-tape/json/video_search.json
 	echo -e "${Yellow}${bold}[Completed $FEED.]${normal}";
 }
