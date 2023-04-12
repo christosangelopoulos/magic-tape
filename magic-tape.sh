@@ -399,8 +399,10 @@ function get_feed_json ()
 	echo -e "${Yellow}${bold}[Downloading $FEED...]${normal}";
 	echo -e "$db\n$ITEM\n$FEED\n$fzf_header">$HOME/git/magic-tape/history/last_action.txt;
 	if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH * 2 ));else LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3)";fi;
-	yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --extractor-args youtubetab:approximate_date --playlist-start $ITEM --playlist-end $(($ITEM + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/git/magic-tape/json/video_search.json
+	yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --extractor-args youtubetab:approximate_date --playlist-start $ITEM --playlist-end $(($ITEM + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/git/magic-tape/json/video_search.json;
 	echo -e "${Yellow}${bold}[Completed $FEED.]${normal}";
+	#correct back LIST_LENGTH value;
+	if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH / 2 ));fi;
 }
 
 function get_data ()
