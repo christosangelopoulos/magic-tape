@@ -4,7 +4,24 @@
 #╹ ╹╹ ╹┗━┛╹┗━╸    ╹ ╹ ╹╹  ┗━╸
 #A script written by Christos Angelopoulos in March 2023 under GNU GENERAL PUBLIC LICENSE
 #
-
+function channel_feed ()
+{
+		big_loop=1;
+			ITEM=1;
+			FEED="/channel/""$P""/videos";
+			while [ $big_loop -eq 1 ];
+			do	fzf_header="channel: "$channel_name"  videos $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
+			get_feed_json;
+			get_data;
+			small_loop=1;
+			while [ $small_loop -eq 1 ];
+			do select_video ;
+				if [[ "$TITLE" == "Next Page" ]]||[[ "$TITLE" == "Previous Page" ]];then small_loop=0;fi;
+				if [[ "$TITLE" == "Abort Selection" ]];then small_loop=0;big_loop=0;fi;
+				if [[ "$TITLE" != "Abort Selection" ]]&&[[ "$TITLE" != "Next Page" ]]&&[[ "$TITLE" != "Previous Page" ]];then select_action;fi;
+			done;
+		done;
+}
 function color_set()
 {
 	if [[ "$COLOR" == "No" ]];
@@ -575,7 +592,7 @@ function select_action ()
 	clear_image;
 	#while [ "$ACTION" != "P" ]  && [ "$ACTION" != "V" ] && [ "$ACTION" != "A" ] && [ "$ACTION" != "W" ] && [ "$ACTION" != "Q" ] ;
 	#do
-	ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nQuit ❌"|rofi -dmenu -i -p "🔎 What do you want to do?" -l 8 -width 22 -selected-row 0)";
+	ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name"\nQuit ❌"|rofi -dmenu -i -p "🔎 What do you want to do?" -l 9 -width 22 -selected-row 0)";
 	case $ACTION in
 		"Play ⭐Video 360p") message_audio_video;print_mpv_video_shortcuts;mpv --ytdl-raw-options=format=18 "$play_now";play_now="";TITLE="";
 		;;
@@ -595,6 +612,10 @@ function select_action ()
 			notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video added to Liked Videos.";
 			else notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video already added to Liked Videos.";
 			fi;
+		;;
+		"Browse Feed of channel"*) clear; P="$(cat $HOME/git/magic-tape/search/video/channel_ids.txt|head -$i|tail +$i)";
+			channel_name="$(cat $HOME/git/magic-tape/search/video/channel_names.txt|head -$i|tail +$i)";
+			channel_feed;
 		;;
 		"Quit ❌") clear;
 		;;
@@ -775,26 +796,12 @@ do
 				 clear;
   ;;
   c) clear;clear_image;
-  			C="$(cat $HOME/git/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select channel" -l 20 -width 40)";
+  			channel_name="$(cat $HOME/git/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select channel" -l 20 -width 40)";
   			echo -e "${Yellow}${bold}[Selected channel: $C]"${normal};
-  			if [[ -z "$C" ]];
+  			if [[ -z "$channel_name" ]];
    		then empty_query;
-  			else P="$(grep "$C" $HOME/git/magic-tape/subscriptions/subscriptions.txt|head -1|awk '{print $1}')"
-  			big_loop=1;
-  				ITEM=1;
-   			FEED="/channel/""$P""/videos";
-   			while [ $big_loop -eq 1 ];
-   			do	fzf_header="channel: $C  videos $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
-						get_feed_json;
-						get_data;
-   			small_loop=1;
-						while [ $small_loop -eq 1 ];
-						do select_video ;
-							if [[ "$TITLE" == "Next Page" ]]||[[ "$TITLE" == "Previous Page" ]];then small_loop=0;fi;
-							if [[ "$TITLE" == "Abort Selection" ]];then small_loop=0;big_loop=0;fi;
-							if [[ "$TITLE" != "Abort Selection" ]]&&[[ "$TITLE" != "Next Page" ]]&&[[ "$TITLE" != "Previous Page" ]];then select_action;fi;
-						done;
-					done;
+  			else P="$(grep "$channel_name" $HOME/git/magic-tape/subscriptions/subscriptions.txt|head -1|awk '{print $1}')";
+					channel_feed;
 					fi;
   ;;
   h) clear;clear_image;
