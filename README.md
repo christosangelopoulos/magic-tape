@@ -50,6 +50,7 @@ Regarding image support, it can either be achived with
 
 * [kitty terminal](https://sw.kovidgoyal.net/kitty/)
 
+
     $ sudo apt install kitty
 
 
@@ -63,6 +64,7 @@ or with
 
 
 * [chafa](https://github.com/hpjansson/chafa)
+
 
     $ sudo apt install chafa
 
@@ -174,6 +176,7 @@ Once a video is selected, the user is prompted to __select action__:
 * Play ⭐⭐⭐Best Audio
 * Download Video 🔽
 * Like Video ❤️
+* Browse Feed of channel that uploaded the video  📺
 * Quit ❌
 
 ![image7](screenshots/rofi_select_action.png)
