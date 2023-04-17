@@ -47,7 +47,7 @@ function setup ()
 	PREF_BROWSER="$(echo -e "brave\nchrome\nchromium\nedge\nfirefox\nopera\nvivaldi"|rofi -dmenu -i -p "SET UP: 🌍 Select browser to login YouTube with" -l 20 -width 40)";
 	if [[ "$PREF_BROWSER" == "" ]];then empty_query;
 	else if [[ $PREF_BROWSER == "brave" ]];then BROWSER=brave-browser-stable;else BROWSER=$PREF_BROWSER;fi;
-	LIST_LENGTH="$(echo -e "10\n15\n20\n25\n30\n35\n40\n45\n50\n55\n60\n65\n70"|rofi -dmenu -i -p "SET UP: 📋 Select video list length" -l 20 -width 40)";
+	LIST_LENGTH="$(echo -e "10\n20\n30\n40\n50\n60\n70\n80"|rofi -dmenu -i -p "SET UP: 📋 Select video list length" -l 20 -width 40)";
 	if [[ "$LIST_LENGTH" == "" ]];then empty_query;
 		else	DIALOG_DELAY="$(echo -e "0\n0.5\n1\n1.5\n2\n2.5\n3\n3.5\n4"|rofi -dmenu -i -p "SET UP: 🕓 Select dialog message duration(sec)" -l 20 -width 40)";
 			if [[ "$DIALOG_DELAY" == "" ]];
@@ -213,8 +213,9 @@ function misc_menu ()
 							FEED="/results?search_query="$C"&sp=EgIQAg%253D%253D";
 							while [ $repeat_channel_search -eq 1 ];
      		do fzf_header="$(echo ${FEED^^}|sed 's/&SP=.*$//;s/^.*SEARCH_QUERY=/search: /;s/[\/\?=&+]/ /g') channels: $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
+							ITEM0=$ITEM;
 							echo -e "${Yellow}${bold}[Downloading $FEED...]${normal}";
-							echo -e "$db\n$ITEM\n$FEED\n$fzf_header">$HOME/git/magic-tape/history/last_action.txt;
+							echo -e "$db\n$ITEM\n$ITEM0\n$FEED\n$fzf_header">$HOME/git/magic-tape/history/last_action.txt;
 							yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --playlist-start $ITEM --playlist-end $(($ITEM + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/git/magic-tape/json/channel_search.json
 							echo -e "${Yellow}${bold}[Completed $FEED.]${normal}";
 
@@ -273,8 +274,10 @@ function misc_menu ()
 							i=$(cat $HOME/git/magic-tape/search/channels/index.txt);
 							NAME=$(head -$i $HOME/git/magic-tape/search/channels/titles.txt|tail +$i);
 							if [[ $CHAN == " " ]]; then echo "ABORT!"; NAME="Abort Selection";clear;fi;
-							echo -e "Channel Selected: ${Yellow}${bold}$NAME${bold}";
-							if [[ -n $PREVIOUS_PAGE ]]&&[[ $CHAN == *"shift-left"* ]]; then NAME="Previous Page";fi;
+							echo -e "Channel Selected: ${Yellow}${bold}$NAME${bold}${normal}";
+							if [ $ITEM  -ge $LIST_LENGTH ]&&[[ $CHAN == *"shift-left"* ]]; then NAME="Previous Page";fi;
+							if [ $ITEM  -le $LIST_LENGTH ]&&[[ $CHAN == *"shift-left"* ]]; then NAME="Abort Selection";fi;
+							#if [[ -n $PREVIOUS_PAGE ]]&&[[ $CHAN == *"shift-left"* ]]; then NAME="Previous Page";fi;
 							if [[ $CHAN == *"shift-right"* ]]; then NAME="Next Page";fi;
 							if [[ $NAME == "Next Page" ]];then ITEM=$(($ITEM + $LIST_LENGTH));fi;
 							if [[ $NAME == "Previous Page" ]];then ITEM=$(($ITEM - $LIST_LENGTH));fi;
@@ -414,9 +417,9 @@ function draw_preview {
 function get_feed_json ()
 {
 	echo -e "${Yellow}${bold}[Downloading $FEED...]${normal}";
-	echo -e "$db\n$ITEM\n$FEED\n$fzf_header">$HOME/git/magic-tape/history/last_action.txt;
+	echo -e "$db\n$ITEM\n$ITEM0\n$FEED\n$fzf_header">$HOME/git/magic-tape/history/last_action.txt;
 	if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH * 2 ));else LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3)";fi;
-	yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --extractor-args youtubetab:approximate_date --playlist-start $ITEM --playlist-end $(($ITEM + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/git/magic-tape/json/video_search.json;
+	yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --extractor-args youtubetab:approximate_date --playlist-start $ITEM0 --playlist-end $(($ITEM0 + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/git/magic-tape/json/video_search.json;
 	echo -e "${Yellow}${bold}[Completed $FEED.]${normal}";
 	#correct back LIST_LENGTH value;
 	if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH / 2 ));fi;
@@ -424,7 +427,7 @@ function get_feed_json ()
 
 function get_data ()
 {
-	#fix json problem first seen Apr 12 2023, where each item takes two lines, not one. While and until this stands, this one-liner corrects the issue. Also LIST_LENGTH=$(($LIST_LENGTH * 2 )) in setup function, exactly because of this issue
+	#fix json problem first seen Apr 12 2023, where each item in the json file takes two lines, not one. While and until this stands, this one-liner corrects the issue. Also LIST_LENGTH=$(($LIST_LENGTH * 2 )) in setup function, exactly because of this issue
 	if [ $db == "f" ]||[ $db == "t" ];then even=2;while [ $even -le $(cat $HOME/git/magic-tape/json/video_search.json|wc -l) ];do echo "$(head -$even $HOME/git/magic-tape/json/video_search.json|tail +$even)">>$HOME/git/magic-tape/json/video_search_temp.json;even=$(($even +2));done;mv $HOME/git/magic-tape/json/video_search_temp.json $HOME/git/magic-tape/json/video_search.json;fi;
 
 	jq '.id' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/ids.txt;
@@ -541,10 +544,17 @@ function select_video ()
 	TITLE=$(head -$i $HOME/git/magic-tape/search/video/titles.txt|tail +$i);
 	channel_name="$(cat $HOME/git/magic-tape/search/video/channel_names.txt|head -$i|tail +$i)";
 
-	if [[ -n $PREVIOUS_PAGE ]]&&[[ $PLAY == *"shift-left"* ]]; then TITLE="Previous Page";fi;
+	if [ $ITEM  -ge $LIST_LENGTH ]&&[[ $PLAY == *"shift-left"* ]]; then TITLE="Previous Page";fi;
+	if [ $ITEM  -le $LIST_LENGTH ]&&[[ $PLAY == *"shift-left"* ]]; then TITLE="Abort Selection";fi;
 	if [[ $PLAY == *"shift-right"* ]]; then TITLE="Next Page";fi;
-	if [[ $TITLE == "Next Page" ]];then ITEM=$(($ITEM + $LIST_LENGTH));fi;
-	if [[ $TITLE == "Previous Page" ]];then ITEM=$(($ITEM - $LIST_LENGTH));fi;
+	if [[ $TITLE == "Next Page" ]];
+	then ITEM=$(($ITEM + $LIST_LENGTH));
+		if [[ $db == "f" ]]||[[ $db == "t" ]]; then ITEM0=$(($ITEM0 + $LIST_LENGTH * 2));else ITEM0=$ITEM;fi;
+	fi;
+	if [[ $TITLE == "Previous Page" ]];
+	then ITEM=$(($ITEM - $LIST_LENGTH));
+		if [[ $db == "f" ]]||[[ $db == "t" ]]; then ITEM0=$(($ITEM0 - $LIST_LENGTH * 2));else ITEM0=$ITEM;fi;
+	fi;
 	if [[ $TITLE == "Abort Selection" ]];then big_loop=0;fi;
 	if [[ $PLAY == " " ]]; then echo "ABORT!"; TITLE="Abort Selection";big_loop=0;clear;fi;
 	PLAY="";
@@ -673,6 +683,7 @@ do
   f) clear;clear_image;
    		big_loop=1;
    		ITEM=1;
+   		ITEM0=1;
   			FEED="/feed/subscriptions";
   			while [ $big_loop -eq 1 ];
   			do fzf_header="$(echo ${FEED^^}|sed 's/[\/\?=]/ /g') videos $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
@@ -691,6 +702,7 @@ do
   t) clear;clear_image;
    		big_loop=1;
    		ITEM=1;
+   		ITEM0=1;
   			FEED="/feed/trending";
   			while [ $big_loop -eq 1 ];
   			do fzf_header="$(echo ${FEED^^}|sed 's/[\/\?=]/ /g') videos $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
@@ -718,6 +730,7 @@ do
    			echo "$P">>$HOME/git/magic-tape/history/search_history.txt;
    			big_loop=1;
    			ITEM=1;
+   			ITEM0=1;
    			FEED="/results?search_query=""$P""&sp=CAASAhAB";
    			while [ $big_loop -eq 1 ];
    			do fzf_header="$(echo ${FEED^^}|sed 's/&SP=.*$//;s/^.*SEARCH_QUERY=/search: /;s/[\/\?=&+]/ /g') videos: $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
@@ -738,9 +751,9 @@ do
 				 clear_image;
 				 db="$(head -1 $HOME/git/magic-tape/history/last_action.txt)";
 				 ITEM="$(head -2 $HOME/git/magic-tape/history/last_action.txt|tail +2)";
-				 FEED="$(head -3 $HOME/git/magic-tape/history/last_action.txt|tail +3)";
-				 fzf_header="$(head -4 $HOME/git/magic-tape/history/last_action.txt|tail +4)";
-
+					ITEM0="$(head -3 $HOME/git/magic-tape/history/last_action.txt|tail +3)";
+				 FEED="$(head -4 $HOME/git/magic-tape/history/last_action.txt|tail +4)";
+				 fzf_header="$(head -5 $HOME/git/magic-tape/history/last_action.txt|tail +5)";
   			big_loop=1;
   			first=1;
   			while [ $big_loop -eq 1 ];
