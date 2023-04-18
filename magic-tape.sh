@@ -8,6 +8,7 @@ function channel_feed ()
 {
 		big_loop=1;
 			ITEM=1;
+			ITEM0=$ITEM;
 			FEED="/channel/""$P""/videos";
 			while [ $big_loop -eq 1 ];
 			do	fzf_header="channel: "$channel_name"  videos $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
