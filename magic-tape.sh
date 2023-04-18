@@ -596,8 +596,7 @@ function message_audio_video ()
 	then	echo "$play_now"" ""$TITLE">>$HOME/git/magic-tape/history/watch_history.txt;
 	fi;
  notify-send -t $NOTIF_DELAY -i "$notification_img" "Playing: $TITLE";
-	clear;
-}
+	}
 
 function select_action ()
 {
