@@ -550,10 +550,12 @@ function select_video ()
 	if [[ $PLAY == *"shift-right"* ]]; then TITLE="Next Page";fi;
 	if [[ $TITLE == "Next Page" ]];
 	then ITEM=$(($ITEM + $LIST_LENGTH));
+		#change implemented when the 2-lines-per-item-in-the-json-file issue appeared
 		if [[ $db == "f" ]]||[[ $db == "t" ]]; then ITEM0=$(($ITEM0 + $LIST_LENGTH * 2));else ITEM0=$ITEM;fi;
 	fi;
 	if [[ $TITLE == "Previous Page" ]];
 	then ITEM=$(($ITEM - $LIST_LENGTH));
+		#change implemented when the 2-lines-per-item-in-the-json-file issue appeared
 		if [[ $db == "f" ]]||[[ $db == "t" ]]; then ITEM0=$(($ITEM0 - $LIST_LENGTH * 2));else ITEM0=$ITEM;fi;
 	fi;
 	if [[ $TITLE == "Abort Selection" ]];then big_loop=0;fi;
@@ -799,6 +801,7 @@ do
   			else P=${P// /+};
    			big_loop=1;
    			ITEM=1;
+   			ITEM0=$ITEM;
    			FEED="/results?search_query=""$P""&sp=CAASAhAB";
    			while [ $big_loop -eq 1 ];
    			do fzf_header="$(echo ${FEED^^}|sed 's/&SP=.*$//;s/^.*SEARCH_QUERY=/search: /;s/[\/\?=&+]/ /g') videos: $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
