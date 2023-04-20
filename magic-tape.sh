@@ -50,7 +50,7 @@ function setup ()
 	else if [[ $PREF_BROWSER == "brave" ]];then BROWSER=brave-browser-stable;else BROWSER=$PREF_BROWSER;fi;
 	LIST_LENGTH="$(echo -e "10\n20\n30\n40\n50\n60\n70\n80"|rofi -dmenu -i -p "SET UP: 📋 Select video list length" -l 20 -width 40)";
 	if [[ "$LIST_LENGTH" == "" ]];then empty_query;
-		else	DIALOG_DELAY="$(echo -e "0\n0.5\n1\n1.5\n2\n2.5\n3\n3.5\n4"|rofi -dmenu -i -p "SET UP: 🕓 Select dialog message duration(sec)" -l 20 -width 40)";
+		else	DIALOG_DELAY="$(echo -e "0\n1\n2\n3\n4\n5\n6"|rofi -dmenu -i -p "SET UP: 🕓 Select dialog message duration(sec)" -l 20 -width 40)";
 			if [[ "$DIALOG_DELAY" == "" ]];
 			then empty_query;
 			else NOTIF_DELAY="$(echo -e "0\n1\n2\n3\n4\n5\n6"|rofi -dmenu -i -p "SET UP: 🕓 Select notification message duration(sec)" -l 20 -width 40)";
