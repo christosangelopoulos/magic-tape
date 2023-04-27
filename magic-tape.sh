@@ -604,8 +604,6 @@ function select_action ()
 {
 	clear;
 	clear_image;
-	#while [ "$ACTION" != "P" ]  && [ "$ACTION" != "V" ] && [ "$ACTION" != "A" ] && [ "$ACTION" != "W" ] && [ "$ACTION" != "Q" ] ;
-	#do
 	ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name" 📺\nQuit ❌"|rofi -dmenu -i -p "🔎 What do you want to do?" -l 9 -width 22 -selected-row 0)";
 	case $ACTION in
 		"Play ⭐Video 360p") message_audio_video;print_mpv_video_shortcuts;mpv --ytdl-raw-options=format=18 "$play_now";play_now="";TITLE="";
@@ -636,7 +634,7 @@ function select_action ()
 		*)clear_image;echo -e "\n😕${Yellow}${bold}$db${normal} ${Green}is an invalid key, please try again.${normal}\n"; sleep $DIALOG_DELAY;clear;
 		;;
 	esac
-	#done
+
 	ACTION="";
 }
 
@@ -777,7 +775,7 @@ do
   ;;
   c) clear;clear_image;
   			channel_name="$(cat $HOME/git/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select channel" -l 20 -width 40)";
-  			echo -e "${Green}Selected channel:${Yellow}${bold} $C"${normal};
+  			echo -e "${Green}Selected channel:${Yellow}${bold} $channel_name"${normal};
   			if [[ -z "$channel_name" ]];
    		then empty_query;
   			else P="$(grep "$channel_name" $HOME/git/magic-tape/subscriptions/subscriptions.txt|head -1|awk '{print $1}')";
