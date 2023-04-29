@@ -85,7 +85,7 @@ To run the script, first you need to make it executable:
 
     $ cd magic-tape
     $ chmod +x magic-tape.sh
-	$ mkdir -p jpg/ json/ search/video/ search/channels/ subscriptions/ history/
+	$ mkdir -p history/ jpg/ json/ search/video/ search/channels/ subscriptions/jpg/
 
 
 
@@ -175,8 +175,10 @@ Once a video is selected, the user is prompted to __select action__:
 * Play ⭐⭐⭐Best Video/Live
 * Play ⭐⭐⭐Best Audio
 * Download Video 🔽
+* Download Audio 🔽
 * Like Video ❤️
 * Browse Feed of channel that uploaded the video  📺
+* Subscribe to the channel that uploaded the video 📋
 * Quit ❌
 
 ![image7](screenshots/rofi_select_action.png)
