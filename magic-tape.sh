@@ -160,7 +160,7 @@ function setup ()
 					else COLOR="$(echo -e "Yes\nNo"|rofi -dmenu -i -p "SET UP: 🕓 Do  you prefer multi-colored terminal output?" -l 20 -width 40)";
 					if [[ "$COLOR" == "" ]];
 					then empty_query;
-					else echo -e "$PREF_BROWSER\n$BROWSER\n$LIST_LENGTH\n$DIALOG_DELAY\n$NOTIF_DELAY\n$IMAGE_SUPPORT\n$COLOR">$HOME/git/magic-tape/config.txt;
+					else echo -e "Prefered_browser: $PREF_BROWSER\nBrowser: $BROWSER\nList_Length: $LIST_LENGTH\nTerminal_message_duration: $DIALOG_DELAY\nNotification_duration: $NOTIF_DELAY\nImage_support: $IMAGE_SUPPORT\nColored_messages: $COLOR">$HOME/git/magic-tape/config.txt;
 						notify-send -t 5000 "SET UP: 😀 Your preferences are now stored!";
 						echo -e "${Yellow}${bold}SET UP: 😀 Your preferences are now stored!${normal}";	sleep 2;
 					fi;
@@ -683,13 +683,13 @@ db=""
 if [[ ! -e $HOME/git/magic-tape/config.txt ]]||[ $(cat $HOME/git/magic-tape/config.txt|wc -l) -lt 7 ];
 then setup;
 fi;
-PREF_BROWSER="$(head -1 $HOME/git/magic-tape/config.txt)";
-BROWSER="$(head -2 $HOME/git/magic-tape/config.txt|tail +2)";
-LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3)";
-DIALOG_DELAY="$(head -4 $HOME/git/magic-tape/config.txt|tail +4)";
-NOTIF_DELAY="$(head -5 $HOME/git/magic-tape/config.txt|tail +5)";
-IMAGE_SUPPORT="$(head -6 $HOME/git/magic-tape/config.txt|tail +6)";
-COLOR="$(head -7 $HOME/git/magic-tape/config.txt|tail +7)";
+PREF_BROWSER="$(head -1 $HOME/git/magic-tape/config.txt|awk '{print $2}')";
+BROWSER="$(head -2 $HOME/git/magic-tape/config.txt|tail +2|awk '{print $2}')";
+LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3|awk '{print $2}')";
+DIALOG_DELAY="$(head -4 $HOME/git/magic-tape/config.txt|tail +4|awk '{print $2}')";
+NOTIF_DELAY="$(head -5 $HOME/git/magic-tape/config.txt|tail +5|awk '{print $2}')";
+IMAGE_SUPPORT="$(head -6 $HOME/git/magic-tape/config.txt|tail +6|awk '{print $2}')";
+COLOR="$(head -7 $HOME/git/magic-tape/config.txt|tail +7|awk '{print $2}')";
 
 color_set;
 while [ "$db" != "q" ]
