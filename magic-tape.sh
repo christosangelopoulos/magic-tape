@@ -231,7 +231,7 @@ function print_mpv_video_shortcuts()
 {
 echo -e " ${Green}    ${Yellow}${bold}MPV VIDEO SHORTCUTS    ${normal}";
 echo -e " ${GreenInvert}${bold}   SPACE   │ Pause/Play     ${normal}";
-echo -e " ${Green}${bold}   9  0    │ -/+ Volume     ${normal}";
+echo -e " ${Green}${bold}   9   0   │ -/+ Volume     ${normal}";
 echo -e " ${GreenInvert}${bold}     m     │ Mute           ${normal}";
 echo -e " ${Green}${bold}     f     │ Full Screen    ${normal}";
 echo -e " ${GreenInvert}${bold}   ←   →   │ -/+  5 sec     ${normal}";
@@ -653,7 +653,7 @@ function select_action ()
 function empty_query ()
 {
 	clear;
- echo "😕 Selection cancelled...";
+ echo "😕 Selection canceled...";
  sleep $DIALOG_DELAY;
 }
 ###############################################################################
