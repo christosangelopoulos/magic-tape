@@ -126,6 +126,7 @@ function color_set()
 	if [[ "$COLOR" == "No" ]];
 	then Yellow="";
 		Green="";
+		GreenInvert="";
 		Red="";
 		Magenta="";
 		Cyan="";
@@ -265,7 +266,7 @@ function misc_menu ()
 	do	echo "╭────────────────────────────────────────╮";
 		echo -e "│${Yellow}${bold}Miscellaneous menu${normal}                Enter:│";
 		echo "├────────────────────────────────────────┤";
-		echo -e "│ ${Yellow}${bold}P ${Cyan}to SET UP PREFENCES!${normal}                 │";
+		echo -e "│ ${Yellow}${bold}P ${Cyan}to SET UP PREFERENCES!${normal}               │";
 		echo "├────────────────────────────────────────┤";
 		echo -e "│ ${Yellow}${bold}l ${Red}to LIKE a video.${normal}                     │";
 		echo -e "│ ${Yellow}${bold}L ${Red}to UNLIKE a video.${normal}                   │";
