@@ -227,42 +227,35 @@ function import_subscriptions()
 
 function print_mpv_video_shortcuts()
 {
-	echo -e "╭───────────────────────────╮";
-	echo -e "│    ${Yellow}${bold}MPV VIDEO SHORTCUTS${normal}    │";
-	echo -e "├───────────┬───────────────┤";
-	echo -e "│ ${Cyan}${bold}  SPACE${normal}   │  ${Cyan}${bold}Pause/Play${normal}   │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│   ${Green}${bold}9  0${normal}    │  ${Green}${bold}-/+ Volume${normal}   │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│     ${Green}${bold}m${normal}     │     ${Green}${bold}Mute${normal}      │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│     ${Cyan}${bold}f${normal}     │  ${Cyan}${bold}Full Screen${normal}  │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│   ${Magenta}${bold}←   →${normal}   │  ${Magenta}${bold}-/+  5 sec${normal}   │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│   ${Magenta}${bold}↑   ↓${normal}   │  ${Magenta}${bold}-/+  1 min${normal}   │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│    ${Cyan}${bold} q  ${normal}   │     ${Cyan}${bold}Quit${normal}      │";
-	echo -e "╰───────────┴───────────────╯"
+echo -e "${Green}    ${Yellow}${bold}MPV VIDEO SHORTCUTS    ${normal}";
+echo -e "${GreenInvert}${bold}   SPACE   │ Pause/Play    ${normal}";
+echo -e "${Green}${bold}   9  0    │ -/+ Volume    ${normal}";
+echo -e "${GreenInvert}${bold}     m     │ Mute          ${normal}";
+echo -e "${Green}${bold}     f     │ Full Screen   ${normal}";
+echo -e "${GreenInvert}${bold}   ←   →   │  -/+  5 sec   ${normal}";
+echo -e "${Green}${bold}   ↑   ↓   │  -/+  1 min   ${normal}";
+echo -e "${GreenInvert}${bold}     j     │ Cycle subs    ${normal}";
+echo -e "${Green}${bold}   z   Z   │  Sub -/+100 ms${normal}";
+echo -e "${GreenInvert}${bold}   s   S   │ Screenshot    ${normal}";
+echo -e "${Green}${bold}   1   2   │ -/+ Contrast  ${normal}";
+echo -e "${GreenInvert}${bold}   3   4   │ -/+ Brightness${normal}";
+echo -e "${Green}${bold}   5   6   │ -/+ Gamma     ${normal}";
+echo -e "${GreenInvert}${bold}   7   8   │ -/+ Saturation${normal}";
+echo -e "${Green}${bold}   ,   .   │ -/+ Frame     ${normal}";
+echo -e "${GreenInvert}${bold}     q     │ Quit          ${normal}";
+
 }
 
 function print_mpv_audio_shortcuts()
 {
-	echo -e "╭───────────────────────────╮";
-	echo -e "│    ${Yellow}${bold}MPV AUDIO SHORTCUTS${normal}    │";
-	echo -e "├───────────┬───────────────┤";
-	echo -e "│ ${Cyan}${bold}  SPACE${normal}   │  ${Cyan}${bold}Pause/Play${normal}   │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│   ${Green}${bold}9  0${normal}    │  ${Green}${bold}-/+ Volume${normal}   │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│     ${Green}${bold}m${normal}     │     ${Green}${bold}Mute${normal}      │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│   ${Magenta}${bold}←   →${normal}   │  ${Magenta}${bold}-/+  5 sec${normal}   │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│   ${Magenta}${bold}↑   ↓${normal}   │  ${Magenta}${bold}-/+  1 min${normal}   │";
-	echo -e "├───────────┼───────────────┤";
-	echo -e "│    ${Cyan}${bold} q  ${normal}   │     ${Cyan}${bold}Quit${normal}      │";
-	echo -e "╰───────────┴───────────────╯"
+	echo -e "${Green}    ${Yellow}${bold}MPV AUDIO SHORTCUTS    ${normal}";
+	echo -e "${GreenInvert}${bold}   SPACE   │ Pause/Play    ${normal}";
+	echo -e "${Green}${bold}   9  0    │ -/+ Volume    ${normal}";
+	echo -e "${GreenInvert}${bold}     m     │ Mute          ${normal}";
+	echo -e "${Green}${bold}     f     │ Full Screen   ${normal}";
+	echo -e "${GreenInvert}${bold}   ←   →   │  -/+  5 sec   ${normal}";
+	echo -e "${Green}${bold}   ↑   ↓   │  -/+  1 min   ${normal}";
+	echo -e "${GreenInvert}${bold}     q     │ Quit          ${normal}";
 }
 
 function misc_menu ()
@@ -607,7 +600,7 @@ function select_action ()
 	case $ACTION in
 		"Play ⭐Video 360p") message_audio_video;print_mpv_video_shortcuts;mpv --ytdl-raw-options=format=18 "$play_now";play_now="";TITLE="";
 		;;
-		"Play ⭐⭐Video 720p") message_audio_video;print_mpv_video_shortcuts;	mpv --ytdl-raw-options=format=22 "$play_now";play_now="";TITLE="";
+		"Play ⭐⭐Video 720p") message_audio_video;print_mpv_video_shortcuts;mpv --ytdl-raw-options=format=22 "$play_now";play_now="";TITLE="";
 		;;
 		"Play ⭐⭐⭐Best Video/Live") message_audio_video;print_mpv_video_shortcuts;mpv "$play_now";play_now="";TITLE="";
 		;;
@@ -664,6 +657,7 @@ function empty_query ()
 ###############################################################################
 export -f draw_preview draw_uber clear_image start_ueberzug finalise
 export IMAGE_SUPPORT UEBERZUG_FIFO
+GreenInvert="\x1b[42m\x1b[30m"
 Yellow="\033[1;33m"
 Green="\033[1;32m"
 Red="\033[1;31m"
