@@ -230,34 +230,34 @@ function import_subscriptions()
 function print_mpv_video_shortcuts()
 {
 echo -e "${Green}    ${Yellow}${bold}MPV VIDEO SHORTCUTS    ${normal}";
-echo -e "${GreenInvert}${bold}   SPACE   │ Pause/Play    ${normal}";
-echo -e "${Green}${bold}   9  0    │ -/+ Volume    ${normal}";
-echo -e "${GreenInvert}${bold}     m     │ Mute          ${normal}";
-echo -e "${Green}${bold}     f     │ Full Screen   ${normal}";
-echo -e "${GreenInvert}${bold}   ←   →   │  -/+  5 sec   ${normal}";
-echo -e "${Green}${bold}   ↑   ↓   │  -/+  1 min   ${normal}";
-echo -e "${GreenInvert}${bold}     j     │ Cycle subs    ${normal}";
-echo -e "${Green}${bold}   z   Z   │  Sub -/+100 ms${normal}";
-echo -e "${GreenInvert}${bold}   s   S   │ Screenshot    ${normal}";
-echo -e "${Green}${bold}   1   2   │ -/+ Contrast  ${normal}";
-echo -e "${GreenInvert}${bold}   3   4   │ -/+ Brightness${normal}";
-echo -e "${Green}${bold}   5   6   │ -/+ Gamma     ${normal}";
-echo -e "${GreenInvert}${bold}   7   8   │ -/+ Saturation${normal}";
-echo -e "${Green}${bold}   ,   .   │ -/+ Frame     ${normal}";
-echo -e "${GreenInvert}${bold}     q     │ Quit          ${normal}";
+echo -e "${GreenInvert}${bold}   SPACE   │ Pause/Play     ${normal}";
+echo -e "${Green}${bold}   9  0    │ -/+ Volume     ${normal}";
+echo -e "${GreenInvert}${bold}     m     │ Mute           ${normal}";
+echo -e "${Green}${bold}     f     │ Full Screen    ${normal}";
+echo -e "${GreenInvert}${bold}   ←   →   │ -/+  5 sec     ${normal}";
+echo -e "${Green}${bold}   ↑   ↓   │ -/+  1 min     ${normal}";
+echo -e "${GreenInvert}${bold}     j     │ Cycle subs     ${normal}";
+echo -e "${Green}${bold}   z   Z   │ Sub -/+100 ms  ${normal}";
+echo -e "${GreenInvert}${bold}   s   S   │ Screenshot     ${normal}";
+echo -e "${Green}${bold}   1   2   │ -/+ Contrast   ${normal}";
+echo -e "${GreenInvert}${bold}   3   4   │ -/+ Brightness ${normal}";
+echo -e "${Green}${bold}   5   6   │ -/+ Gamma      ${normal}";
+echo -e "${GreenInvert}${bold}   7   8   │ -/+ Saturation ${normal}";
+echo -e "${Green}${bold}   ,   .   │ -/+ Frame      ${normal}";
+echo -e "${GreenInvert}${bold}     q     │ Quit           ${normal}";
 
 }
 
 function print_mpv_audio_shortcuts()
 {
 	echo -e "${Green}    ${Yellow}${bold}MPV AUDIO SHORTCUTS    ${normal}";
-	echo -e "${GreenInvert}${bold}   SPACE   │ Pause/Play    ${normal}";
-	echo -e "${Green}${bold}   9  0    │ -/+ Volume    ${normal}";
-	echo -e "${GreenInvert}${bold}     m     │ Mute          ${normal}";
-	echo -e "${Green}${bold}     f     │ Full Screen   ${normal}";
-	echo -e "${GreenInvert}${bold}   ←   →   │  -/+  5 sec   ${normal}";
-	echo -e "${Green}${bold}   ↑   ↓   │  -/+  1 min   ${normal}";
-	echo -e "${GreenInvert}${bold}     q     │ Quit          ${normal}";
+	echo -e "${GreenInvert}${bold}   SPACE   │ Pause/Play     ${normal}";
+	echo -e "${Green}${bold}   9  0    │ -/+ Volume     ${normal}";
+	echo -e "${GreenInvert}${bold}     m     │ Mute           ${normal}";
+	echo -e "${Green}${bold}     f     │ Full Screen    ${normal}";
+	echo -e "${GreenInvert}${bold}   ←   →   │ -/+  5 sec     ${normal}";
+	echo -e "${Green}${bold}   ↑   ↓   │ -/+  1 min     ${normal}";
+	echo -e "${GreenInvert}${bold}     q     │ Quit           ${normal}";
 }
 
 function misc_menu ()
