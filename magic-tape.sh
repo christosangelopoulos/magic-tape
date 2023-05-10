@@ -134,6 +134,7 @@ function color_set()
 		normal=`tput sgr0`
 	else Yellow="\033[1;33m"
 		Green="\033[1;32m"
+		GreenInvert="\x1b[42m\x1b[30m"
 		Red="\033[1;31m"
 		Magenta="\033[1;35m"
 		Cyan="\033[1;36m"
