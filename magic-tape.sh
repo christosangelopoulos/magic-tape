@@ -4,7 +4,6 @@
 #╹ ╹╹ ╹┗━┛╹┗━╸    ╹ ╹ ╹╹  ┗━╸
 #A script written by Christos Angelopoulos in March 2023 under GNU GENERAL PUBLIC LICENSE
 #
-
 function new_subscription ()
 {
 		C=${C// /+};C=${C//\'/%27};
@@ -39,6 +38,7 @@ function new_subscription ()
 		echo "Abort Selection">>$HOME/git/magic-tape/search/channels/titles.txt;
 
 		CHAN=" $(cat -n $HOME/git/magic-tape/search/channels/titles.txt|sed 's/^. *//g' |fzf\
+		--info=hidden \
 		--layout=reverse \
 		--height=100% \
 		--prompt="Select Channel: " \
@@ -56,19 +56,19 @@ function new_subscription ()
 		echo $i>$HOME/git/magic-tape/search/channels/index.txt;\
 		TITLE="$(cat $HOME/git/magic-tape/search/channels/titles.txt|head -$i|tail +$i)";\
 		if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then	ll=0;while [ $ll -le $(($height/2 - 2)) ];do echo "";((ll++));done;fi;\
-		ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
+		ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
 		if [[ "$TITLE" == "Previous Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/previous.png;\
 		elif [[ "$TITLE" == "Next Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/next.png;\
 		elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/abort.png;\
 		else draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/jpg/"$(cat $HOME/git/magic-tape/search/channels/ids.txt|head -$i|tail +$i)".jpg;fi;\
-		echo -e "\n$TITLE"|fold -w $FZF_PREVIEW_COLUMNS -s;\
-		ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
+		echo -e "\n""$Yellow""$TITLE""$normal"|fold -w $FZF_PREVIEW_COLUMNS -s;\
+		ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
 			if [[ $TITLE != "Abort Selection" ]]&&[[ $TITLE != "Next Page" ]]&&[[ $TITLE != "Previous Page" ]];\
 			then SUBS="$(cat $HOME/git/magic-tape/search/channels/subscribers.txt|head -$i|tail +$i)";\
-		echo -e "\nSubscribers: ""$SUBS";\
-		ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
+		echo -e "\n"$Green"Subscribers: ""$Cyan""$SUBS""$normal";\
+		ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
 		DESCRIPTION="$(cat $HOME/git/magic-tape/search/channels/descriptions.txt|head -$i|tail +$i)";\
-		echo -e "\n$DESCRIPTION"|fold -w $FZF_PREVIEW_COLUMNS -s;\
+		echo -e "\n\x1b[38;5;250m$DESCRIPTION"$normal""|fold -w $FZF_PREVIEW_COLUMNS -s;	\
 		fi;')";
 		clear_image;
 		i=$(cat $HOME/git/magic-tape/search/channels/index.txt);
@@ -173,7 +173,6 @@ function setup ()
 		fi;
 	fi;
 	color_set;
-	picposy=1;
 	clear;
 }
 
@@ -229,22 +228,22 @@ function import_subscriptions()
 
 function print_mpv_video_shortcuts()
 {
-echo -e " ${Green}    ${Yellow}${bold}MPV VIDEO SHORTCUTS    ${normal}";
-echo -e " ${GreenInvert}${bold}   SPACE   │ Pause/Play     ${normal}";
-echo -e " ${Green}${bold}   9   0   │ -/+ Volume     ${normal}";
-echo -e " ${GreenInvert}${bold}     m     │ Mute           ${normal}";
-echo -e " ${Green}${bold}     f     │ Full Screen    ${normal}";
-echo -e " ${GreenInvert}${bold}   ←   →   │ -/+  5 sec     ${normal}";
-echo -e " ${Green}${bold}   ↑   ↓   │ -/+  1 min     ${normal}";
-echo -e " ${GreenInvert}${bold}     j     │ Cycle subs     ${normal}";
-echo -e " ${Green}${bold}   z   Z   │ Sub -/+100 ms  ${normal}";
-echo -e " ${GreenInvert}${bold}   s   S   │ Screenshot     ${normal}";
-echo -e " ${Green}${bold}   1   2   │ -/+ Contrast   ${normal}";
-echo -e " ${GreenInvert}${bold}   3   4   │ -/+ Brightness ${normal}";
-echo -e " ${Green}${bold}   5   6   │ -/+ Gamma      ${normal}";
-echo -e " ${GreenInvert}${bold}   7   8   │ -/+ Saturation ${normal}";
-echo -e " ${Green}${bold}   ,   .   │ -/+ Frame      ${normal}";
-echo -e " ${GreenInvert}${bold}     q     │ Quit           ${normal}";
+	echo -e " ${Green}    ${Yellow}${bold}MPV VIDEO SHORTCUTS    ${normal}";
+	echo -e " ${GreenInvert}${bold}   SPACE   │ Pause/Play     ${normal}";
+	echo -e " ${Green}${bold}   9   0   │ -/+ Volume     ${normal}";
+	echo -e " ${GreenInvert}${bold}     m     │ Mute           ${normal}";
+	echo -e " ${Green}${bold}     f     │ Full Screen    ${normal}";
+	echo -e " ${GreenInvert}${bold}   ←   →   │ -/+  5 sec     ${normal}";
+	echo -e " ${Green}${bold}   ↑   ↓   │ -/+  1 min     ${normal}";
+	echo -e " ${GreenInvert}${bold}     j     │ Cycle subs     ${normal}";
+	echo -e " ${Green}${bold}   z   Z   │ Sub -/+100 ms  ${normal}";
+	echo -e " ${GreenInvert}${bold}   s   S   │ Screenshot     ${normal}";
+	echo -e " ${Green}${bold}   1   2   │ -/+ Contrast   ${normal}";
+	echo -e " ${GreenInvert}${bold}   3   4   │ -/+ Brightness ${normal}";
+	echo -e " ${Green}${bold}   5   6   │ -/+ Gamma      ${normal}";
+	echo -e " ${GreenInvert}${bold}   7   8   │ -/+ Saturation ${normal}";
+	echo -e " ${Green}${bold}   ,   .   │ -/+ Frame      ${normal}";
+	echo -e " ${GreenInvert}${bold}     q     │ Quit           ${normal}";
 
 }
 
@@ -262,33 +261,31 @@ function print_mpv_audio_shortcuts()
 
 function misc_menu ()
 {
-	clear_image;
 	while [ "$db2" != "q" ] ;
-	do	echo "╭────────────────────────────────────────╮";
-		echo -e "│${Yellow}${bold}Miscellaneous menu${normal}                Enter:│";
-		echo "├────────────────────────────────────────┤";
-		echo -e "│ ${Yellow}${bold}P ${Cyan}to SET UP PREFERENCES!${normal}               │";
-		echo "├────────────────────────────────────────┤";
-		echo -e "│ ${Yellow}${bold}l ${Red}to LIKE a video.${normal}                     │";
-		echo -e "│ ${Yellow}${bold}L ${Red}to UNLIKE a video.${normal}                   │";
-		echo "├────────────────────────────────────────┤";
-		echo -e "│ ${Yellow}${bold}I ${Green}to import subscriptions from YouTube.${normal}│";
-		echo -e "│ ${Yellow}${bold}n ${Green}to subscribe to a new channel.${normal}       │";
-		echo -e "│ ${Yellow}${bold}u ${Green}to unsubscribe from a channel.${normal}       │";
-		echo "├────────────────────────────────────────┤";
-		echo -e "│ ${Yellow}${bold}H ${Magenta}to clear ${Yellow}watch${Magenta} history.${normal}              │";
-		echo -e "│ ${Yellow}${bold}S ${Magenta}to clear ${Yellow}search${Magenta} history.${normal}             │";
-		echo -e "│ ${Yellow}${bold}T ${Magenta}to clear ${Yellow}thumbnail${Magenta} cache.${normal}            │";
-		echo "├────────────────────────────────────────┤";
-		echo -e "│ ${Yellow}${bold}q${normal} ${Cyan}to quit this menu.${normal}                   │";
-		echo  "╰────────────────────────────────────────╯";
-		echo -en "Select: ";read -N 1  db2;
+	clear_image;
+	do	db2="$(echo -e "       ${Yellow}${bold}┏┳┓╻┏━┓┏━╸   ┏┳┓┏━╸┏┓╻╻ ╻${normal}\n       ${Yellow}${bold}┃┃┃┃┗━┓┃     ┃┃┃┣╸ ┃┗┫┃ ┃${normal}\n       ${Yellow}${bold}╹ ╹╹┗━┛┗━╸   ╹ ╹┗━╸╹ ╹┗━┛${normal}\n${Yellow}${bold}P ${Cyan}to SET UP PREFERENCES!${normal}\n${Yellow}${bold}l ${Red}to LIKE a video.${normal}\n${Yellow}${bold}L ${Red}to UNLIKE a video.${normal}\n${Yellow}${bold}I ${Green}to import subscriptions from YouTube.${normal}\n${Yellow}${bold}n ${Green}to subscribe to a new channel.${normal}\n${Yellow}${bold}u ${Green}to unsubscribe from a channel.${normal}\n${Yellow}${bold}H ${Magenta}to clear ${Yellow}watch${Magenta} history.${normal}\n${Yellow}${bold}S ${Magenta}to clear ${Yellow}search${Magenta} history.${normal}\n${Yellow}${bold}T ${Magenta}to clear ${Yellow}thumbnail${Magenta} cache.${normal}\n${Yellow}${bold}q${normal} ${Cyan}to quit this menu.${normal}"|fzf \
+--preview-window=0 \
+--reverse \
+--ansi \
+--tiebreak=begin \
+ --border=rounded \
+ +i \
+ +m \
+ --color='gutter:-1' \
+ --nth=1 \
+ --info=hidden \
+ --header-lines=3 \
+ --prompt="Enter:" \
+ --header-first  \
+ --expect=A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,1,2,3,4,5,6,7,8,9,0 \
+ --preview='if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview 1 1 6 6 $HOME/git/magic-tape/png/misc1.png;fi;\
+if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/git/magic-tape/png/misc2.png;fi;')"
+db2="$(echo $db2|awk '{print $1}')"
 		case $db2 in
   	P) setup;
   	;;
 			I) clear;
 						import_subscriptions;
-						picposy=1;
 			;;
 			n) clear;
 						clear_image;
@@ -339,7 +336,6 @@ function misc_menu ()
 							fi;ctc="";
 			;;
 			l) clear;like_video;
-						picposy=1;
 						clear;
 			;;
 			L) clear;UNLIKE="$(tac $HOME/git/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❌ Select video to unlike" -l 20 -width 40)";
@@ -353,9 +349,8 @@ function misc_menu ()
 								notify-send -t $NOTIF_DELAY -i "$notification_img" "❌ You have unliked $UNLIKE";
 							fi;
 						fi;uv="";
-						picposy=1;
 			;;
-			q) clear;picposy=1;
+			q) clear;
 			;;
 			*)clear_image;echo -e "\n😕${Yellow}${bold}$db2${normal} ${Green}is an invalid key, please try again.${normal}\n"; sleep $DIALOG_DELAY;clear;
 			;;
@@ -484,6 +479,7 @@ function select_video ()
 {
 	PLAY="";
 	PLAY=" $(cat -n $HOME/git/magic-tape/search/video/titles.txt|sed 's/^. *//g' |fzf\
+	--info=hidden \
 	--layout=reverse \
 	--height=100% \
 	--prompt="Select video: " \
@@ -513,24 +509,24 @@ function select_video ()
 			else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/git/magic-tape/png/logo1.png;fi;\
 		fi;\
 	fi;\
-	ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
-	echo -e "\n$TITLE"|fold -w $FZF_PREVIEW_COLUMNS -s;	\
-	ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
+	ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
+	echo -e "\n"$Yellow"$TITLE"$normal"" |fold -w $FZF_PREVIEW_COLUMNS -s ;	\
+	ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
 	if [[ $TITLE != "Abort Selection" ]]&&[[ $TITLE != "Previous Page" ]]&&[[ $TITLE != "Next Page" ]];\
 	then 	LENGTH="$(cat $HOME/git/magic-tape/search/video/lengths.txt|head -$i|tail +$i)";\
-		echo -e "\nLength: $LENGTH";\
+		echo -e "\n"$Green"Length: "$Cyan"$LENGTH"$normal"";\
 		SHARED="$(cat $HOME/git/magic-tape/search/video/shared.txt|head -$i|tail +$i)";\
-		echo  "Shared: $SHARED"; \
+		echo -e "$Green""Shared: "$Cyan"$SHARED"$normal""; \
 		VIEWS="$(cat $HOME/git/magic-tape/search/video/views.txt|head -$i|tail +$i)";\
-		echo  "Views : ""$VIEWS";\
+		echo -e "$Green""Views : ""$Cyan""$VIEWS";\
 		if [[ $db != "c" ]];\
-		then ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
-			echo -e "\nChannel: ""$channel_name"|fold -w $FZF_PREVIEW_COLUMNS -s;\
+		then ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
+			echo -e "\n"$Green"Channel: "$Yellow"$channel_name" |fold -w $FZF_PREVIEW_COLUMNS -s;\
 		fi;\
 		DESCRIPTION="$(cat $HOME/git/magic-tape/search/video/descriptions.txt|head -$i|tail +$i)";\
 		if [[ $DESCRIPTION != "null" ]];
-		then ll=1; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n "─";((ll++));done;\
-			echo -e "\n$DESCRIPTION"|fold -w $FZF_PREVIEW_COLUMNS -s;	\
+		then ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
+			echo -e "\n\x1b[38;5;250m$DESCRIPTION"$normal""|fold -w $FZF_PREVIEW_COLUMNS -s;	\
 		fi;
 	fi;')";
 	clear_image;
@@ -620,7 +616,6 @@ function select_action ()
 			fi;
 		;;
 		"Browse Feed of channel"*) clear;db="c"; P="$channel_id";
-			#channel_name="$(cat $HOME/git/magic-tape/search/video/channel_names.txt|head -$i|tail +$i)";
 			channel_feed;
 		;;
 		"Subscribe to channel"*) clear;
@@ -658,7 +653,6 @@ function empty_query ()
 }
 ###############################################################################
 export -f draw_preview draw_uber clear_image start_ueberzug finalise
-export IMAGE_SUPPORT UEBERZUG_FIFO
 GreenInvert="\x1b[42m\x1b[30m"
 Yellow="\033[1;33m"
 Green="\033[1;32m"
@@ -667,7 +661,7 @@ Magenta="\033[1;35m"
 Cyan="\033[1;36m"
 bold=`tput bold`
 normal=`tput sgr0`
-picposy=1;
+export IMAGE_SUPPORT UEBERZUG_FIFO Green GreenInvert Yellow Red Magenta Cyan bold normal
 db=""
 if [[ ! -e $HOME/git/magic-tape/config.txt ]]||[ $(cat $HOME/git/magic-tape/config.txt|wc -l) -lt 7 ];
 then setup;
@@ -683,16 +677,25 @@ color_set;
 while [ "$db" != "q" ]
 do
 	clear_image;
-	if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview 1 $picposy 6 6 $HOME/git/magic-tape/png/logo1.png;fi;
-	if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 $picposy 6 6 $HOME/git/magic-tape/png/magic-tape.png;fi;
- echo "╭──────────────────────────────────────────╮"
- echo -e "│       ${Yellow}${bold}┏┳┓┏━┓┏━╸╻┏━╸   ╺┳╸┏━┓┏━┓┏━╸${normal}       │"
- echo -e "│       ${Yellow}${bold}┃┃┃┣━┫┃╺┓┃┃  ╺━╸ ┃ ┣━┫┣━┛┣╸ ${normal}       │"
- echo -e "│       ${Yellow}${bold}╹ ╹╹ ╹┗━┛╹┗━╸    ╹ ╹ ╹╹  ┗━╸${normal} Enter:│"
- echo  "├──────────────────────────────────────────┤"
- echo -e "│ ${Yellow}${bold}f ${normal}${Red}to browse Subscriptions Feed.${normal}          │\n│ ${Yellow}${bold}t ${Red}to browse Trending Feed.${normal}               │\n│ ${Yellow}${bold}s${normal} ${Green}to Search for a key word/phrase.${normal}       │\n│ ${Yellow}${bold}r ${Green}to Repeat previous action.${normal}             │\n│ ${Yellow}${bold}c ${Green}to select a Channel Feed.${normal}              │\n│ ${Yellow}${bold}l ${Magenta}to browse your Liked Videos.${normal}           │\n│ ${Yellow}${bold}h ${Magenta}to browse your Watch History${normal}.          │\n│ ${Yellow}${bold}j ${Magenta}to browse your Search History.${normal}         │\n│ ${Yellow}${bold}m ${Cyan}for Miscellaneous Menu.${normal}                │\n│ ${Yellow}${bold}q ${Cyan}to Quit${normal}.                               │"
- echo  "╰──────────────────────────────────────────╯"
- echo -en "Select: ";read -N 1  db
+db="$(echo -e "       ${Yellow}${bold}┏┳┓┏━┓┏━╸╻┏━╸   ╺┳╸┏━┓┏━┓┏━╸${normal}\n       ${Yellow}${bold}┃┃┃┣━┫┃╺┓┃┃  ╺━╸ ┃ ┣━┫┣━┛┣╸ ${normal}\n       ${Yellow}${bold}╹ ╹╹ ╹┗━┛╹┗━╸    ╹ ╹ ╹╹  ┗━╸${normal} \n ${Yellow}${bold}f ${normal}${Red}to browse Subscriptions Feed.${normal}          \n ${Yellow}${bold}t ${Red}to browse Trending Feed.${normal}               \n ${Yellow}${bold}s${normal} ${Green}to Search for a key word/phrase.${normal}       \n ${Yellow}${bold}r ${Green}to Repeat previous action.${normal}             \n ${Yellow}${bold}c ${Green}to select a Channel Feed.${normal}              \n ${Yellow}${bold}l ${Magenta}to browse your Liked Videos.${normal}           \n ${Yellow}${bold}h ${Magenta}to browse your Watch History${normal}.          \n ${Yellow}${bold}j ${Magenta}to browse your Search History.${normal}         \n ${Yellow}${bold}m ${Cyan}for Miscellaneous Menu.${normal}                \n ${Yellow}${bold}q ${Cyan}to Quit${normal}."|fzf \
+ --color='gutter:-1' \
+--preview-window=0 \
+--reverse \
+--ansi \
+--tiebreak=begin \
+--border=rounded \
++i \
++m \
+--nth=1 \
+--info=hidden \
+--header-lines=3 \
+--prompt="Enter:" \
+--header-first \
+--expect=A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,1,2,3,4,5,6,7,8,9,0 \
+--preview='if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview 1 1 6 6 $HOME/git/magic-tape/png/logo1.png;fi;\
+if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/git/magic-tape/png/logo2.png;fi;'
+)"
+db="$(echo $db|awk '{print $1}')"
  case $db in
   f) clear;clear_image;
    		big_loop=1;
@@ -711,7 +714,7 @@ do
 							if [[ "$TITLE" != "Abort Selection" ]]&&[[ "$TITLE" != "Next Page" ]]&&[[ "$TITLE" != "Previous Page" ]];then select_action;fi;
 						done;
 					done;
- 	 		picposy=1;clear;
+ 	 		clear;
   ;;
   t) clear;clear_image;
    		big_loop=1;
@@ -730,7 +733,7 @@ do
 							if [[ "$TITLE" != "Abort Selection" ]]&&[[ "$TITLE" != "Next Page" ]]&&[[ "$TITLE" != "Previous Page" ]];then select_action;fi;
 						done;
 					done;
- 	 		picposy=1;clear;
+ 	 		clear;
   ;;
   s) clear;
   			clear_image;
@@ -759,7 +762,7 @@ do
 							done;
 						done;
  	 		fi;
- 	 		picposy=1;clear;
+ 	 		clear;
   ;;
   r) clear;
 				 clear_image;
@@ -782,7 +785,6 @@ do
 								done;
 								first=0;
 					done;
-				 picposy=1;
 				 clear;
   ;;
   c) clear;clear_image;
@@ -802,11 +804,9 @@ do
   			channel_id="$(grep "$TITLE" $HOME/git/magic-tape/history/watch_history.txt|head -1|awk '{print $1}')";
   			channel_name="$(grep "$TITLE" $HOME/git/magic-tape/history/watch_history.txt|head -1|sed 's/https:\/\/www\.youtube\.com.*$//'|cut -d' ' -f2-)";
   			play_now="$(grep "$TITLE" $HOME/git/magic-tape/history/watch_history.txt|head -1|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|awk '{print $1}')";
-  			#play_now="$(grep "$TITLE" $HOME/git/magic-tape/history/watch_history.txt|head -1|awk '{print $1}')";
 					notification_img="$HOME/git/magic-tape/jpg/img-"${play_now##*=}".jpg";
 						select_action;
   			fi;
-  			picposy=1;
   			clear;
   ;;
   j) clear;clear_image;
@@ -831,7 +831,7 @@ do
 							done;
 						done;
   				fi;
- 	 		picposy=1;clear;
+ 	 		clear;
   ;;
   l) clear;clear_image;
   			TITLE="$(tac $HOME/git/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❤️ Select liked video" -l 20 -width 40)";
@@ -844,14 +844,13 @@ do
   				notification_img="$HOME/git/magic-tape/jpg/img-"${play_now##*=}".jpg";
 						select_action;
   			fi;
-  			picposy=1;
   			clear;
   ;;
   m) clear;clear_image;misc_menu;
   ;;
   q) clear;clear_image;notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Exited magic-tape";
   ;;
-  *)clear;clear_image;echo -e "\n${Yellow}${bold}$db${normal} is an invalid key, please try again.\n";picposy=4;
+  *)clear;clear_image;echo -e "\n${Yellow}${bold}$db${normal} is an invalid key, please try again.\n";sleep $DIALOG_DELAY;
   ;;
  esac
 done
