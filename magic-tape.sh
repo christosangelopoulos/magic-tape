@@ -596,7 +596,7 @@ function select_action ()
 {
 	clear;
 	clear_image;
-	ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name" 📺\nSubscribe to channel "$channel_name" 📋\nQuit ❌"|rofi -dmenu -i -p "🔎 What do you want to do?" -l 10 -width 22 -selected-row 0)";
+	ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name" 📺\nSubscribe to channel "$channel_name" 📋\nOpen in browser 🌐\nQuit ❌"|rofi -dmenu -i -p "🔎 What do you want to do?" -l 11 -width 22 -selected-row 0)";
 	case $ACTION in
 		"Play ⭐Video 360p") message_audio_video;print_mpv_video_shortcuts;mpv --ytdl-raw-options=format=18 "$play_now";play_now="";TITLE="";
 		;;
@@ -638,6 +638,8 @@ function select_action ()
 					if [[ $sas == Y ]] || [[ $sas == y ]];then $BROWSER "https://www.youtube.com/channel/"$channel_id&echo "Opened $PREF_BROWSER";fi;
 				fi;
 			fi;
+		;;
+		"Open in browser 🌐")clear;notify-send -t $NOTIF_DELAY "🌐 Opening video in browser..."&	$BROWSER "$play_now";
 		;;
 		"Quit ❌") clear;
 		;;

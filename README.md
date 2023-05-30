@@ -179,6 +179,7 @@ Once a video is selected, the user is prompted to __select action__:
 * Like Video ❤️
 * Browse Feed of channel that uploaded the video  📺
 * Subscribe to the channel that uploaded the video 📋
+* Open in browser 🌐
 * Quit ❌
 
 ![image7](screenshots/rofi_select_action.png)
