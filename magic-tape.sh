@@ -263,7 +263,7 @@ function misc_menu ()
 {
 	clear_image;
 	while [ "$db2" != "q" ] ;
-	do	echo "0">$HOME/git/magic-tape//search/video/preview_pic.txt;
+	do	echo "0">$HOME/git/magic-tape/search/video/preview_pic.txt;
 	db2="$(echo -e "       ${Yellow}${bold}┏┳┓╻┏━┓┏━╸   ┏┳┓┏━╸┏┓╻╻ ╻${normal}\n       ${Yellow}${bold}┃┃┃┃┗━┓┃     ┃┃┃┣╸ ┃┗┫┃ ┃${normal}\n       ${Yellow}${bold}╹ ╹╹┗━┛┗━╸   ╹ ╹┗━╸╹ ╹┗━┛${normal}\n${Yellow}${bold}P ${Cyan}to SET UP PREFERENCES!${normal}\n${Yellow}${bold}l ${Red}to LIKE a video.${normal}\n${Yellow}${bold}L ${Red}to UNLIKE a video.${normal}\n${Yellow}${bold}I ${Green}to import subscriptions from YouTube.${normal}\n${Yellow}${bold}n ${Green}to subscribe to a new channel.${normal}\n${Yellow}${bold}u ${Green}to unsubscribe from a channel.${normal}\n${Yellow}${bold}H ${Magenta}to clear ${Yellow}watch${Magenta} history.${normal}\n${Yellow}${bold}S ${Magenta}to clear ${Yellow}search${Magenta} history.${normal}\n${Yellow}${bold}T ${Magenta}to clear ${Yellow}thumbnail${Magenta} cache.${normal}\n${Yellow}${bold}q${normal} ${Cyan}to quit this menu.${normal}"|fzf \
 --preview-window=0 \
 --reverse \
@@ -279,9 +279,9 @@ function misc_menu ()
  --prompt="Enter:" \
  --header-first  \
  --expect=A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,1,2,3,4,5,6,7,8,9,0 \
- --preview='pic=$(head -1 $HOME/git/magic-tape//search/video/preview_pic.txt);if [ $pic -eq 0 ];\
+ --preview='pic=$(head -1 $HOME/git/magic-tape/search/video/preview_pic.txt);if [ $pic -eq 0 ];\
  then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview 1 1 6 6 $HOME/git/magic-tape/png/misc1.png;fi;\
-if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/git/magic-tape/png/misc2.png;fi;echo "1">$HOME/git/magic-tape//search/video/preview_pic.txt; fi')";
+if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/git/magic-tape/png/misc2.png;fi;echo "1">$HOME/git/magic-tape/search/video/preview_pic.txt; fi')";
 	db2="$(echo $db2|awk '{print $1}')";
 		case $db2 in
   	P) setup;
@@ -680,7 +680,7 @@ COLOR="$(head -7 $HOME/git/magic-tape/config.txt|tail +7|awk '{print $2}')";
 color_set;
 while [ "$db" != "q" ]
 do
-	echo "0">$HOME/git/magic-tape//search/video/preview_pic.txt;
+	echo "0">$HOME/git/magic-tape/search/video/preview_pic.txt;
 	clear_image;
 db="$(echo -e "       ${Yellow}${bold}┏┳┓┏━┓┏━╸╻┏━╸   ╺┳╸┏━┓┏━┓┏━╸${normal}\n       ${Yellow}${bold}┃┃┃┣━┫┃╺┓┃┃  ╺━╸ ┃ ┣━┫┣━┛┣╸ ${normal}\n       ${Yellow}${bold}╹ ╹╹ ╹┗━┛╹┗━╸    ╹ ╹ ╹╹  ┗━╸${normal} \n ${Yellow}${bold}f ${normal}${Red}to browse Subscriptions Feed.${normal}          \n ${Yellow}${bold}t ${Red}to browse Trending Feed.${normal}               \n ${Yellow}${bold}s${normal} ${Green}to Search for a key word/phrase.${normal}       \n ${Yellow}${bold}r ${Green}to Repeat previous action.${normal}             \n ${Yellow}${bold}c ${Green}to select a Channel Feed.${normal}              \n ${Yellow}${bold}l ${Magenta}to browse your Liked Videos.${normal}           \n ${Yellow}${bold}h ${Magenta}to browse your Watch History${normal}.          \n ${Yellow}${bold}j ${Magenta}to browse your Search History.${normal}         \n ${Yellow}${bold}m ${Cyan}for Miscellaneous Menu.${normal}                \n ${Yellow}${bold}q ${Cyan}to Quit${normal}."|fzf \
 --preview-window=0 \
@@ -697,10 +697,10 @@ db="$(echo -e "       ${Yellow}${bold}┏┳┓┏━┓┏━╸╻┏━╸   
 --prompt="Enter:" \
 --header-first \
 --expect=A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,1,2,3,4,5,6,7,8,9,0 \
---preview='pic=$(head -1 $HOME/git/magic-tape//search/video/preview_pic.txt);if [ $pic -eq 0 ];\
+--preview='pic=$(head -1 $HOME/git/magic-tape/search/video/preview_pic.txt);if [ $pic -eq 0 ];\
  then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview 1 1 6 6 $HOME/git/magic-tape/png/logo1.png;fi;\
 		if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/git/magic-tape/png/magic-tape.png;fi;\
-		echo "1">$HOME/git/magic-tape//search/video/preview_pic.txt;\
+		echo "1">$HOME/git/magic-tape/search/video/preview_pic.txt;\
  fi'
 )"
 db="$(echo $db|awk '{print $1}')"
