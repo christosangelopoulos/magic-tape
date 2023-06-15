@@ -422,7 +422,7 @@ function get_feed_json ()
 function get_data ()
 {
 	#fix json problem first seen Apr 12 2023, where each item in the json file takes two lines, not one. While and until this stands, this one-liner corrects the issue. Also LIST_LENGTH=$(($LIST_LENGTH * 2 )) in setup function, exactly because of this issue
-	if [ $db == "f" ]||[ $db == "t" ];then even=2;while [ $even -le $(cat $HOME/git/magic-tape/json/video_search.json|wc -l) ];do echo "$(head -$even $HOME/git/magic-tape/json/video_search.json|tail +$even)">>$HOME/git/magic-tape/json/video_search_temp.json;even=$(($even +2));done;mv $HOME/git/magic-tape/json/video_search_temp.json $HOME/git/magic-tape/json/video_search.json;fi;
+	#if [ $db == "f" ]||[ $db == "t" ];then even=2;while [ $even -le $(cat $HOME/git/magic-tape/json/video_search.json|wc -l) ];do echo "$(head -$even $HOME/git/magic-tape/json/video_search.json|tail +$even)">>$HOME/git/magic-tape/json/video_search_temp.json;even=$(($even +2));done;mv $HOME/git/magic-tape/json/video_search_temp.json $HOME/git/magic-tape/json/video_search.json;fi;
 	jq '.id' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/ids.txt;
 	jq '.title' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/titles.txt;
 	jq '.duration_string' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/lengths.txt;
@@ -544,12 +544,12 @@ function select_video ()
 	if [[ $TITLE == "Next Page" ]];
 	then ITEM=$(($ITEM + $LIST_LENGTH));
 		#change implemented when the 2-lines-per-item-in-the-json-file issue appeared
-		if [[ $db == "f" ]]||[[ $db == "t" ]]; then ITEM0=$(($ITEM0 + $LIST_LENGTH * 2));else ITEM0=$ITEM;fi;
+		#if [[ $db == "f" ]]||[[ $db == "t" ]]; then ITEM0=$(($ITEM0 + $LIST_LENGTH * 2));else ITEM0=$ITEM;fi;
 	fi;
 	if [[ $TITLE == "Previous Page" ]];
 	then ITEM=$(($ITEM - $LIST_LENGTH));
 		#change implemented when the 2-lines-per-item-in-the-json-file issue appeared
-		if [[ $db == "f" ]]||[[ $db == "t" ]]; then ITEM0=$(($ITEM0 - $LIST_LENGTH * 2));else ITEM0=$ITEM;fi;
+		#if [[ $db == "f" ]]||[[ $db == "t" ]]; then ITEM0=$(($ITEM0 - $LIST_LENGTH * 2));else ITEM0=$ITEM;fi;
 	fi;
 	if [[ $TITLE == "Abort Selection" ]];then big_loop=0;fi;
 	if [[ $PLAY == " " ]]; then echo "ABORT!"; TITLE="Abort Selection";big_loop=0;clear;fi;
