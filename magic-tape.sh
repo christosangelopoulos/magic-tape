@@ -412,7 +412,9 @@ function get_feed_json ()
 {
 	echo -e "${Green}Downloading${Yellow}${bold} $FEED...${normal}";
 	echo -e "$db\n$ITEM\n$ITEM0\n$FEED\n$fzf_header">$HOME/git/magic-tape/history/last_action.txt;
-	if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH * 2 ));else LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3|awk '{print $2}')";fi;
+	#if statement added to fix json problem. If the problrm re-appears, uncomment the if statement, and comment  following line
+	#if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH * 2 ));else LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3|awk '{print $2}')";fi;
+	LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3|awk '{print $2}')";
 	yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --extractor-args youtubetab:approximate_date --playlist-start $ITEM0 --playlist-end $(($ITEM0 + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/git/magic-tape/json/video_search.json;
 	echo -e "${Green}Completed${Yellow}${bold} $FEED.${normal}";
 	#correct back LIST_LENGTH value;
@@ -421,7 +423,7 @@ function get_feed_json ()
 
 function get_data ()
 {
-	#fix json problem first seen Apr 12 2023, where each item in the json file takes two lines, not one. While and until this stands, this one-liner corrects the issue. Also LIST_LENGTH=$(($LIST_LENGTH * 2 )) in setup function, exactly because of this issue
+	#fix json problem first seen Apr 12 2023, where each item in the json file takes two lines, not one. While and until this stands, this one-liner corrects the issue. Also LIST_LENGTH=$(($LIST_LENGTH * 2 )) in get_feed_json function, exactly because of this issue
 	#if [ $db == "f" ]||[ $db == "t" ];then even=2;while [ $even -le $(cat $HOME/git/magic-tape/json/video_search.json|wc -l) ];do echo "$(head -$even $HOME/git/magic-tape/json/video_search.json|tail +$even)">>$HOME/git/magic-tape/json/video_search_temp.json;even=$(($even +2));done;mv $HOME/git/magic-tape/json/video_search_temp.json $HOME/git/magic-tape/json/video_search.json;fi;
 	jq '.id' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/ids.txt;
 	jq '.title' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/titles.txt;
