@@ -417,8 +417,8 @@ function get_feed_json ()
 	LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3|awk '{print $2}')";
 	yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --extractor-args youtubetab:approximate_date --playlist-start $ITEM0 --playlist-end $(($ITEM0 + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/git/magic-tape/json/video_search.json;
 	echo -e "${Green}Completed${Yellow}${bold} $FEED.${normal}";
-	#correct back LIST_LENGTH value;
-	if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH / 2 ));fi;
+	#correct back LIST_LENGTH value(fix json problem);
+	#if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH / 2 ));fi;
 }
 
 function get_data ()
@@ -547,11 +547,13 @@ function select_video ()
 	then ITEM=$(($ITEM + $LIST_LENGTH));
 		#change implemented when the 2-lines-per-item-in-the-json-file issue appeared
 		#if [[ $db == "f" ]]||[[ $db == "t" ]]; then ITEM0=$(($ITEM0 + $LIST_LENGTH * 2));else ITEM0=$ITEM;fi;
+		ITEM0=$ITEM;
 	fi;
 	if [[ $TITLE == "Previous Page" ]];
 	then ITEM=$(($ITEM - $LIST_LENGTH));
 		#change implemented when the 2-lines-per-item-in-the-json-file issue appeared
 		#if [[ $db == "f" ]]||[[ $db == "t" ]]; then ITEM0=$(($ITEM0 - $LIST_LENGTH * 2));else ITEM0=$ITEM;fi;
+		ITEM0=$ITEM;
 	fi;
 	if [[ $TITLE == "Abort Selection" ]];then big_loop=0;fi;
 	if [[ $PLAY == " " ]]; then echo "ABORT!"; TITLE="Abort Selection";big_loop=0;clear;fi;
