@@ -45,6 +45,7 @@ Other dependencies include:
 * [fzf](https://github.com/junegunn/fzf)
 * [mpv](https://github.com/mpv-player/mpv)
 * [jq](https://stedolan.github.io/jq/)
+* [xclip](https://github.com/astrand/xclip)
 
 Regarding image support, it can either be achived with
 
@@ -72,7 +73,7 @@ or with
 
 To install these dependencies, run the following command:
 
-     $ sudo apt install curl fzf rofi mpv jq
+     $ sudo apt install curl fzf rofi mpv jq xclip
 
 ## Install
 
