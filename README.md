@@ -77,28 +77,48 @@ To install these dependencies, run the following command:
 
 ## Install
 
-    $ mkdir git&&cd git
 
     $ git clone https://gitlab.com/christosangel/magic-tape.git
 
+    $ cd magic-tape/
 
-To run the script, first you need to make it executable:
+
+To run the script, it has to be made executable, and then copied to `$PATH`:
 
     $ cd magic-tape
+
     $ chmod +x magic-tape.sh
-	$ mkdir -p history/ jpg/ json/ search/video/ search/channels/ subscriptions/jpg/
+
+    $ cp magic-tape.sh ~/.local/bin/
+
+After that, the user must run this command in order to create the necessary directories:
 
 
+	$ mkdir -p ~/.cache/magic-tape/history/ ~/.cache/magic-tape/jpg/ ~/.cache/magic-tape/json/ ~/.cache/magic-tape/search/video/ ~/.cache/magic-tape/search/channels/ ~/.cache/magic-tape/subscriptions/jpg/ ~/.config/magic-tape/
 
+Copy `png/` directory to `~/.cache/magic-tape/`
 
-Then, run with kitty:
+    $ cp -r png/ ~/.cache/magic-tape/png/
 
-    $ kitty -T magic-tape ./magic-tape.sh
+---
+
+**<u>UPDATE</u>**: The directory structure of the program has been updated. Instead of keeping everything in `~git/magic-tape/`, now various files and directories are kept in various places.
+
+This way,
+* the `magic-tape.sh` is in `~/.local/bin/`
+* the magic-tape cache files are all in `~/.cache/magic-tape/`
+* the configuration text file will be created in `~/.config/magic-tape/`
+
+---
+
+Now, run with `kitty`:
+
+    $ kitty -T magic-tape magic-tape.sh
 
 
 or any other terminal emulator:
 
-    $ ~/git/magic-tape/magic-tape.sh
+    $ magic-tape.sh
 
 
 ## Usage

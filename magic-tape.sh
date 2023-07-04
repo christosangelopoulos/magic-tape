@@ -14,30 +14,30 @@ function new_subscription ()
 		do fzf_header="$(echo ${FEED^^}|sed 's/&SP=.*$//;s/^.*SEARCH_QUERY=/search: /;s/[\/\?=&+]/ /g') channels: $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
 		ITEM0=$ITEM;
 		echo -e "${Green}Downloading${Yellow}${bold} $FEED...${normal}";
-		echo -e "$db\n$ITEM\n$ITEM0\n$FEED\n$fzf_header">$HOME/git/magic-tape/history/last_action.txt;
-		yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --playlist-start $ITEM --playlist-end $(($ITEM + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/git/magic-tape/json/channel_search.json
+		echo -e "$db\n$ITEM\n$ITEM0\n$FEED\n$fzf_header">$HOME/.cache/magic-tape/history/last_action.txt;
+		yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --playlist-start $ITEM --playlist-end $(($ITEM + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/.cache/magic-tape/json/channel_search.json
 		echo -e "${Green}Completed${Yellow}${bold} $FEED${normal}";
 
-		jq '.channel_id' $HOME/git/magic-tape/json/channel_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/channels/ids.txt;
-		jq '.title' $HOME/git/magic-tape/json/channel_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/channels/titles.txt;
-		jq '.description' $HOME/git/magic-tape/json/channel_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/channels/descriptions.txt;
-		jq '.playlist_count' $HOME/git/magic-tape/json/channel_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/channels/subscribers.txt;
-		jq '.thumbnails[1].url' $HOME/git/magic-tape/json/channel_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/channels/img_urls.txt;
+		jq '.channel_id' $HOME/.cache/magic-tape/json/channel_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/channels/ids.txt;
+		jq '.title' $HOME/.cache/magic-tape/json/channel_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/channels/titles.txt;
+		jq '.description' $HOME/.cache/magic-tape/json/channel_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/channels/descriptions.txt;
+		jq '.playlist_count' $HOME/.cache/magic-tape/json/channel_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/channels/subscribers.txt;
+		jq '.thumbnails[1].url' $HOME/.cache/magic-tape/json/channel_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/channels/img_urls.txt;
 
-		cat /dev/null>$HOME/git/magic-tape/search/channels/thumbnails.txt;
+		cat /dev/null>$HOME/.cache/magic-tape/search/channels/thumbnails.txt;
 		i=1;
-			while [ $i -le $(cat $HOME/git/magic-tape/search/channels/ids.txt|wc -l) ];
-			do		echo "url = \"https:""$(cat $HOME/git/magic-tape/search/channels/img_urls.txt|head -$i|tail +$i)\"">>$HOME/git/magic-tape/search/channels/thumbnails.txt;
-			echo "output = \"$HOME/git/magic-tape/jpg/$(cat $HOME/git/magic-tape/search/channels/ids.txt|head -$i|tail +$i).jpg\"">>$HOME/git/magic-tape/search/channels/thumbnails.txt;
+			while [ $i -le $(cat $HOME/.cache/magic-tape/search/channels/ids.txt|wc -l) ];
+			do		echo "url = \"https:""$(cat $HOME/.cache/magic-tape/search/channels/img_urls.txt|head -$i|tail +$i)\"">>$HOME/.cache/magic-tape/search/channels/thumbnails.txt;
+			echo "output = \"$HOME/.cache/magic-tape/jpg/$(cat $HOME/.cache/magic-tape/search/channels/ids.txt|head -$i|tail +$i).jpg\"">>$HOME/.cache/magic-tape/search/channels/thumbnails.txt;
 			((i++));
 		done;
 		echo -e "${Green}Downloading channel thumbnails...${normal}";
-		curl -s -K $HOME/git/magic-tape/search/channels/thumbnails.txt&echo -e "${Yellow}${bold}[Background downloading channel thumbnails]${normal}";
-		if [ $ITEM -gt 1 ];then echo "Previous Page">>$HOME/git/magic-tape/search/channels/titles.txt;fi;
-		if [ $(cat $HOME/git/magic-tape/search/channels/ids.txt|wc -l) -ge $LIST_LENGTH ];then echo "Next Page">>$HOME/git/magic-tape/search/channels/titles.txt;fi;
-		echo "Abort Selection">>$HOME/git/magic-tape/search/channels/titles.txt;
+		curl -s -K $HOME/.cache/magic-tape/search/channels/thumbnails.txt&echo -e "${Yellow}${bold}[Background downloading channel thumbnails]${normal}";
+		if [ $ITEM -gt 1 ];then echo "Previous Page">>$HOME/.cache/magic-tape/search/channels/titles.txt;fi;
+		if [ $(cat $HOME/.cache/magic-tape/search/channels/ids.txt|wc -l) -ge $LIST_LENGTH ];then echo "Next Page">>$HOME/.cache/magic-tape/search/channels/titles.txt;fi;
+		echo "Abort Selection">>$HOME/.cache/magic-tape/search/channels/titles.txt;
 
-		CHAN=" $(cat -n $HOME/git/magic-tape/search/channels/titles.txt|sed 's/^. *//g' |fzf\
+		CHAN=" $(cat -n $HOME/.cache/magic-tape/search/channels/titles.txt|sed 's/^. *//g' |fzf\
 		--info=hidden \
 		--layout=reverse \
 		--height=100% \
@@ -53,26 +53,26 @@ function new_subscription ()
 		--exact \
 		--preview='height=$(($FZF_PREVIEW_COLUMNS/2 +2));\
 		i=$(echo {}|sed "s/\\t.*$//g");\
-		echo $i>$HOME/git/magic-tape/search/channels/index.txt;\
-		TITLE="$(cat $HOME/git/magic-tape/search/channels/titles.txt|head -$i|tail +$i)";\
+		echo $i>$HOME/.cache/magic-tape/search/channels/index.txt;\
+		TITLE="$(cat $HOME/.cache/magic-tape/search/channels/titles.txt|head -$i|tail +$i)";\
 		if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then	ll=0;while [ $ll -le $(($height/2 - 2)) ];do echo "";((ll++));done;fi;\
 		ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
-		if [[ "$TITLE" == "Previous Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/previous.png;\
-		elif [[ "$TITLE" == "Next Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/next.png;\
-		elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/png/abort.png;\
-		else draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/git/magic-tape/jpg/"$(cat $HOME/git/magic-tape/search/channels/ids.txt|head -$i|tail +$i)".jpg;fi;\
+		if [[ "$TITLE" == "Previous Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/png/previous.png;\
+		elif [[ "$TITLE" == "Next Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/png/next.png;\
+		elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/png/abort.png;\
+		else draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/jpg/"$(cat $HOME/.cache/magic-tape/search/channels/ids.txt|head -$i|tail +$i)".jpg;fi;\
 		echo -e "\n""$Yellow""$TITLE""$normal"|fold -w $FZF_PREVIEW_COLUMNS -s;\
 		ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
 			if [[ $TITLE != "Abort Selection" ]]&&[[ $TITLE != "Next Page" ]]&&[[ $TITLE != "Previous Page" ]];\
-			then SUBS="$(cat $HOME/git/magic-tape/search/channels/subscribers.txt|head -$i|tail +$i)";\
+			then SUBS="$(cat $HOME/.cache/magic-tape/search/channels/subscribers.txt|head -$i|tail +$i)";\
 		echo -e "\n"$Green"Subscribers: ""$Cyan""$SUBS""$normal";\
 		ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
-		DESCRIPTION="$(cat $HOME/git/magic-tape/search/channels/descriptions.txt|head -$i|tail +$i)";\
+		DESCRIPTION="$(cat $HOME/.cache/magic-tape/search/channels/descriptions.txt|head -$i|tail +$i)";\
 		echo -e "\n\x1b[38;5;250m$DESCRIPTION"$normal""|fold -w $FZF_PREVIEW_COLUMNS -s;	\
 		fi;')";
 		clear_image;
-		i=$(cat $HOME/git/magic-tape/search/channels/index.txt);
-		NAME=$(head -$i $HOME/git/magic-tape/search/channels/titles.txt|tail +$i);
+		i=$(cat $HOME/.cache/magic-tape/search/channels/index.txt);
+		NAME=$(head -$i $HOME/.cache/magic-tape/search/channels/titles.txt|tail +$i);
 		if [[ $CHAN == " " ]]; then echo "ABORT!"; NAME="Abort Selection";clear;fi;
 		echo -e "${Green}Channel Selected: ${Yellow}${bold}$NAME${normal}";
 		if [ $ITEM  -ge $LIST_LENGTH ]&&[[ $CHAN == *"shift-left"* ]]; then NAME="Previous Page";fi;
@@ -83,16 +83,16 @@ function new_subscription ()
 		if [[ $NAME == "Previous Page" ]];then ITEM=$(($ITEM - $LIST_LENGTH));fi;
 		if [[ $NAME == "Abort Selection" ]];then repeat_channel_search=0;fi;
 		if [[ "$NAME" != "Abort Selection" ]]&&[[ "$NAME" != "Next Page" ]]&&[[ "$NAME" != "Previous Page" ]];
-		then SUB_URL="$(head -$i $HOME/git/magic-tape/search/channels/ids.txt|tail +$i)";
+		then SUB_URL="$(head -$i $HOME/.cache/magic-tape/search/channels/ids.txt|tail +$i)";
 			repeat_channel_search=0;
 			echo -e " ${Green}You will subscribe to this channel:\n${Yellow}${bold}$NAME${normal}\nProceed?(Y/y)"; read -N 1 pr;echo -e "\n";
 			if [[ $pr == Y ]] || [[ $pr == y ]];
-			then		notification_img="$HOME/git/magic-tape/jpg/""$(cat $HOME/git/magic-tape/search/channels/ids.txt|head -$i|tail +$i)"".jpg";
-				if [ -n "$(grep -i $SUB_URL $HOME/git/magic-tape/subscriptions/subscriptions.txt)" ];
+			then		notification_img="$HOME/.cache/magic-tape/jpg/""$(cat $HOME/.cache/magic-tape/search/channels/ids.txt|head -$i|tail +$i)"".jpg";
+				if [ -n "$(grep -i $SUB_URL $HOME/.cache/magic-tape/subscriptions/subscriptions.txt)" ];
 				then notify-send -t $NOTIF_DELAY -i "$notification_img" "You are already subscribed to $NAME ";
-				else	echo "$SUB_URL"" ""$NAME">>$HOME/git/magic-tape/subscriptions/subscriptions.txt;
+				else	echo "$SUB_URL"" ""$NAME">>$HOME/.cache/magic-tape/subscriptions/subscriptions.txt;
 					notify-send -t $NOTIF_DELAY -i "$notification_img" "You have subscribed to $NAME ";
-					mv "$notification_img" $HOME/git/magic-tape/subscriptions/jpg/"$SUB_URL.jpg";
+					mv "$notification_img" $HOME/.cache/magic-tape/subscriptions/jpg/"$SUB_URL.jpg";
 					echo -e "${Red}${bold}NOTICE: ${Yellow}${bold}In order for this action to take effect in YouTube, you need to subscribe manually from a browser as well.\nDo you want to do it now? (Y/y)${normal}"|fold -w 75 -s;
 					read -N 1 pr2;echo -e "\n";
 					if [[ $pr2 == Y ]] || [[ $pr2 == y ]];then $BROWSER "https://www.youtube.com/channel/"$SUB_URL&echo "Opened $PREF_BROWSER";fi;
@@ -163,7 +163,7 @@ function setup ()
 					else COLOR="$(echo -e "Yes\nNo"|rofi -dmenu -i -p "SET UP: 🕓 Do  you prefer multi-colored terminal output?" -l 20 -width 40)";
 					if [[ "$COLOR" == "" ]];
 					then empty_query;
-					else echo -e "Prefered_browser: $PREF_BROWSER\nBrowser: $BROWSER\nList_Length: $LIST_LENGTH\nTerminal_message_duration: $DIALOG_DELAY\nNotification_duration: $NOTIF_DELAY\nImage_support: $IMAGE_SUPPORT\nColored_messages: $COLOR">$HOME/git/magic-tape/config.txt;
+					else echo -e "Prefered_browser: $PREF_BROWSER\nBrowser: $BROWSER\nList_Length: $LIST_LENGTH\nTerminal_message_duration: $DIALOG_DELAY\nNotification_duration: $NOTIF_DELAY\nImage_support: $IMAGE_SUPPORT\nColored_messages: $COLOR">$HOME/.config/magic-tape/config.txt;
 						notify-send -t 5000 "SET UP: 😀 Your preferences are now stored!";
 						echo -e "${Yellow}${bold}SET UP: 😀 Your preferences are now stored!${normal}";	sleep 2;
 					fi;
@@ -178,16 +178,16 @@ function setup ()
 
 function like_video ()
 {
-	LIKE="$(tac $HOME/git/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❤️ Select video to like" -l 20 -width 40)";
+	LIKE="$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❤️ Select video to like" -l 20 -width 40)";
 	if [[ -z "$LIKE" ]];
 		then empty_query;
 	else echo -e "❤️ Add\n${Yellow}${bold}"$LIKE"${normal}\nto Liked Videos?(Y/y))";
 		read -N 1 alv;echo -e "\n";
 		if [[ $alv == Y ]] || [[ $alv == y ]];
-		then if [[ -z "$(grep "$LIKE" $HOME/git/magic-tape/history/liked.txt)" ]];
-			then echo "$(grep "$LIKE" $HOME/git/magic-tape/history/watch_history.txt|head -1)" >>	$HOME/git/magic-tape/history/liked.txt;
-				notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video added to Liked Videos.";
-			else notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video already added to Liked Videos.";
+		then if [[ -z "$(grep "$LIKE" $HOME/.cache/magic-tape/history/liked.txt)" ]];
+			then echo "$(grep "$LIKE" $HOME/.cache/magic-tape/history/watch_history.txt|head -1)" >>	$HOME/.cache/magic-tape/history/liked.txt;
+				notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "❤️ Video added to Liked Videos.";
+			else notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "❤️ Video already added to Liked Videos.";
 			fi;
 		fi;alv="";
 	fi;
@@ -200,29 +200,29 @@ function import_subscriptions()
 	if [[ $impsub == "Y" ]] || [[ $impsub == "y" ]];
 	then 	echo -e "${Green}Downloading subscriptions data...${normal}";
 		new_subs=subscriptions_$(date +%F).json;
-		yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist -j "https://www.youtube.com/feed/channels">$HOME/git/magic-tape/json/$new_subs;
+		yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist -j "https://www.youtube.com/feed/channels">$HOME/.cache/magic-tape/json/$new_subs;
 		echo -e "${Green}Download Complete.${normal}";
-		jq '.id' $HOME/git/magic-tape/json/$new_subs|sed 's/"//g'>$HOME/git/magic-tape/search/channels/channel_ids.txt;
-		jq '.title' $HOME/git/magic-tape/json/$new_subs|sed 's/"//g'>$HOME/git/magic-tape/search/channels/channel_names.txt;
-		jq '.thumbnails[1].url' $HOME/git/magic-tape/json/$new_subs|sed 's/"//g'>$HOME/git/magic-tape/search/channels/image_urls.txt;
-		cat /dev/null>$HOME/git/magic-tape/search/channels/thumbnails.txt;
-		cp $HOME/git/magic-tape/subscriptions/subscriptions.txt $HOME/git/magic-tape/subscriptions/subscriptions-$(date +%F).bak.txt;
-		cat /dev/null>$HOME/git/magic-tape/subscriptions/subscriptions.txt;
+		jq '.id' $HOME/.cache/magic-tape/json/$new_subs|sed 's/"//g'>$HOME/.cache/magic-tape/search/channels/channel_ids.txt;
+		jq '.title' $HOME/.cache/magic-tape/json/$new_subs|sed 's/"//g'>$HOME/.cache/magic-tape/search/channels/channel_names.txt;
+		jq '.thumbnails[1].url' $HOME/.cache/magic-tape/json/$new_subs|sed 's/"//g'>$HOME/.cache/magic-tape/search/channels/image_urls.txt;
+		cat /dev/null>$HOME/.cache/magic-tape/search/channels/thumbnails.txt;
+		cp $HOME/.cache/magic-tape/subscriptions/subscriptions.txt $HOME/.cache/magic-tape/subscriptions/subscriptions-$(date +%F).bak.txt;
+		cat /dev/null>$HOME/.cache/magic-tape/subscriptions/subscriptions.txt;
 		i=1;
-		while [ $i -le $(cat $HOME/git/magic-tape/search/channels/channel_ids.txt|wc -l) ];
-		do	echo "$(cat $HOME/git/magic-tape/search/channels/channel_ids.txt|head -$i|tail +$i) $(cat $HOME/git/magic-tape/search/channels/channel_names.txt|head -$i|tail +$i)">>$HOME/git/magic-tape/subscriptions/subscriptions.txt;
-			img_path="$HOME/git/magic-tape/subscriptions/jpg/$(cat $HOME/git/magic-tape/search/channels/channel_ids.txt|head -$i|tail +$i).jpg";
+		while [ $i -le $(cat $HOME/.cache/magic-tape/search/channels/channel_ids.txt|wc -l) ];
+		do	echo "$(cat $HOME/.cache/magic-tape/search/channels/channel_ids.txt|head -$i|tail +$i) $(cat $HOME/.cache/magic-tape/search/channels/channel_names.txt|head -$i|tail +$i)">>$HOME/.cache/magic-tape/subscriptions/subscriptions.txt;
+			img_path="$HOME/.cache/magic-tape/subscriptions/jpg/$(cat $HOME/.cache/magic-tape/search/channels/channel_ids.txt|head -$i|tail +$i).jpg";
 			if [ ! -f  "$img_path" ];
-			then echo "url = \"https:$(cat $HOME/git/magic-tape/search/channels/image_urls.txt|head -$i|tail +$i)\"">>$HOME/git/magic-tape/search/channels/thumbnails.txt;
-				echo "output = \"$img_path\"">>$HOME/git/magic-tape/search/channels/thumbnails.txt;
+			then echo "url = \"https:$(cat $HOME/.cache/magic-tape/search/channels/image_urls.txt|head -$i|tail +$i)\"">>$HOME/.cache/magic-tape/search/channels/thumbnails.txt;
+				echo "output = \"$img_path\"">>$HOME/.cache/magic-tape/search/channels/thumbnails.txt;
 			fi;
 			((i++));
 		done;
 		echo -e "${Green}Downloading thumbnails...${normal}";
-		curl -s -K $HOME/git/magic-tape/search/channels/thumbnails.txt;
+		curl -s -K $HOME/.cache/magic-tape/search/channels/thumbnails.txt;
 		echo -e "${Green}Thumbnail download complete.${normal}";
-		echo -e "${Green}Your magic-tape subscriptions are now updated.\nA backup copy of your old subscriptions is kept in\n${Yellow}${bold}$HOME/git/magic-tape/subscriptions/subscriptions-$(date +%F).bak.txt${normal}\n${Green}Press any key to return to the miscellaneous menu: ${normal}";
-		read -N 1  imp2;clear;mv $HOME/git/magic-tape/json/$new_subs $HOME/.local/share/Trash/files/;
+		echo -e "${Green}Your magic-tape subscriptions are now updated.\nA backup copy of your old subscriptions is kept in\n${Yellow}${bold}$HOME/.cache/magic-tape/subscriptions/subscriptions-$(date +%F).bak.txt${normal}\n${Green}Press any key to return to the miscellaneous menu: ${normal}";
+		read -N 1  imp2;clear;mv $HOME/.cache/magic-tape/json/$new_subs $HOME/.local/share/Trash/files/;
 	fi;
 }
 
@@ -263,7 +263,7 @@ function misc_menu ()
 {
 	clear_image;
 	while [ "$db2" != "q" ] ;
-	do	echo "0">$HOME/git/magic-tape/search/video/preview_pic.txt;
+	do	echo "0">$HOME/.cache/magic-tape/search/video/preview_pic.txt;
 	db2="$(echo -e "       ${Yellow}${bold}┏┳┓╻┏━┓┏━╸   ┏┳┓┏━╸┏┓╻╻ ╻${normal}\n       ${Yellow}${bold}┃┃┃┃┗━┓┃     ┃┃┃┣╸ ┃┗┫┃ ┃${normal}\n       ${Yellow}${bold}╹ ╹╹┗━┛┗━╸   ╹ ╹┗━╸╹ ╹┗━┛${normal}\n${Yellow}${bold}P ${Cyan}to SET UP PREFERENCES!${normal}\n${Yellow}${bold}l ${Red}to LIKE a video.${normal}\n${Yellow}${bold}L ${Red}to UNLIKE a video.${normal}\n${Yellow}${bold}I ${Green}to import subscriptions from YouTube.${normal}\n${Yellow}${bold}n ${Green}to subscribe to a new channel.${normal}\n${Yellow}${bold}u ${Green}to unsubscribe from a channel.${normal}\n${Yellow}${bold}H ${Magenta}to clear ${Yellow}watch${Magenta} history.${normal}\n${Yellow}${bold}S ${Magenta}to clear ${Yellow}search${Magenta} history.${normal}\n${Yellow}${bold}T ${Magenta}to clear ${Yellow}thumbnail${Magenta} cache.${normal}\n${Yellow}${bold}q${normal} ${Cyan}to quit this menu.${normal}"|fzf \
 --preview-window=0 \
 --reverse \
@@ -279,9 +279,9 @@ function misc_menu ()
  --prompt="Enter:" \
  --header-first  \
  --expect=A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,1,2,3,4,5,6,7,8,9,0 \
- --preview='pic=$(head -1 $HOME/git/magic-tape/search/video/preview_pic.txt);if [ $pic -eq 0 ];\
- then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview 1 1 6 6 $HOME/git/magic-tape/png/misc1.png;fi;\
-if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/git/magic-tape/png/misc2.png;fi;echo "1">$HOME/git/magic-tape/search/video/preview_pic.txt; fi')";
+ --preview='pic=$(head -1 $HOME/.cache/magic-tape/search/video/preview_pic.txt);if [ $pic -eq 0 ];\
+ then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview 1 1 6 6 $HOME/.cache/magic-tape/png/misc1.png;fi;\
+if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/.cache/magic-tape/png/misc2.png;fi;echo "1">$HOME/.cache/magic-tape/search/video/preview_pic.txt; fi')";
 	db2="$(echo $db2|awk '{print $1}')";
 		case $db2 in
   	P) setup;
@@ -291,7 +291,7 @@ if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/git/magic
 			;;
 			n) clear;
 						clear_image;
-						draw_preview 0 0 6 6 $HOME/git/magic-tape/png/search.png;
+						draw_preview 0 0 6 6 $HOME/.cache/magic-tape/png/search.png;
 						echo -e "\tEnter keyword/keyphrase\n\tfor a channel\n\tto search for: \n";
 						read  C;
 						clear_image;
@@ -300,14 +300,14 @@ if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/git/magic
 						else new_subscription;
 						fi;
 					;;
-					u) clear;U="$(cat $HOME/git/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|rofi -dmenu -i -p "❌ Unsubscribe from channel" -l 20 -width 40)";
+					u) clear;U="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|rofi -dmenu -i -p "❌ Unsubscribe from channel" -l 20 -width 40)";
 								if [[ -z "$U" ]];	then empty_query;
 	 						else	echo "$U";
 	 						echo -e "${Red}${bold}Unsubscribe from this channel:\n"${Yellow}$U"${normal}\nProceed?(Y/y))";
 	 						 read -N 1 uc;echo -e "\n";
 									if [[ $uc == Y ]] || [[ $uc == y ]];
-									then	notification_img="$HOME/git/magic-tape/png/logo1.png";
-										sed -i "/$U/d" $HOME/git/magic-tape/subscriptions/subscriptions.txt;
+									then	notification_img="$HOME/.cache/magic-tape/png/logo1.png";
+										sed -i "/$U/d" $HOME/.cache/magic-tape/subscriptions/subscriptions.txt;
 										echo -e "${Green}${bold}Unsubscribed from $U ]${normal}";
 										notify-send -t $NOTIF_DELAY -i "$notification_img" "You have unsubscribed from $U";
 										echo -e "${Red}${bold}NOTICE: ${Yellow}${bold}In order for this action to take effect in YouTube, you need to unsubscribe manually from a browser as well.\nDo you want to do it now? (Y/y)${normal}"|fold -w 75 -s;
@@ -319,35 +319,35 @@ if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/git/magic
 			H) clear;echo -e "${Green}Clear ${Yellow}${bold}watch history?${normal}(Y/y))";
 					 read -N 1 cwh;echo -e "\n";
 						if [[ $cwh == Y ]] || [[ $cwh == y ]];
-						then cat /dev/null >	$HOME/git/magic-tape/history/watch_history.txt;
-							notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Watch history cleared.";
+						then cat /dev/null >	$HOME/.cache/magic-tape/history/watch_history.txt;
+							notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Watch history cleared.";
 						fi;cwh="";
 			;;
 			S) clear;echo -e "${Green}Clear ${Yellow}${bold}search history?${normal}(Y/y))";
 					 read -N 1 csh;echo -e "\n";
 						if [[ $csh == Y ]] || [[ $csh == y ]];
-						then cat /dev/null >	$HOME/git/magic-tape/history/search_history.txt;
-						notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Search history cleared.";
+						then cat /dev/null >	$HOME/.cache/magic-tape/history/search_history.txt;
+						notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Search history cleared.";
 						fi;csh="";
 			;;
 			T) clear;echo -e "${Green}Clear ${Yellow}${bold}thumbnail cache?${normal}(Y/y))";
 						 read -N 1 ctc;echo -e "\n";
 							if [[ $ctc == Y ]] || [[ $ctc == y ]];
-							then mv	$HOME/git/magic-tape/jpg/* $HOME/.local/share/Trash/files/
-							notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Thumbnail cache cleared.";
+							then mv	$HOME/.cache/magic-tape/jpg/* $HOME/.local/share/Trash/files/
+							notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Thumbnail cache cleared.";
 							fi;ctc="";
 			;;
 			l) clear;like_video;
 						clear;
 			;;
-			L) clear;UNLIKE="$(tac $HOME/git/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❌ Select video to unlike" -l 20 -width 40)";
+			L) clear;UNLIKE="$(tac $HOME/.cache/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❌ Select video to unlike" -l 20 -width 40)";
 						if [[ -z "$UNLIKE" ]];	then empty_query;
 						else	echo -e "${Red}${bold}Unlike video\n${Yellow}"$UNLIKE"?${normal}\n(Y/y))";
 						 read -N 1 uv;echo -e "\n";
 							if [[ $uv == Y ]] || [[ $uv == y ]];
-							then	notification_img="$HOME/git/magic-tape/png/logo1.png";
+							then	notification_img="$HOME/.cache/magic-tape/png/logo1.png";
 								#UNLIKE="$(echo "$UNLIKE"|awk '{print $1}'|sed 's/^.*\///')";
-								sed -i "/$UNLIKE/d" $HOME/git/magic-tape/history/liked.txt;
+								sed -i "/$UNLIKE/d" $HOME/.cache/magic-tape/history/liked.txt;
 								notify-send -t $NOTIF_DELAY -i "$notification_img" "❌ You have unliked $UNLIKE";
 							fi;
 						fi;uv="";
@@ -411,11 +411,11 @@ function draw_preview {
 function get_feed_json ()
 {
 	echo -e "${Green}Downloading${Yellow}${bold} $FEED...${normal}";
-	echo -e "$db\n$ITEM\n$ITEM0\n$FEED\n$fzf_header">$HOME/git/magic-tape/history/last_action.txt;
+	echo -e "$db\n$ITEM\n$ITEM0\n$FEED\n$fzf_header">$HOME/.cache/magic-tape/history/last_action.txt;
 	#if statement added to fix json problem. If the problrm re-appears, uncomment the if statement, and comment  following line
-	#if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH * 2 ));else LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3|awk '{print $2}')";fi;
-	LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3|awk '{print $2}')";
-	yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --extractor-args youtubetab:approximate_date --playlist-start $ITEM0 --playlist-end $(($ITEM0 + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/git/magic-tape/json/video_search.json;
+	#if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH * 2 ));else LIST_LENGTH="$(head -3 $HOME/.config/magic-tape/config.txt|tail +3|awk '{print $2}')";fi;
+	LIST_LENGTH="$(head -3 $HOME/.config/magic-tape/config.txt|tail +3|awk '{print $2}')";
+	yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --extractor-args youtubetab:approximate_date --playlist-start $ITEM0 --playlist-end $(($ITEM0 + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/.cache/magic-tape/json/video_search.json;
 	echo -e "${Green}Completed${Yellow}${bold} $FEED.${normal}";
 	#correct back LIST_LENGTH value(fix json problem);
 	#if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH / 2 ));fi;
@@ -424,38 +424,38 @@ function get_feed_json ()
 function get_data ()
 {
 	#fix json problem first seen Apr 12 2023, where each item in the json file takes two lines, not one. While and until this stands, this one-liner corrects the issue. Also LIST_LENGTH=$(($LIST_LENGTH * 2 )) in get_feed_json function, exactly because of this issue
-	#if [ $db == "f" ]||[ $db == "t" ];then even=2;while [ $even -le $(cat $HOME/git/magic-tape/json/video_search.json|wc -l) ];do echo "$(head -$even $HOME/git/magic-tape/json/video_search.json|tail +$even)">>$HOME/git/magic-tape/json/video_search_temp.json;even=$(($even +2));done;mv $HOME/git/magic-tape/json/video_search_temp.json $HOME/git/magic-tape/json/video_search.json;fi;
-	jq '.id' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/ids.txt;
-	jq '.title' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/titles.txt;
-	jq '.duration_string' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/lengths.txt;
-	jq '.url' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/urls.txt;
-	jq '.timestamp' $HOME/git/magic-tape/json/video_search.json>$HOME/git/magic-tape/search/video/timestamps.txt;
-	jq '.description' $HOME/git/magic-tape/json/video_search.json>$HOME/git/magic-tape/search/video/descriptions.txt;
-	jq '.view_count' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/views.txt;
-	jq '.channel_id' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/channel_ids.txt;
-	jq '.channel' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/channel_names.txt;
-	jq '.thumbnails[0].url' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'|sed 's/\.jpg.*$/\.jpg/g'>$HOME/git/magic-tape/search/video/image_urls.txt;
-	jq '.live_status' $HOME/git/magic-tape/json/video_search.json>$HOME/git/magic-tape/search/video/live_status.txt;
-	epoch="$(jq '.epoch' $HOME/git/magic-tape/json/video_search.json|head -1)";
+	#if [ $db == "f" ]||[ $db == "t" ];then even=2;while [ $even -le $(cat $HOME/.cache/magic-tape/json/video_search.json|wc -l) ];do echo "$(head -$even $HOME/.cache/magic-tape/json/video_search.json|tail +$even)">>$HOME/.cache/magic-tape/json/video_search_temp.json;even=$(($even +2));done;mv $HOME/.cache/magic-tape/json/video_search_temp.json $HOME/.cache/magic-tape/json/video_search.json;fi;
+	jq '.id' $HOME/.cache/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/video/ids.txt;
+	jq '.title' $HOME/.cache/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/video/titles.txt;
+	jq '.duration_string' $HOME/.cache/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/video/lengths.txt;
+	jq '.url' $HOME/.cache/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/video/urls.txt;
+	jq '.timestamp' $HOME/.cache/magic-tape/json/video_search.json>$HOME/.cache/magic-tape/search/video/timestamps.txt;
+	jq '.description' $HOME/.cache/magic-tape/json/video_search.json>$HOME/.cache/magic-tape/search/video/descriptions.txt;
+	jq '.view_count' $HOME/.cache/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/video/views.txt;
+	jq '.channel_id' $HOME/.cache/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/video/channel_ids.txt;
+	jq '.channel' $HOME/.cache/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/video/channel_names.txt;
+	jq '.thumbnails[0].url' $HOME/.cache/magic-tape/json/video_search.json|sed 's/"//g'|sed 's/\.jpg.*$/\.jpg/g'>$HOME/.cache/magic-tape/search/video/image_urls.txt;
+	jq '.live_status' $HOME/.cache/magic-tape/json/video_search.json>$HOME/.cache/magic-tape/search/video/live_status.txt;
+	epoch="$(jq '.epoch' $HOME/.cache/magic-tape/json/video_search.json|head -1)";
 	Y_epoch="$(date --date=@$epoch +%Y|sed 's/^0*//')";
 	M_epoch="$(date --date=@$epoch +%m|sed 's/^0*//')";
 	D_epoch="$(date --date=@$epoch +%j|sed 's/^0*//')";
 	if [[ $db == "c" ]];
-	then jq '.playlist_uploader' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/channel_names.txt;
-		jq '.playlist_uploader_id' $HOME/git/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/git/magic-tape/search/video/channel_ids.txt;
+	then jq '.playlist_uploader' $HOME/.cache/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/video/channel_names.txt;
+		jq '.playlist_uploader_id' $HOME/.cache/magic-tape/json/video_search.json|sed 's/"//g'>$HOME/.cache/magic-tape/search/video/channel_ids.txt;
 		fi;
-	cat /dev/null>$HOME/git/magic-tape/search/video/thumbnails.txt;
-	cat /dev/null>$HOME/git/magic-tape/search/video/shared.txt;
+	cat /dev/null>$HOME/.cache/magic-tape/search/video/thumbnails.txt;
+	cat /dev/null>$HOME/.cache/magic-tape/search/video/shared.txt;
 	i=1;
-	while [ $i -le $(cat $HOME/git/magic-tape/search/video/titles.txt|wc -l) ];
-	do	img_path="$HOME/git/magic-tape/jpg/img-$(cat $HOME/git/magic-tape/search/video/ids.txt|head -$i|tail +$i).jpg";
+	while [ $i -le $(cat $HOME/.cache/magic-tape/search/video/titles.txt|wc -l) ];
+	do	img_path="$HOME/.cache/magic-tape/jpg/img-$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i).jpg";
 		if [ ! -f  "$img_path" ];
-		then echo "url = \"$(cat $HOME/git/magic-tape/search/video/image_urls.txt|head -$i|tail +$i)\"">>$HOME/git/magic-tape/search/video/thumbnails.txt;
-			echo "output = \"$img_path\"">>$HOME/git/magic-tape/search/video/thumbnails.txt;
-			cp $HOME/git/magic-tape/png/wait.png $HOME/git/magic-tape/jpg/img-$(cat $HOME/git/magic-tape/search/video/ids.txt|head -$i|tail +$i).jpg
+		then echo "url = \"$(cat $HOME/.cache/magic-tape/search/video/image_urls.txt|head -$i|tail +$i)\"">>$HOME/.cache/magic-tape/search/video/thumbnails.txt;
+			echo "output = \"$img_path\"">>$HOME/.cache/magic-tape/search/video/thumbnails.txt;
+			cp $HOME/.cache/magic-tape/png/wait.png $HOME/.cache/magic-tape/jpg/img-$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i).jpg
 		fi;
 		### parse approx date
-		timestamp=$(cat $HOME/git/magic-tape/search/video/timestamps.txt|head -$i|tail +$i);
+		timestamp=$(cat $HOME/.cache/magic-tape/search/video/timestamps.txt|head -$i|tail +$i);
 		if [[ $timestamp != "null" ]];then Y_timestamp="$(date --date=@$timestamp +%Y|sed 's/^0*//')";
 			M_timestamp="$(date --date=@$timestamp +%m|sed 's/^0*//')";
 			D_timestamp="$(date --date=@$timestamp +%j|sed 's/^0*//')";
@@ -467,22 +467,22 @@ function get_data ()
 			#yesterday=$(($D_timestamp+1));
 			if [ $Y_epoch -eq $Y_timestamp ]&&[ $M_epoch -eq $M_timestamp ]&&[ "$D_epoch" -gt "$D_timestamp" ] ;then approximate_date="$(($D_epoch-$D_timestamp)) days ago";fi;
 			if [ $Y_epoch -eq $Y_timestamp ]&&[ $M_epoch -eq $M_timestamp ]&&[ "$D_epoch" -eq $(($D_timestamp+1)) ] ;then approximate_date="Yesterday";fi;
-		else approximate_date="$(head -$i $HOME/git/magic-tape/search/video/live_status.txt|tail +$i|sed 's/_/ /g;s/"//g')";
+		else approximate_date="$(head -$i $HOME/.cache/magic-tape/search/video/live_status.txt|tail +$i|sed 's/_/ /g;s/"//g')";
 		fi;
-		echo $approximate_date>>$HOME/git/magic-tape/search/video/shared.txt;
+		echo $approximate_date>>$HOME/.cache/magic-tape/search/video/shared.txt;
 		((i++));
 	done;
 	echo -e "${Green}Downloading thumbnails...${normal}";
-	curl -s -K $HOME/git/magic-tape/search/video/thumbnails.txt&	echo -e "${Green}Background thumbnails download.${normal}";
-	if [ $ITEM -gt 1 ];then echo "Previous Page">>$HOME/git/magic-tape/search/video/titles.txt;fi;
-	if [ $(cat $HOME/git/magic-tape/search/video/ids.txt|wc -l) -ge $LIST_LENGTH ];then echo "Next Page">>$HOME/git/magic-tape/search/video/titles.txt;fi;
-	echo "Abort Selection">>$HOME/git/magic-tape/search/video/titles.txt;
+	curl -s -K $HOME/.cache/magic-tape/search/video/thumbnails.txt&	echo -e "${Green}Background thumbnails download.${normal}";
+	if [ $ITEM -gt 1 ];then echo "Previous Page">>$HOME/.cache/magic-tape/search/video/titles.txt;fi;
+	if [ $(cat $HOME/.cache/magic-tape/search/video/ids.txt|wc -l) -ge $LIST_LENGTH ];then echo "Next Page">>$HOME/.cache/magic-tape/search/video/titles.txt;fi;
+	echo "Abort Selection">>$HOME/.cache/magic-tape/search/video/titles.txt;
 }
 
 function select_video ()
 {
 	PLAY="";
-	PLAY=" $(cat -n $HOME/git/magic-tape/search/video/titles.txt|sed 's/^. *//g' |fzf\
+	PLAY=" $(cat -n $HOME/.cache/magic-tape/search/video/titles.txt|sed 's/^. *//g' |fzf\
 	--info=hidden \
 	--layout=reverse \
 	--height=100% \
@@ -499,47 +499,47 @@ function select_video ()
 	--preview='
 	height=$(($FZF_PREVIEW_COLUMNS /4 + 1));\
 	if [[ "$IMAGE_SUPPORT" == "kitty" ]];then clear_image;fi;\
-	i=$(echo {}|sed "s/\\t.*$//g");echo $i>$HOME/git/magic-tape/search/video/index.txt;\
+	i=$(echo {}|sed "s/\\t.*$//g");echo $i>$HOME/.cache/magic-tape/search/video/index.txt;\
 	if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then	ll=0; while [ $ll -le $height ];do echo "";((ll++));done;fi;\
-	TITLE="$(cat $HOME/git/magic-tape/search/video/titles.txt|head -$i|tail +$i)";\
-	channel_name="$(cat $HOME/git/magic-tape/search/video/channel_names.txt|head -$i|tail +$i)";\
-	channel_jpg="$(cat $HOME/git/magic-tape/search/video/channel_ids.txt|head -$i|tail +$i)"".jpg";\
-	if [[ "$TITLE" == "Previous Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/png/previous.png;\
-	elif [[ "$TITLE" == "Next Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/png/next.png;\
-	elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/png/abort.png;\
-		else draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/git/magic-tape/jpg/img-"$(cat $HOME/git/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg;\
-		if [ -e $HOME/git/magic-tape/subscriptions/jpg/"$channel_jpg" ];\
-			then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/git/magic-tape/subscriptions/jpg/"$channel_jpg";fi;\
-			else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/git/magic-tape/png/logo1.png;fi;\
+	TITLE="$(cat $HOME/.cache/magic-tape/search/video/titles.txt|head -$i|tail +$i)";\
+	channel_name="$(cat $HOME/.cache/magic-tape/search/video/channel_names.txt|head -$i|tail +$i)";\
+	channel_jpg="$(cat $HOME/.cache/magic-tape/search/video/channel_ids.txt|head -$i|tail +$i)"".jpg";\
+	if [[ "$TITLE" == "Previous Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/previous.png;\
+	elif [[ "$TITLE" == "Next Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/next.png;\
+	elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/abort.png;\
+		else draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/jpg/img-"$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg;\
+		if [ -e $HOME/.cache/magic-tape/subscriptions/jpg/"$channel_jpg" ];\
+			then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/.cache/magic-tape/subscriptions/jpg/"$channel_jpg";fi;\
+			else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/.cache/magic-tape/png/logo1.png;fi;\
 		fi;\
 	fi;\
 	ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
 	echo -e "\n"$Yellow"$TITLE"$normal"" |fold -w $FZF_PREVIEW_COLUMNS -s ;	\
 	ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
 	if [[ $TITLE != "Abort Selection" ]]&&[[ $TITLE != "Previous Page" ]]&&[[ $TITLE != "Next Page" ]];\
-	then 	LENGTH="$(cat $HOME/git/magic-tape/search/video/lengths.txt|head -$i|tail +$i)";\
+	then 	LENGTH="$(cat $HOME/.cache/magic-tape/search/video/lengths.txt|head -$i|tail +$i)";\
 		echo -e "\n"$Green"Length: "$Cyan"$LENGTH"$normal"";\
-		SHARED="$(cat $HOME/git/magic-tape/search/video/shared.txt|head -$i|tail +$i)";\
+		SHARED="$(cat $HOME/.cache/magic-tape/search/video/shared.txt|head -$i|tail +$i)";\
 		echo -e "$Green""Shared: "$Cyan"$SHARED"$normal""; \
-		VIEWS="$(cat $HOME/git/magic-tape/search/video/views.txt|head -$i|tail +$i)";\
+		VIEWS="$(cat $HOME/.cache/magic-tape/search/video/views.txt|head -$i|tail +$i)";\
 		echo -e "$Green""Views : ""$Cyan""$VIEWS";\
 		if [[ $db != "c" ]];\
 		then ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
 			echo -e "\n"$Green"Channel: "$Yellow"$channel_name" |fold -w $FZF_PREVIEW_COLUMNS -s;\
 		fi;\
-		DESCRIPTION="$(cat $HOME/git/magic-tape/search/video/descriptions.txt|head -$i|tail +$i)";\
+		DESCRIPTION="$(cat $HOME/.cache/magic-tape/search/video/descriptions.txt|head -$i|tail +$i)";\
 		if [[ $DESCRIPTION != "null" ]];
 		then ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
 			echo -e "\n\x1b[38;5;250m$DESCRIPTION"$normal""|fold -w $FZF_PREVIEW_COLUMNS -s;	\
 		fi;
 	fi;')";
 	clear_image;
-	i=$(cat $HOME/git/magic-tape/search/video/index.txt);
-		notification_img="$HOME/git/magic-tape/jpg/img-"$(cat $HOME/git/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg";
-	play_now="$(head -$i $HOME/git/magic-tape/search/video/urls.txt|tail +$i)";
-	TITLE=$(head -$i $HOME/git/magic-tape/search/video/titles.txt|tail +$i);
-	channel_name="$(cat $HOME/git/magic-tape/search/video/channel_names.txt|head -$i|tail +$i)";
-	channel_id="$(cat $HOME/git/magic-tape/search/video/channel_ids.txt|head -$i|tail +$i)";
+	i=$(cat $HOME/.cache/magic-tape/search/video/index.txt);
+		notification_img="$HOME/.cache/magic-tape/jpg/img-"$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg";
+	play_now="$(head -$i $HOME/.cache/magic-tape/search/video/urls.txt|tail +$i)";
+	TITLE=$(head -$i $HOME/.cache/magic-tape/search/video/titles.txt|tail +$i);
+	channel_name="$(cat $HOME/.cache/magic-tape/search/video/channel_names.txt|head -$i|tail +$i)";
+	channel_id="$(cat $HOME/.cache/magic-tape/search/video/channel_ids.txt|head -$i|tail +$i)";
 	if [ $ITEM  -ge $LIST_LENGTH ]&&[[ $PLAY == *"shift-left"* ]]; then TITLE="Previous Page";fi;
 	if [ $ITEM  -le $LIST_LENGTH ]&&[[ $PLAY == *"shift-left"* ]]; then TITLE="Abort Selection";fi;
 	if [[ $PLAY == *"shift-right"* ]]; then TITLE="Next Page";fi;
@@ -564,9 +564,9 @@ function download_video ()
 {
 	cd $HOME/Desktop;
 	echo -e "${Green}Downloading${Yellow}${bold} $play_now${normal}...]";
-	notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/download.png "Video Downloading: $TITLE";
+	notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/download.png "Video Downloading: $TITLE";
 	yt-dlp "$play_now";
-	notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Video Downloading of $TITLE is now complete.";
+	notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Video Downloading of $TITLE is now complete.";
 	echo -e "${Green}Video Downloading of${Yellow}${bold} $TITLE ${Green}is now complete.${normal}";
 	sleep $DIALOG_DELAY;
 	cd ;
@@ -577,9 +577,9 @@ function download_audio ()
 {
 	cd $HOME/Desktop;
 	echo -e "${Green}Downloading audio  of${Yellow}${bold} $play_now...${normal}";
-	notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/download.png "Audio Downloading: $TITLE";
+	notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/download.png "Audio Downloading: $TITLE";
 	yt-dlp --extract-audio --audio-quality 0 --embed-thumbnail "$play_now";
-	notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Audio Downloading of $TITLE is now complete.";
+	notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Audio Downloading of $TITLE is now complete.";
 	echo -e "${Green}Audio Downloading of${Yellow}${bold} $TITLE ${Green}is now complete.${normal}";
 	sleep $DIALOG_DELAY;
 	cd ;
@@ -589,9 +589,9 @@ function download_audio ()
 function message_audio_video ()
 {
 	echo -e "${Green}${bold}Playing:${Yellow} $play_now\n${Green}Title  :${Yellow} $TITLE\n${Green}Channel:${Yellow} $channel_name${normal}";
-	if [[ -n "$play_now" ]] && [[ -n "$TITLE" ]] && [[ -z "$(grep "$play_now" $HOME/git/magic-tape/history/watch_history.txt)" ]];
-	then	echo "$channel_id"" ""$channel_name"" ""$play_now"" ""$TITLE">>$HOME/git/magic-tape/history/watch_history.txt;
-	#echo "{\"url\": \"$play_now\", \"title\": \"$TITLE\", \"channel\": \"$channel_name\", \"channel_id\": \"$channel_id\"}">>$HOME/git/magic-tape/history/watch_history.json;
+	if [[ -n "$play_now" ]] && [[ -n "$TITLE" ]] && [[ -z "$(grep "$play_now" $HOME/.cache/magic-tape/history/watch_history.txt)" ]];
+	then	echo "$channel_id"" ""$channel_name"" ""$play_now"" ""$TITLE">>$HOME/.cache/magic-tape/history/watch_history.txt;
+	#echo "{\"url\": \"$play_now\", \"title\": \"$TITLE\", \"channel\": \"$channel_name\", \"channel_id\": \"$channel_id\"}">>$HOME/.cache/magic-tape/history/watch_history.json;
 	fi;
  notify-send -t $NOTIF_DELAY -i "$notification_img" "Playing: $TITLE";
 	}
@@ -615,28 +615,28 @@ function select_action ()
 		"Download Audio 🔽") clear;download_audio;clear_image;echo -e "\n${Green}Audio Download complete.${normal}\n";
 		;;
 		"Like Video ❤️") clear;
-			if [[ -z "$(grep "$play_now" $HOME/git/magic-tape/history/liked.txt)" ]];
-			then echo "$channel_id"" ""$channel_name"" ""$play_now"" ""$TITLE">>$HOME/git/magic-tape/history/liked.txt;
-			notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video added to Liked Videos.";
-			else notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "❤️ Video already added to Liked Videos.";
+			if [[ -z "$(grep "$play_now" $HOME/.cache/magic-tape/history/liked.txt)" ]];
+			then echo "$channel_id"" ""$channel_name"" ""$play_now"" ""$TITLE">>$HOME/.cache/magic-tape/history/liked.txt;
+			notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "❤️ Video added to Liked Videos.";
+			else notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "❤️ Video already added to Liked Videos.";
 			fi;
 		;;
 		"Browse Feed of channel"*) clear;db="c"; P="$channel_id";
 			channel_feed;
 		;;
 		"Subscribe to channel"*) clear;
-			if [ -n "$(grep $channel_id $HOME/git/magic-tape/subscriptions/subscriptions.txt)" ];
-			then notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/subscriptions/jpg/$channel_id".jpg" "You are already subscribed to $channel_name ";
+			if [ -n "$(grep $channel_id $HOME/.cache/magic-tape/subscriptions/subscriptions.txt)" ];
+			then notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/subscriptions/jpg/$channel_id".jpg" "You are already subscribed to $channel_name ";
 			else	C=${channel_name// /+};C=${C//\'/%27};
 				if [[ "$C" == "null" ]]; then notify-send -t $NOTIF_DELAY "❌ You cannot subscribe to this channel (null)";
 				else	echo -e "${Green}Downloading data of ${Yellow}${bold}$channel_name${normal}${Green} channel...${normal}";
-					yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --playlist-start 1 --playlist-end 10 -j "https://www.youtube.com/results?search_query="$C"&sp=EgIQAg%253D%253D"|grep "$channel_id">$HOME/git/magic-tape/json/channel_search.json;
-					channel_thumbnail_url="$(jq '.thumbnails[1].url' $HOME/git/magic-tape/json/channel_search.json|sed 's/"//g')";
+					yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --playlist-start 1 --playlist-end 10 -j "https://www.youtube.com/results?search_query="$C"&sp=EgIQAg%253D%253D"|grep "$channel_id">$HOME/.cache/magic-tape/json/channel_search.json;
+					channel_thumbnail_url="$(jq '.thumbnails[1].url' $HOME/.cache/magic-tape/json/channel_search.json|sed 's/"//g')";
 					echo -e "${Green}Dowloading thumbnail of${Yellow}${bold} $channel_name${normal}${Green} channel...${normal}";
-					curl -s -o $HOME/git/magic-tape/subscriptions/jpg/$channel_id".jpg" "https:""$channel_thumbnail_url";
+					curl -s -o $HOME/.cache/magic-tape/subscriptions/jpg/$channel_id".jpg" "https:""$channel_thumbnail_url";
 					echo -e "${Green}Done.${normal}";
-					echo "$channel_id"" ""$channel_name">>$HOME/git/magic-tape/subscriptions/subscriptions.txt;
-					notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/subscriptions/jpg/$channel_id".jpg" "You have subscribed to $channel_name ";
+					echo "$channel_id"" ""$channel_name">>$HOME/.cache/magic-tape/subscriptions/subscriptions.txt;
+					notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/subscriptions/jpg/$channel_id".jpg" "You have subscribed to $channel_name ";
 					echo -e "${Red}${bold}NOTICE: ${Yellow}${bold}In order for this action to take effect in YouTube, you need to subscribe manually from a browser as well.\nDo you want to do it now? (Y/y)${normal}"|fold -w 75 -s;
 					read -N 1 sas;echo -e "\n";
 					if [[ $sas == Y ]] || [[ $sas == y ]];then $BROWSER "https://www.youtube.com/channel/"$channel_id&echo "Opened $PREF_BROWSER";fi;
@@ -673,20 +673,20 @@ bold=`tput bold`
 normal=`tput sgr0`
 export IMAGE_SUPPORT UEBERZUG_FIFO Green GreenInvert Yellow Red Magenta Cyan bold normal
 db=""
-if [[ ! -e $HOME/git/magic-tape/config.txt ]]||[ $(cat $HOME/git/magic-tape/config.txt|wc -l) -lt 7 ];
+if [[ ! -e $HOME/.config/magic-tape/config.txt ]]||[ $(cat $HOME/.config/magic-tape/config.txt|wc -l) -lt 7 ];
 then setup;
 fi;
-PREF_BROWSER="$(head -1 $HOME/git/magic-tape/config.txt|awk '{print $2}')";
-BROWSER="$(head -2 $HOME/git/magic-tape/config.txt|tail +2|awk '{print $2}')";
-LIST_LENGTH="$(head -3 $HOME/git/magic-tape/config.txt|tail +3|awk '{print $2}')";
-DIALOG_DELAY="$(head -4 $HOME/git/magic-tape/config.txt|tail +4|awk '{print $2}')";
-NOTIF_DELAY="$(head -5 $HOME/git/magic-tape/config.txt|tail +5|awk '{print $2}')";
-IMAGE_SUPPORT="$(head -6 $HOME/git/magic-tape/config.txt|tail +6|awk '{print $2}')";
-COLOR="$(head -7 $HOME/git/magic-tape/config.txt|tail +7|awk '{print $2}')";
+PREF_BROWSER="$(head -1 $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
+BROWSER="$(head -2 $HOME/.config/magic-tape/config.txt|tail +2|awk '{print $2}')";
+LIST_LENGTH="$(head -3 $HOME/.config/magic-tape/config.txt|tail +3|awk '{print $2}')";
+DIALOG_DELAY="$(head -4 $HOME/.config/magic-tape/config.txt|tail +4|awk '{print $2}')";
+NOTIF_DELAY="$(head -5 $HOME/.config/magic-tape/config.txt|tail +5|awk '{print $2}')";
+IMAGE_SUPPORT="$(head -6 $HOME/.config/magic-tape/config.txt|tail +6|awk '{print $2}')";
+COLOR="$(head -7 $HOME/.config/magic-tape/config.txt|tail +7|awk '{print $2}')";
 color_set;
 while [ "$db" != "q" ]
 do
-	echo "0">$HOME/git/magic-tape/search/video/preview_pic.txt;
+	echo "0">$HOME/.cache/magic-tape/search/video/preview_pic.txt;
 	clear_image;
 db="$(echo -e "       ${Yellow}${bold}┏┳┓┏━┓┏━╸╻┏━╸   ╺┳╸┏━┓┏━┓┏━╸${normal}\n       ${Yellow}${bold}┃┃┃┣━┫┃╺┓┃┃  ╺━╸ ┃ ┣━┫┣━┛┣╸ ${normal}\n       ${Yellow}${bold}╹ ╹╹ ╹┗━┛╹┗━╸    ╹ ╹ ╹╹  ┗━╸${normal} \n ${Yellow}${bold}f ${normal}${Red}to browse Subscriptions Feed.${normal}          \n ${Yellow}${bold}t ${Red}to browse Trending Feed.${normal}               \n ${Yellow}${bold}s${normal} ${Green}to Search for a key word/phrase.${normal}       \n ${Yellow}${bold}r ${Green}to Repeat previous action.${normal}             \n ${Yellow}${bold}c ${Green}to select a Channel Feed.${normal}              \n ${Yellow}${bold}l ${Magenta}to browse your Liked Videos.${normal}           \n ${Yellow}${bold}h ${Magenta}to browse your Watch History${normal}.          \n ${Yellow}${bold}j ${Magenta}to browse your Search History.${normal}         \n ${Yellow}${bold}m ${Cyan}for Miscellaneous Menu.${normal}                \n ${Yellow}${bold}q ${Cyan}to Quit${normal}."|fzf \
 --preview-window=0 \
@@ -703,10 +703,10 @@ db="$(echo -e "       ${Yellow}${bold}┏┳┓┏━┓┏━╸╻┏━╸   
 --prompt="Enter:" \
 --header-first \
 --expect=A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,1,2,3,4,5,6,7,8,9,0 \
---preview='pic=$(head -1 $HOME/git/magic-tape/search/video/preview_pic.txt);if [ $pic -eq 0 ];\
- then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview 1 1 6 6 $HOME/git/magic-tape/png/logo1.png;fi;\
-		if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/git/magic-tape/png/magic-tape.png;fi;\
-		echo "1">$HOME/git/magic-tape/search/video/preview_pic.txt;\
+--preview='pic=$(head -1 $HOME/.cache/magic-tape/search/video/preview_pic.txt);if [ $pic -eq 0 ];\
+ then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview 1 1 6 6 $HOME/.cache/magic-tape/png/logo1.png;fi;\
+		if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/.cache/magic-tape/png/magic-tape.png;fi;\
+		echo "1">$HOME/.cache/magic-tape/search/video/preview_pic.txt;\
  fi'
 )"
 db="$(echo $db|awk '{print $1}')"
@@ -751,14 +751,14 @@ db="$(echo $db|awk '{print $1}')"
   ;;
   s) clear;
   			clear_image;
-  			draw_preview 0 0 6 6 $HOME/git/magic-tape/png/search.png;
+  			draw_preview 0 0 6 6 $HOME/.cache/magic-tape/png/search.png;
   			echo -e "\tEnter keyword/keyphrase\n\tto search for: \n";
   			read  P;
    		clear_image;
    		if [[ -z "$P" ]];
    			then empty_query;
    		else P=${P// /+};
-   			echo "$P">>$HOME/git/magic-tape/history/search_history.txt;
+   			echo "$P">>$HOME/.cache/magic-tape/history/search_history.txt;
    			big_loop=1;
    			ITEM=1;
    			ITEM0=1;
@@ -780,11 +780,11 @@ db="$(echo $db|awk '{print $1}')"
   ;;
   r) clear;
 				 clear_image;
-				 db="$(head -1 $HOME/git/magic-tape/history/last_action.txt)";
-				 ITEM="$(head -2 $HOME/git/magic-tape/history/last_action.txt|tail +2)";
-					ITEM0="$(head -3 $HOME/git/magic-tape/history/last_action.txt|tail +3)";
-				 FEED="$(head -4 $HOME/git/magic-tape/history/last_action.txt|tail +4)";
-				 fzf_header="$(head -5 $HOME/git/magic-tape/history/last_action.txt|tail +5)";
+				 db="$(head -1 $HOME/.cache/magic-tape/history/last_action.txt)";
+				 ITEM="$(head -2 $HOME/.cache/magic-tape/history/last_action.txt|tail +2)";
+					ITEM0="$(head -3 $HOME/.cache/magic-tape/history/last_action.txt|tail +3)";
+				 FEED="$(head -4 $HOME/.cache/magic-tape/history/last_action.txt|tail +4)";
+				 fzf_header="$(head -5 $HOME/.cache/magic-tape/history/last_action.txt|tail +5)";
   			big_loop=1;
   			first=1;
   			while [ $big_loop -eq 1 ];
@@ -802,29 +802,29 @@ db="$(echo $db|awk '{print $1}')"
 				 clear;
   ;;
   c) clear;clear_image;
-  			channel_name="$(cat $HOME/git/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select channel" -l 20 -width 40)";
+  			channel_name="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select channel" -l 20 -width 40)";
   			echo -e "${Green}Selected channel:${Yellow}${bold} $channel_name"${normal};
   			if [[ -z "$channel_name" ]];
    		then empty_query;
-  			else P="$(grep "$channel_name" $HOME/git/magic-tape/subscriptions/subscriptions.txt|head -1|awk '{print $1}')";
+  			else P="$(grep "$channel_name" $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|head -1|awk '{print $1}')";
 					channel_feed;
 					fi;
   ;;
   h) clear;clear_image;
-  			TITLE="$(tac $HOME/git/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select previous video" -l 20 -width 40)";
+  			TITLE="$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select previous video" -l 20 -width 40)";
   			if [[ "$TITLE" == "" ]];
    			then empty_query;
   			else 	TITLE=${TITLE//\*/\\*};
-  			channel_id="$(grep "$TITLE" $HOME/git/magic-tape/history/watch_history.txt|head -1|awk '{print $1}')";
-  			channel_name="$(grep "$TITLE" $HOME/git/magic-tape/history/watch_history.txt|head -1|sed 's/https:\/\/www\.youtube\.com.*$//'|cut -d' ' -f2-)";
-  			play_now="$(grep "$TITLE" $HOME/git/magic-tape/history/watch_history.txt|head -1|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|awk '{print $1}')";
-					notification_img="$HOME/git/magic-tape/jpg/img-"${play_now##*=}".jpg";
+  			channel_id="$(grep "$TITLE" $HOME/.cache/magic-tape/history/watch_history.txt|head -1|awk '{print $1}')";
+  			channel_name="$(grep "$TITLE" $HOME/.cache/magic-tape/history/watch_history.txt|head -1|sed 's/https:\/\/www\.youtube\.com.*$//'|cut -d' ' -f2-)";
+  			play_now="$(grep "$TITLE" $HOME/.cache/magic-tape/history/watch_history.txt|head -1|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|awk '{print $1}')";
+					notification_img="$HOME/.cache/magic-tape/jpg/img-"${play_now##*=}".jpg";
 						select_action;
   			fi;
   			clear;
   ;;
   j) clear;clear_image;
-  		 P="$(tac $HOME/git/magic-tape/history/search_history.txt|sed 's/+/ /g'|rofi -dmenu -i -p "🔎 Select key word/phrase" -l 20 -width 40)";
+  		 P="$(tac $HOME/.cache/magic-tape/history/search_history.txt|sed 's/+/ /g'|rofi -dmenu -i -p "🔎 Select key word/phrase" -l 20 -width 40)";
   			if [[ -z "$P" ]];
    		then empty_query;
   			else P=${P// /+};
@@ -848,21 +848,21 @@ db="$(echo $db|awk '{print $1}')"
  	 		clear;
   ;;
   l) clear;clear_image;
-  			TITLE="$(tac $HOME/git/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❤️ Select liked video" -l 20 -width 40)";
+  			TITLE="$(tac $HOME/.cache/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❤️ Select liked video" -l 20 -width 40)";
   			if [[ -z "$TITLE" ]];
    		then empty_query;
   			else TITLE=${TITLE//\*/\\*};
-  			channel_id="$(grep "$TITLE" $HOME/git/magic-tape/history/liked.txt|head -1|awk '{print $1}')";
-  			channel_name="$(grep "$TITLE" $HOME/git/magic-tape/history/liked.txt|head -1|sed 's/https:\/\/www\.youtube\.com.*$//'|cut -d' ' -f2-)";
-  			play_now="$(grep "$TITLE" $HOME/git/magic-tape/history/liked.txt|head -1|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|awk '{print $1}')";
-  				notification_img="$HOME/git/magic-tape/jpg/img-"${play_now##*=}".jpg";
+  			channel_id="$(grep "$TITLE" $HOME/.cache/magic-tape/history/liked.txt|head -1|awk '{print $1}')";
+  			channel_name="$(grep "$TITLE" $HOME/.cache/magic-tape/history/liked.txt|head -1|sed 's/https:\/\/www\.youtube\.com.*$//'|cut -d' ' -f2-)";
+  			play_now="$(grep "$TITLE" $HOME/.cache/magic-tape/history/liked.txt|head -1|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|awk '{print $1}')";
+  				notification_img="$HOME/.cache/magic-tape/jpg/img-"${play_now##*=}".jpg";
 						select_action;
   			fi;
   			clear;
   ;;
   m) clear;clear_image;misc_menu;
   ;;
-  q) clear;clear_image;notify-send -t $NOTIF_DELAY -i $HOME/git/magic-tape/png/logo1.png "Exited magic-tape";
+  q) clear;clear_image;notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Exited magic-tape";
   ;;
   *)clear;clear_image;echo -e "\n${Yellow}${bold}$db${normal} is an invalid key, please try again.\n";sleep $DIALOG_DELAY;
   ;;
