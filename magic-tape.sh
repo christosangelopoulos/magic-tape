@@ -158,7 +158,7 @@ function setup ()
 				then empty_query;
 				else NOTIF_DELAY=$(($NOTIF_DELAY * 1000));
 				IMAGE_SUPPORT="$(echo -e "kitty\nuberzug\nchafa\nnone"|rofi -dmenu -i -p "SET UP: 📷 Select image support" -l 20 -width 40)";
-				if [[ "$NOTIF_DELAY" == "" ]];
+				if [[ "$IMAGE_SUPPORT" == "" ]];
 					then empty_query;
 					else COLOR="$(echo -e "Yes\nNo"|rofi -dmenu -i -p "SET UP: 🕓 Do  you prefer multi-colored terminal output?" -l 20 -width 40)";
 					if [[ "$COLOR" == "" ]];
