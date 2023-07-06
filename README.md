@@ -46,6 +46,7 @@ Other dependencies include:
 * [mpv](https://github.com/mpv-player/mpv)
 * [jq](https://stedolan.github.io/jq/)
 * [xclip](https://github.com/astrand/xclip)
+* [dmenu](http://tools.suckless.org/dmenu/)
 
 Regarding image support, it can either be achived with
 
@@ -73,7 +74,17 @@ or with
 
 To install these dependencies, run the following command:
 
-     $ sudo apt install curl fzf rofi mpv jq xclip
+     $ sudo apt install curl fzf mpv jq xclip
+
+To install `rofi`:
+
+     $ sudo apt install rofi
+
+To install `dmenu`:
+
+    $ sudo apt install dmenu
+
+
 
 ## Install
 
@@ -249,5 +260,6 @@ Channel selection then is made with __fzf__:
   * the magic-tape cache files are all in `~/.cache/magic-tape/`
   * the configuration text file will be created in `~/.config/magic-tape/`
 2. The action selection can be either with `rofi`, or `fzf` (if the user wants to go full TUI).This can be configured during the **P option** of the **misc menu**.
+3. `dmenu` is also added as an action selector. .This can be configured during the **P option** of the **misc menu**.
 
 ---
