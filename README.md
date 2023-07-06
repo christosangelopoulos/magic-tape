@@ -128,7 +128,7 @@ or any other terminal emulator:
 ### Set up
 
 While using the script for the first time, the user will be asked for his preferences:
-* __Prefered action Selector__, can either be `rofi` or `fzf`.
+* __Prefered action Selector__, can either be `rofi`,`fzf` or `dmenu`.
 * __Prefered web browser__, the cookies of which will be used by magic-tape in order to extract data from YouTube.
 Supported browsers by yt-dlp are brave, chrome, chromium, edge, firefox, opera, vivaldi.
 * __Prefered video list length__ to get in each request. Longer video lists may be more preferable, but take longer to get.
@@ -260,6 +260,6 @@ Channel selection then is made with __fzf__:
   * the magic-tape cache files are all in `~/.cache/magic-tape/`
   * the configuration text file will be created in `~/.config/magic-tape/`
 2. The action selection can be either with `rofi`, or `fzf` (if the user wants to go full TUI).This can be configured during the **P option** of the **misc menu**.
-3. `dmenu` is also added as an action selector. .This can be configured during the **P option** of the **misc menu**.
+3. `dmenu` is also added as an action selector. This can be configured during the **P option** of the **misc menu**.
 
 ---
