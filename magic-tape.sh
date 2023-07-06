@@ -465,17 +465,17 @@ function get_data ()
 		fi;
 		### parse approx date
 		timestamp="$(cat $HOME/.cache/magic-tape/search/video/timestamps.txt|head -$i|tail +$i)";
-		if [[ $timestamp != "null" ]];then Y_timestamp="$(date --date=@$timestamp +%Y|sed 's/^0*//')";
+		if [[ "$timestamp" != "null" ]];then Y_timestamp="$(date --date=@$timestamp +%Y|sed 's/^0*//')";
 			M_timestamp="$(date --date=@$timestamp +%m|sed 's/^0*//')";
 			D_timestamp="$(date --date=@$timestamp +%j|sed 's/^0*//')";
-			if [ $Y_epoch -gt $Y_timestamp ];then approximate_date="$(($Y_epoch-$Y_timestamp)) years ago";fi;
-			if [ $Y_epoch -eq $(($Y_timestamp+1)) ];then approximate_date="One year ago";fi;
-			if [ $Y_epoch -eq $Y_timestamp ]&&[ $M_epoch -gt $M_timestamp ];then approximate_date="$(($M_epoch-$M_timestamp)) months ago";fi;
-			if [ $Y_epoch -eq $Y_timestamp ]&&[ $M_epoch -eq $(($M_timestamp+1)) ];then approximate_date="One month ago";fi;
-			if [ $Y_epoch -eq $Y_timestamp ]&&[ $M_epoch -eq $M_timestamp ]&&[ $D_epoch -eq $D_timestamp ] ;then approximate_date="Today";fi;
+			if [ "$Y_epoch" -gt "$Y_timestamp" ];then approximate_date="$(($Y_epoch-$Y_timestamp)) years ago";fi;
+			if [ "$Y_epoch" -eq $(($Y_timestamp + 1)) ];then approximate_date="One year ago";fi;
+			if [ "$Y_epoch" -eq "$Y_timestamp" ]&&[ "$M_epoch" -gt "$M_timestamp" ];then approximate_date="$(($M_epoch-$M_timestamp)) months ago";fi;
+			if [ "$Y_epoch" -eq "$Y_timestamp" ]&&[ "$M_epoch" -eq $(($M_timestamp + 1)) ];then approximate_date="One month ago";fi;
+			if [ "$Y_epoch" -eq "$Y_timestamp" ]&&[ "$M_epoch" -eq "$M_timestamp" ]&&[ $D_epoch -eq $D_timestamp ] ;then approximate_date="Today";fi;
 			#yesterday=$(($D_timestamp+1));
-			if [ $Y_epoch -eq $Y_timestamp ]&&[ $M_epoch -eq $M_timestamp ]&&[ "$D_epoch" -gt "$D_timestamp" ] ;then approximate_date="$(($D_epoch-$D_timestamp)) days ago";fi;
-			if [ $Y_epoch -eq $Y_timestamp ]&&[ $M_epoch -eq $M_timestamp ]&&[ "$D_epoch" -eq $(($D_timestamp+1)) ] ;then approximate_date="Yesterday";fi;
+			if [ "$Y_epoch" -eq "$Y_timestamp" ]&&[ "$M_epoch" -eq "$M_timestamp" ]&&[ "$D_epoch" -gt "$D_timestamp" ] ;then approximate_date="$(($D_epoch - $D_timestamp)) days ago";fi;
+			if [ "$Y_epoch" -eq "$Y_timestamp" ]&&[ "$M_epoch" -eq "$M_timestamp" ]&&[ "$D_epoch" -eq $(($D_timestamp + 1)) ] ;then approximate_date="Yesterday";fi;
 		else approximate_date="$(head -$i $HOME/.cache/magic-tape/search/video/live_status.txt|tail +$i|sed 's/_/ /g;s/"//g')";
 		fi;
 		echo $approximate_date>>$HOME/.cache/magic-tape/search/video/shared.txt;
