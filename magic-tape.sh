@@ -464,7 +464,7 @@ function get_data ()
 			cp $HOME/.cache/magic-tape/png/wait.png $HOME/.cache/magic-tape/jpg/img-$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i).jpg
 		fi;
 		### parse approx date
-		timestamp=$(cat $HOME/.cache/magic-tape/search/video/timestamps.txt|head -$i|tail +$i);
+		timestamp="$(cat $HOME/.cache/magic-tape/search/video/timestamps.txt|head -$i|tail +$i)";
 		if [[ $timestamp != "null" ]];then Y_timestamp="$(date --date=@$timestamp +%Y|sed 's/^0*//')";
 			M_timestamp="$(date --date=@$timestamp +%m|sed 's/^0*//')";
 			D_timestamp="$(date --date=@$timestamp +%j|sed 's/^0*//')";
