@@ -145,25 +145,32 @@ function color_set()
 function setup ()
 {
 	clear;clear_image;
-	PREF_BROWSER="$(echo -e "brave\nchrome\nchromium\nedge\nfirefox\nopera\nvivaldi"|rofi -dmenu -i -p "SET UP: 🌍 Select browser to login YouTube with" -l 20 -width 40)";
-	if [[ "$PREF_BROWSER" == "" ]];then empty_query;
-	else if [[ $PREF_BROWSER == "brave" ]];then BROWSER=brave-browser-stable;else BROWSER=$PREF_BROWSER;fi;
-	LIST_LENGTH="$(echo -e "10\n20\n30\n40\n50\n60\n70\n80"|rofi -dmenu -i -p "SET UP: 📋 Select video list length" -l 20 -width 40)";
-	if [[ "$LIST_LENGTH" == "" ]];then empty_query;
-		else	DIALOG_DELAY="$(echo -e "0\n1\n2\n3\n4\n5\n6"|rofi -dmenu -i -p "SET UP: 🕓 Select dialog message duration(sec)" -l 20 -width 40)";
-			if [[ "$DIALOG_DELAY" == "" ]];
+PREF_SELECTOR="$(echo -e "rofi\nfzf"|fzf --preview-window=0 --color='gutter:-1' --reverse --tiebreak=begin --border=rounded +i +m --info=hidden --header-first --prompt="SET UP: 🌍 Select program to select actions ")";
+if [[ "$PREF_SELECTOR" == "" ]];then empty_query;
+else if [[ $PREF_SELECTOR == "rofi" ]];then PREF_SELECTOR="rofi -dmenu -l 20 -width 40 -i -p ";else PREF_SELECTOR="fzf --preview-window=0 --color='gutter:-1' --reverse --tiebreak=begin --border=rounded +i +m --info=hidden --header-first --prompt=";fi;
+	PREF_BROWSER="$(echo -e "brave\nchrome\nchromium\nedge\nfirefox\nopera\nvivaldi"|eval "$PREF_SELECTOR""\"SET UP: 🌍 Select browser to login YouTube with \"")";
+	if [[ "$PREF_BROWSER" == "" ]];
+	then empty_query;
+	else
+	 if [[ $PREF_BROWSER == "brave" ]];then BROWSER=brave-browser-stable;else BROWSER=$PREF_BROWSER;
+	 fi;
+	LIST_LENGTH="$(echo -e "10\n20\n30\n40\n50\n60\n70\n80"|eval "$PREF_SELECTOR""\"SET UP: 📋 Select video list length \"")";
+	if [[ "$LIST_LENGTH" == "" ]];
+	then empty_query;
+	else	DIALOG_DELAY="$(echo -e "0\n1\n2\n3\n4\n5\n6"|eval "$PREF_SELECTOR""\"SET UP: 🕓 Select dialog message duration(sec) \"")";
+		if [[ "$DIALOG_DELAY" == "" ]];
+		then empty_query;
+		else NOTIF_DELAY="$(echo -e "0\n1\n2\n3\n4\n5\n6"|eval "$PREF_SELECTOR""\"SET UP: 🕓 Select notification message duration(sec) \"")";
+			if [[ "$NOTIF_DELAY" == "" ]];
 			then empty_query;
-			else NOTIF_DELAY="$(echo -e "0\n1\n2\n3\n4\n5\n6"|rofi -dmenu -i -p "SET UP: 🕓 Select notification message duration(sec)" -l 20 -width 40)";
-				if [[ "$NOTIF_DELAY" == "" ]];
-				then empty_query;
-				else NOTIF_DELAY=$(($NOTIF_DELAY * 1000));
-				IMAGE_SUPPORT="$(echo -e "kitty\nuberzug\nchafa\nnone"|rofi -dmenu -i -p "SET UP: 📷 Select image support" -l 20 -width 40)";
+			else NOTIF_DELAY=$(($NOTIF_DELAY * 1000));
+				IMAGE_SUPPORT="$(echo -e "kitty\nuberzug\nchafa\nnone"|eval "$PREF_SELECTOR""\"SET UP: 📷 Select image support \"")";
 				if [[ "$IMAGE_SUPPORT" == "" ]];
-					then empty_query;
-					else COLOR="$(echo -e "Yes\nNo"|rofi -dmenu -i -p "SET UP: 🕓 Do  you prefer multi-colored terminal output?" -l 20 -width 40)";
+				then empty_query;
+				else COLOR="$(echo -e "Yes\nNo"|eval "$PREF_SELECTOR""\"SET UP: 🕓 Do  you prefer multi-colored terminal output? \"")";
 					if [[ "$COLOR" == "" ]];
 					then empty_query;
-					else echo -e "Prefered_browser: $PREF_BROWSER\nBrowser: $BROWSER\nList_Length: $LIST_LENGTH\nTerminal_message_duration: $DIALOG_DELAY\nNotification_duration: $NOTIF_DELAY\nImage_support: $IMAGE_SUPPORT\nColored_messages: $COLOR">$HOME/.config/magic-tape/config.txt;
+					else echo -e "Prefered_selector:$PREF_SELECTOR\nPrefered_browser: $PREF_BROWSER\nBrowser: $BROWSER\nList_Length: $LIST_LENGTH\nTerminal_message_duration: $DIALOG_DELAY\nNotification_duration: $NOTIF_DELAY\nImage_support: $IMAGE_SUPPORT\nColored_messages: $COLOR">$HOME/.config/magic-tape/config.txt;
 						notify-send -t 5000 "SET UP: 😀 Your preferences are now stored!";
 						echo -e "${Yellow}${bold}SET UP: 😀 Your preferences are now stored!${normal}";	sleep 2;
 					fi;
@@ -172,13 +179,14 @@ function setup ()
 			fi;
 		fi;
 	fi;
+fi;
 	color_set;
 	clear;
 }
 
 function like_video ()
 {
-	LIKE="$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❤️ Select video to like" -l 20 -width 40)";
+	LIKE="$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"❤️ Select video to like \"")";
 	if [[ -z "$LIKE" ]];
 		then empty_query;
 	else echo -e "❤️ Add\n${Yellow}${bold}"$LIKE"${normal}\nto Liked Videos?(Y/y))";
@@ -266,6 +274,7 @@ function misc_menu ()
 	do	echo "0">$HOME/.cache/magic-tape/search/video/preview_pic.txt;
 	db2="$(echo -e "       ${Yellow}${bold}┏┳┓╻┏━┓┏━╸   ┏┳┓┏━╸┏┓╻╻ ╻${normal}\n       ${Yellow}${bold}┃┃┃┃┗━┓┃     ┃┃┃┣╸ ┃┗┫┃ ┃${normal}\n       ${Yellow}${bold}╹ ╹╹┗━┛┗━╸   ╹ ╹┗━╸╹ ╹┗━┛${normal}\n${Yellow}${bold}P ${Cyan}to SET UP PREFERENCES!${normal}\n${Yellow}${bold}l ${Red}to LIKE a video.${normal}\n${Yellow}${bold}L ${Red}to UNLIKE a video.${normal}\n${Yellow}${bold}I ${Green}to import subscriptions from YouTube.${normal}\n${Yellow}${bold}n ${Green}to subscribe to a new channel.${normal}\n${Yellow}${bold}u ${Green}to unsubscribe from a channel.${normal}\n${Yellow}${bold}H ${Magenta}to clear ${Yellow}watch${Magenta} history.${normal}\n${Yellow}${bold}S ${Magenta}to clear ${Yellow}search${Magenta} history.${normal}\n${Yellow}${bold}T ${Magenta}to clear ${Yellow}thumbnail${Magenta} cache.${normal}\n${Yellow}${bold}q${normal} ${Cyan}to quit this menu.${normal}"|fzf \
 --preview-window=0 \
+--disabled \
 --reverse \
 --ansi \
 --tiebreak=begin \
@@ -284,12 +293,12 @@ function misc_menu ()
 if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/.cache/magic-tape/png/misc2.png;fi;echo "1">$HOME/.cache/magic-tape/search/video/preview_pic.txt; fi')";
 	db2="$(echo $db2|awk '{print $1}')";
 		case $db2 in
-  	P) setup;
+  	"P") setup;
   	;;
-			I) clear;
+			"I") clear;
 						import_subscriptions;
 			;;
-			n) clear;
+			"n") clear;
 						clear_image;
 						draw_preview 0 0 6 6 $HOME/.cache/magic-tape/png/search.png;
 						echo -e "\tEnter keyword/keyphrase\n\tfor a channel\n\tto search for: \n";
@@ -300,7 +309,7 @@ if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/.cache/ma
 						else new_subscription;
 						fi;
 					;;
-					u) clear;U="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|rofi -dmenu -i -p "❌ Unsubscribe from channel" -l 20 -width 40)";
+					"u") clear;U="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"❌ Unsubscribe from channel \"")";
 								if [[ -z "$U" ]];	then empty_query;
 	 						else	echo "$U";
 	 						echo -e "${Red}${bold}Unsubscribe from this channel:\n"${Yellow}$U"${normal}\nProceed?(Y/y))";
@@ -316,31 +325,31 @@ if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/.cache/ma
 									fi;
 								fi;uc="";uc2="";
 			;;
-			H) clear;echo -e "${Green}Clear ${Yellow}${bold}watch history?${normal}(Y/y))";
+			"H") clear;echo -e "${Green}Clear ${Yellow}${bold}watch history?${normal}(Y/y))";
 					 read -N 1 cwh;echo -e "\n";
 						if [[ $cwh == Y ]] || [[ $cwh == y ]];
 						then cat /dev/null >	$HOME/.cache/magic-tape/history/watch_history.txt;
 							notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Watch history cleared.";
 						fi;cwh="";
 			;;
-			S) clear;echo -e "${Green}Clear ${Yellow}${bold}search history?${normal}(Y/y))";
+			"S") clear;echo -e "${Green}Clear ${Yellow}${bold}search history?${normal}(Y/y))";
 					 read -N 1 csh;echo -e "\n";
 						if [[ $csh == Y ]] || [[ $csh == y ]];
 						then cat /dev/null >	$HOME/.cache/magic-tape/history/search_history.txt;
 						notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Search history cleared.";
 						fi;csh="";
 			;;
-			T) clear;echo -e "${Green}Clear ${Yellow}${bold}thumbnail cache?${normal}(Y/y))";
+			"T") clear;echo -e "${Green}Clear ${Yellow}${bold}thumbnail cache?${normal}(Y/y))";
 						 read -N 1 ctc;echo -e "\n";
 							if [[ $ctc == Y ]] || [[ $ctc == y ]];
 							then mv	$HOME/.cache/magic-tape/jpg/* $HOME/.local/share/Trash/files/
 							notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Thumbnail cache cleared.";
 							fi;ctc="";
 			;;
-			l) clear;like_video;
+			"l") clear;like_video;
 						clear;
 			;;
-			L) clear;UNLIKE="$(tac $HOME/.cache/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❌ Select video to unlike" -l 20 -width 40)";
+			"L") clear;UNLIKE="$(tac $HOME/.cache/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"❌ Select video to unlike \"")";
 						if [[ -z "$UNLIKE" ]];	then empty_query;
 						else	echo -e "${Red}${bold}Unlike video\n${Yellow}"$UNLIKE"?${normal}\n(Y/y))";
 						 read -N 1 uv;echo -e "\n";
@@ -352,7 +361,7 @@ if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/.cache/ma
 							fi;
 						fi;uv="";
 			;;
-			q) clear;
+			"q") clear;
 			;;
 			*)clear_image;echo -e "\n😕${Yellow}${bold}$db2${normal} ${Green}is an invalid key, please try again.${normal}\n"; sleep $DIALOG_DELAY;clear;
 			;;
@@ -413,8 +422,8 @@ function get_feed_json ()
 	echo -e "${Green}Downloading${Yellow}${bold} $FEED...${normal}";
 	echo -e "$db\n$ITEM\n$ITEM0\n$FEED\n$fzf_header">$HOME/.cache/magic-tape/history/last_action.txt;
 	#if statement added to fix json problem. If the problrm re-appears, uncomment the if statement, and comment  following line
-	#if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH * 2 ));else LIST_LENGTH="$(head -3 $HOME/.config/magic-tape/config.txt|tail +3|awk '{print $2}')";fi;
-	LIST_LENGTH="$(head -3 $HOME/.config/magic-tape/config.txt|tail +3|awk '{print $2}')";
+	#if [ $db == "f" ]||[ $db == "t" ];then LIST_LENGTH=$(($LIST_LENGTH * 2 ));else LIST_LENGTH="$(grep 'List_Length' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";fi;
+	LIST_LENGTH="$(grep 'List_Length' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
 	yt-dlp --cookies-from-browser $PREF_BROWSER --flat-playlist --extractor-args youtubetab:approximate_date --playlist-start $ITEM0 --playlist-end $(($ITEM0 + $(($LIST_LENGTH - 1)))) -j "https://www.youtube.com$FEED">$HOME/.cache/magic-tape/json/video_search.json;
 	echo -e "${Green}Completed${Yellow}${bold} $FEED.${normal}";
 	#correct back LIST_LENGTH value(fix json problem);
@@ -600,7 +609,7 @@ function select_action ()
 {
 	clear;
 	clear_image;
-	ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name" 📺\nSubscribe to channel "$channel_name" 📋\nOpen in browser 🌐\nCopy link 🔗\nQuit ❌"|rofi -dmenu -i -p "🔎 What do you want to do?" -l 12 -width 22 -selected-row 0)";
+	ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name" 📺\nSubscribe to channel "$channel_name" 📋\nOpen in browser 🌐\nCopy link 🔗\nQuit ❌"|eval "$PREF_SELECTOR""\"Select action: \"")";
 	case $ACTION in
 		"Play ⭐Video 360p") message_audio_video;print_mpv_video_shortcuts;mpv --ytdl-raw-options=format=18 "$play_now";play_now="";TITLE="";
 		;;
@@ -673,16 +682,17 @@ bold=`tput bold`
 normal=`tput sgr0`
 export IMAGE_SUPPORT UEBERZUG_FIFO Green GreenInvert Yellow Red Magenta Cyan bold normal
 db=""
-if [[ ! -e $HOME/.config/magic-tape/config.txt ]]||[ $(cat $HOME/.config/magic-tape/config.txt|wc -l) -lt 7 ];
+if [[ ! -e $HOME/.config/magic-tape/config.txt ]]||[ $(cat $HOME/.config/magic-tape/config.txt|wc -l) -lt 8 ];
 then setup;
 fi;
-PREF_BROWSER="$(head -1 $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
-BROWSER="$(head -2 $HOME/.config/magic-tape/config.txt|tail +2|awk '{print $2}')";
-LIST_LENGTH="$(head -3 $HOME/.config/magic-tape/config.txt|tail +3|awk '{print $2}')";
-DIALOG_DELAY="$(head -4 $HOME/.config/magic-tape/config.txt|tail +4|awk '{print $2}')";
-NOTIF_DELAY="$(head -5 $HOME/.config/magic-tape/config.txt|tail +5|awk '{print $2}')";
-IMAGE_SUPPORT="$(head -6 $HOME/.config/magic-tape/config.txt|tail +6|awk '{print $2}')";
-COLOR="$(head -7 $HOME/.config/magic-tape/config.txt|tail +7|awk '{print $2}')";
+PREF_SELECTOR="$(grep 'Prefered_selector' $HOME/.config/magic-tape/config.txt|sed 's/Prefered_selector://')";
+PREF_BROWSER="$(grep 'Prefered_browser' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
+BROWSER="$(grep 'Browser' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
+LIST_LENGTH="$(grep 'List_Length' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
+DIALOG_DELAY="$(grep 'Terminal_message_duration' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
+NOTIF_DELAY="$(grep 'Notification_duration' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
+IMAGE_SUPPORT="$(grep 'Image_support' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
+COLOR="$(grep 'Colored_messages' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
 color_set;
 while [ "$db" != "q" ]
 do
@@ -690,6 +700,7 @@ do
 	clear_image;
 db="$(echo -e "       ${Yellow}${bold}┏┳┓┏━┓┏━╸╻┏━╸   ╺┳╸┏━┓┏━┓┏━╸${normal}\n       ${Yellow}${bold}┃┃┃┣━┫┃╺┓┃┃  ╺━╸ ┃ ┣━┫┣━┛┣╸ ${normal}\n       ${Yellow}${bold}╹ ╹╹ ╹┗━┛╹┗━╸    ╹ ╹ ╹╹  ┗━╸${normal} \n ${Yellow}${bold}f ${normal}${Red}to browse Subscriptions Feed.${normal}          \n ${Yellow}${bold}t ${Red}to browse Trending Feed.${normal}               \n ${Yellow}${bold}s${normal} ${Green}to Search for a key word/phrase.${normal}       \n ${Yellow}${bold}r ${Green}to Repeat previous action.${normal}             \n ${Yellow}${bold}c ${Green}to select a Channel Feed.${normal}              \n ${Yellow}${bold}l ${Magenta}to browse your Liked Videos.${normal}           \n ${Yellow}${bold}h ${Magenta}to browse your Watch History${normal}.          \n ${Yellow}${bold}j ${Magenta}to browse your Search History.${normal}         \n ${Yellow}${bold}m ${Cyan}for Miscellaneous Menu.${normal}                \n ${Yellow}${bold}q ${Cyan}to Quit${normal}."|fzf \
 --preview-window=0 \
+--disabled \
 --color='gutter:-1' \
 --reverse \
 --ansi \
@@ -711,7 +722,7 @@ db="$(echo -e "       ${Yellow}${bold}┏┳┓┏━┓┏━╸╻┏━╸   
 )"
 db="$(echo $db|awk '{print $1}')"
  case $db in
-  f) clear;clear_image;
+  "f") clear;clear_image;
    		big_loop=1;
    		ITEM=1;
    		ITEM0=1;
@@ -730,7 +741,7 @@ db="$(echo $db|awk '{print $1}')"
 					done;
  	 		clear;
   ;;
-  t) clear;clear_image;
+  "t") clear;clear_image;
    		big_loop=1;
    		ITEM=1;
    		ITEM0=1;
@@ -749,7 +760,7 @@ db="$(echo $db|awk '{print $1}')"
 					done;
  	 		clear;
   ;;
-  s) clear;
+  "s") clear;
   			clear_image;
   			draw_preview 0 0 6 6 $HOME/.cache/magic-tape/png/search.png;
   			echo -e "\tEnter keyword/keyphrase\n\tto search for: \n";
@@ -778,7 +789,7 @@ db="$(echo $db|awk '{print $1}')"
  	 		fi;
  	 		clear;
   ;;
-  r) clear;
+  "r") clear;
 				 clear_image;
 				 db="$(head -1 $HOME/.cache/magic-tape/history/last_action.txt)";
 				 ITEM="$(head -2 $HOME/.cache/magic-tape/history/last_action.txt|tail +2)";
@@ -801,8 +812,8 @@ db="$(echo $db|awk '{print $1}')"
 					done;
 				 clear;
   ;;
-  c) clear;clear_image;
-  			channel_name="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select channel" -l 20 -width 40)";
+  "c") clear;clear_image;
+  			channel_name="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"🔎 Select channel \"")";
   			echo -e "${Green}Selected channel:${Yellow}${bold} $channel_name"${normal};
   			if [[ -z "$channel_name" ]];
    		then empty_query;
@@ -810,8 +821,8 @@ db="$(echo $db|awk '{print $1}')"
 					channel_feed;
 					fi;
   ;;
-  h) clear;clear_image;
-  			TITLE="$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "🔎 Select previous video" -l 20 -width 40)";
+  "h") clear;clear_image;
+  			TITLE="$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"🔎 Select previous video \"")";
   			if [[ "$TITLE" == "" ]];
    			then empty_query;
   			else 	TITLE=${TITLE//\*/\\*};
@@ -823,8 +834,8 @@ db="$(echo $db|awk '{print $1}')"
   			fi;
   			clear;
   ;;
-  j) clear;clear_image;
-  		 P="$(tac $HOME/.cache/magic-tape/history/search_history.txt|sed 's/+/ /g'|rofi -dmenu -i -p "🔎 Select key word/phrase" -l 20 -width 40)";
+  "j") clear;clear_image;
+  		 P="$(tac $HOME/.cache/magic-tape/history/search_history.txt|sed 's/+/ /g'|eval "$PREF_SELECTOR""\"🔎 Select key word/phrase \"")";
   			if [[ -z "$P" ]];
    		then empty_query;
   			else P=${P// /+};
@@ -847,8 +858,8 @@ db="$(echo $db|awk '{print $1}')"
   				fi;
  	 		clear;
   ;;
-  l) clear;clear_image;
-  			TITLE="$(tac $HOME/.cache/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|rofi -dmenu -i -p "❤️ Select liked video" -l 20 -width 40)";
+  "l") clear;clear_image;
+  			TITLE="$(tac $HOME/.cache/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"❤️ Select liked video \"")";
   			if [[ -z "$TITLE" ]];
    		then empty_query;
   			else TITLE=${TITLE//\*/\\*};
@@ -860,9 +871,9 @@ db="$(echo $db|awk '{print $1}')"
   			fi;
   			clear;
   ;;
-  m) clear;clear_image;misc_menu;
+  "m") clear;clear_image;misc_menu;
   ;;
-  q) clear;clear_image;notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Exited magic-tape";
+  "q") clear;clear_image;notify-send -t $NOTIF_DELAY -i $HOME/.cache/magic-tape/png/logo1.png "Exited magic-tape";
   ;;
   *)clear;clear_image;echo -e "\n${Yellow}${bold}$db${normal} is an invalid key, please try again.\n";sleep $DIALOG_DELAY;
   ;;

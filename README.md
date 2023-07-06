@@ -83,7 +83,7 @@ To install these dependencies, run the following command:
     $ cd magic-tape/
 
 
-To run the script, it has to be made executable, and then copied to `$PATH`:
+To run the script from any directory, it has to be made executable, and then copied to `$PATH`,:
 
     $ cd magic-tape
 
@@ -100,16 +100,7 @@ Copy `png/` directory to `~/.cache/magic-tape/`
 
     $ cp -r png/ ~/.cache/magic-tape/png/
 
----
 
-**<u>UPDATE</u>**: The directory structure of the program has been updated. Instead of keeping everything in `~git/magic-tape/`, now various files and directories are kept in various places.
-
-This way,
-* the `magic-tape.sh` is in `~/.local/bin/`
-* the magic-tape cache files are all in `~/.cache/magic-tape/`
-* the configuration text file will be created in `~/.config/magic-tape/`
-
----
 
 Now, run with `kitty`:
 
@@ -126,6 +117,7 @@ or any other terminal emulator:
 ### Set up
 
 While using the script for the first time, the user will be asked for his preferences:
+* __Prefered action Selector__, can either be `rofi` or `fzf`.
 * __Prefered web browser__, the cookies of which will be used by magic-tape in order to extract data from YouTube.
 Supported browsers by yt-dlp are brave, chrome, chromium, edge, firefox, opera, vivaldi.
 * __Prefered video list length__ to get in each request. Longer video lists may be more preferable, but take longer to get.
@@ -247,3 +239,15 @@ Channel selection then is made with __fzf__:
 ![image 11](screenshots/misc_L.png)
 
 ![image 12](screenshots/misc_u.png)
+
+---
+
+**<u>UPDATES</u>**:
+
+1. The directory structure of the program has been updated. Instead of keeping everything in `~git/magic-tape/`, now various files and directories are kept in various places.This way,
+  * the `magic-tape.sh` is in `~/.local/bin/`
+  * the magic-tape cache files are all in `~/.cache/magic-tape/`
+  * the configuration text file will be created in `~/.config/magic-tape/`
+2. The action selection can be either with `rofi`, or `fzf` (if the user wants to go full TUI).This can be configured during the **P option** of the **misc menu**.
+
+---
