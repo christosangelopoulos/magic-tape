@@ -147,7 +147,7 @@ function setup ()
 	clear;clear_image;
 PREF_SELECTOR="$(echo -e "rofi\nfzf\ndmenu"|fzf --preview-window=0 --color='gutter:-1' --reverse --tiebreak=begin --border=rounded +i +m --info=hidden --header-first --prompt="SET UP: 🌍 Select program to select actions ")";
 if [[ "$PREF_SELECTOR" == "" ]];then empty_query;
-else if [[ $PREF_SELECTOR == "rofi" ]];then PREF_SELECTOR="rofi -dmenu -l 20 -width 40 -i -p ";elif [[ $PREF_SELECTOR == "fzf" ]];then PREF_SELECTOR="fzf --preview-window=0 --color='gutter:-1' --reverse --tiebreak=begin --border=rounded +i +m --info=hidden --header-first --prompt=";else PREF_SELECTOR="dmenu -l 20 -i -p ";fi;
+else if [[ $PREF_SELECTOR == "rofi" ]];then PREF_SELECTOR="rofi -dmenu -l 20 -width 40 -i -p ";elif [[ $PREF_SELECTOR == "fzf" ]];then PREF_SELECTOR="fzf --preview-window=0 --color='gutter:-1' --reverse --tiebreak=begin --border=rounded +m --info=hidden --header-first --prompt=";else PREF_SELECTOR="dmenu -l 20 -i -p ";fi;
 	PREF_BROWSER="$(echo -e "brave\nchrome\nchromium\nedge\nfirefox\nopera\nvivaldi"|eval "$PREF_SELECTOR""\"SET UP: 🌍 Select browser to login YouTube with \"")";
 	if [[ "$PREF_BROWSER" == "" ]];
 	then empty_query;
