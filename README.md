@@ -47,6 +47,7 @@ Other dependencies include:
 * [jq](https://stedolan.github.io/jq/)
 * [xclip](https://github.com/astrand/xclip)
 * [dmenu](http://tools.suckless.org/dmenu/)
+* [imagemagick](https://imagemagick.org/index.php)
 
 Regarding image support, it can either be achived with
 
@@ -105,7 +106,9 @@ To run the script from any directory, it has to be made executable, and then cop
 After that, the user must run this command in order to create the necessary directories:
 
 
-	$ mkdir -p ~/.cache/magic-tape/history/ ~/.cache/magic-tape/jpg/ ~/.cache/magic-tape/json/ ~/.cache/magic-tape/search/video/ ~/.cache/magic-tape/search/channels/ ~/.cache/magic-tape/subscriptions/jpg/ ~/.config/magic-tape/
+	$ mkdir -p ~/.cache/magic-tape/history/ ~/.cache/magic-tape/jpg/ ~/.cache/magic-tape/json/ ~/.cache/magic-tape/search/video/
+
+    $ mkdir ~/.cache/magic-tape/search/channels/ ~/.cache/magic-tape/subscriptions/jpg/ ~/.config/magic-tape/
 
 Copy `png/` directory to `~/.cache/magic-tape/`
 
