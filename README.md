@@ -36,8 +36,9 @@ Instructions on installing yt-dlp can be found here:
 
 Easily install yt-dlp using pip:
 
-    $ pip install yt-dlp
-
+```
+pip install yt-dlp
+```
 
 Other dependencies include:
 * [cURL](https://curl.se/)
@@ -54,7 +55,9 @@ Regarding image support, it can either be achived with
 * [kitty terminal](https://sw.kovidgoyal.net/kitty/)
 
 
-    $ sudo apt install kitty
+```
+sudo apt install kitty
+```
 
 
 
@@ -69,62 +72,76 @@ or with
 * [chafa](https://github.com/hpjansson/chafa)
 
 
-    $ sudo apt install chafa
-
+```
+sudo apt install chafa
+```
 
 
 To install these dependencies, run the following command:
 
-     $ sudo apt install curl fzf mpv jq xclip
+```
+sudo apt install curl fzf mpv jq xclip
+```
 
 To install `rofi`:
 
-     $ sudo apt install rofi
+```
+sudo apt install rofi
+```
 
 To install `dmenu`:
 
-    $ sudo apt install dmenu
-
+```
+sudo apt install dmenu
+```
 
 
 ## Install
 
+```
+git clone https://gitlab.com/christosangel/magic-tape.git
 
-    $ git clone https://gitlab.com/christosangel/magic-tape.git
+cd magic-tape/
 
-    $ cd magic-tape/
-
+```
 
 To run the script from any directory, it has to be made executable, and then copied to `$PATH`,:
 
-    $ cd magic-tape
+```
 
-    $ chmod +x magic-tape.sh
+chmod +x magic-tape.sh
 
-    $ cp magic-tape.sh ~/.local/bin/
+cp magic-tape.sh ~/.local/bin/
+
+```
 
 After that, the user must run this command in order to create the necessary directories:
 
+```
+mkdir -p ~/.cache/magic-tape/history/ ~/.cache/magic-tape/jpg/ ~/.cache/magic-tape/json/ ~/.cache/magic-tape/search/video/
 
-	$ mkdir -p ~/.cache/magic-tape/history/ ~/.cache/magic-tape/jpg/ ~/.cache/magic-tape/json/ ~/.cache/magic-tape/search/video/
+mkdir -p ~/.cache/magic-tape/search/channels/ ~/.cache/magic-tape/subscriptions/jpg/ ~/.config/magic-tape/
+```
 
-    $ mkdir ~/.cache/magic-tape/search/channels/ ~/.cache/magic-tape/subscriptions/jpg/ ~/.config/magic-tape/
 
 Copy `png/` directory to `~/.cache/magic-tape/`
 
-    $ cp -r png/ ~/.cache/magic-tape/png/
-
+```
+cp -r png/ ~/.cache/magic-tape/png/
+```
 
 
 Now, run with `kitty`:
 
-    $ kitty -T magic-tape magic-tape.sh
-
+```
+kitty -T magic-tape magic-tape.sh
+```
 
 or any other terminal emulator:
 
-    $ magic-tape.sh
-
+```
+magic-tape.sh
+```
 
 ## Usage
 
