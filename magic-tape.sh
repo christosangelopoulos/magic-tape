@@ -251,7 +251,7 @@ function print_mpv_video_shortcuts()
 	echo -e " ${Green}${bold}   5   6   │ -/+ Gamma      ${normal}";
 	echo -e " ${GreenInvert}${bold}   7   8   │ -/+ Saturation ${normal}";
 	echo -e " ${Green}${bold}   ,   .   │ -/+ Frame      ${normal}";
-	echo -e " ${GreenInvert}${bold}     q     │ Quit           ${normal}";
+	echo -e " ${GreenInvert}${bold}   q / Q   │ Quit/+position ${normal}";
 
 }
 
