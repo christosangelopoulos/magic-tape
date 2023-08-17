@@ -598,7 +598,7 @@ function download_audio ()
 function message_audio_video ()
 {
 	echo -e "${Green}${bold}Playing:${Yellow} $play_now\n${Green}Title  :${Yellow} $TITLE\n${Green}Channel:${Yellow} $channel_name${normal}";
-	if [[ -n "$play_now" ]] && [[ -n "$TITLE" ]] && [[ -z "$(grep "$play_now" $HOME/.cache/magic-tape/history/watch_history.txt)" ]];
+	if [[ -n "$play_now" ]] && [[ -n "$TITLE" ]] && [[ -z "$(tail -1 $HOME/.cache/magic-tape/history/watch_history.txt|grep "$play_now" )" ]];
 	then	echo "$channel_id"" ""$channel_name"" ""$play_now"" ""$TITLE">>$HOME/.cache/magic-tape/history/watch_history.txt;
 	#echo "{\"url\": \"$play_now\", \"title\": \"$TITLE\", \"channel\": \"$channel_name\", \"channel_id\": \"$channel_id\"}">>$HOME/.cache/magic-tape/history/watch_history.json;
 	fi;
