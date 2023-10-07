@@ -434,16 +434,17 @@ function get_data ()
 {
 	#fix json problem first seen Apr 12 2023, where each item in the json file takes two lines, not one. While and until this stands, this one-liner corrects the issue. Also LIST_LENGTH=$(($LIST_LENGTH * 2 )) in get_feed_json function, exactly because of this issue
 	#if [ $db == "f" ]||[ $db == "t" ];then even=2;while [ $even -le $(cat $HOME/.cache/magic-tape/json/video_search.json|wc -l) ];do echo "$(head -$even $HOME/.cache/magic-tape/json/video_search.json|tail +$even)">>$HOME/.cache/magic-tape/json/video_search_temp.json;even=$(($even +2));done;mv $HOME/.cache/magic-tape/json/video_search_temp.json $HOME/.cache/magic-tape/json/video_search.json;fi;
-	jq '.id' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/“/g;s/"//g;s/“/"/g;s/”/"/g'cache/magic-tape/search/video/ids.txt;
-	jq '.title' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/“/g;s/"//g;s/“/"/g;s/”/"/g'>$HOME/.cache/magic-tape/search/video/titles.txt;
-	jq '.duration_string' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/“/g;s/"//g;s/“/"/g;s/”/"/g'>$HOME/.cache/magic-tape/search/video/lengths.txt;
-	jq '.url' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/“/g;s/"//g;s/“/"/g;s/”/"/g'>$HOME/.cache/magic-tape/search/video/urls.txt;
+
+	jq '.id' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/⁆/g;s/"//g;s/⁆/"/g'>$HOME/.cache/magic-tape/search/video/ids.txt;
+	jq '.title' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/⁆/g;s/"//g;s/⁆/"/g'>$HOME/.cache/magic-tape/search/video/titles.txt;
+	jq '.duration_string' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/⁆/g;s/"//g;s/⁆/"/g'>$HOME/.cache/magic-tape/search/video/lengths.txt;
+	jq '.url' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/⁆/g;s/"//g;s/⁆/"/g'>$HOME/.cache/magic-tape/search/video/urls.txt;
 	jq '.timestamp' $HOME/.cache/magic-tape/json/video_search.json>$HOME/.cache/magic-tape/search/video/timestamps.txt;
 	jq '.description' $HOME/.cache/magic-tape/json/video_search.json>$HOME/.cache/magic-tape/search/video/descriptions.txt;
-	jq '.view_count' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/“/g;s/"//g;s/“/"/g;s/”/"/g'>$HOME/.cache/magic-tape/search/video/views.txt;
-	jq '.channel_id' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/“/g;s/"//g;s/“/"/g;s/”/"/g'>$HOME/.cache/magic-tape/search/video/channel_ids.txt;
-	jq '.channel' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/“/g;s/"//g;s/“/"/g;s/”/"/g'>$HOME/.cache/magic-tape/search/video/channel_names.txt;
-	jq '.thumbnails[0].url' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/“/g;s/"//g;s/“/"/g;s/”/"/g'|sed 's/\.jpg.*$/\.jpg/g'>$HOME/.cache/magic-tape/search/video/image_urls.txt;
+	jq '.view_count' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/⁆/g;s/"//g;s/⁆/"/g'>$HOME/.cache/magic-tape/search/video/views.txt;
+	jq '.channel_id' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/⁆/g;s/"//g;s/⁆/"/g'>$HOME/.cache/magic-tape/search/video/channel_ids.txt;
+	jq '.channel' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/⁆/g;s/"//g;s/⁆/"/g'>$HOME/.cache/magic-tape/search/video/channel_names.txt;
+	jq '.thumbnails[0].url' $HOME/.cache/magic-tape/json/video_search.json|sed 's/\\"/⁆/g;s/"//g;s/⁆/"/g'|sed 's/\.jpg.*$/\.jpg/g'>$HOME/.cache/magic-tape/search/video/image_urls.txt;
 	jq '.live_status' $HOME/.cache/magic-tape/json/video_search.json>$HOME/.cache/magic-tape/search/video/live_status.txt;
 	epoch="$(jq '.epoch' $HOME/.cache/magic-tape/json/video_search.json|head -1)";
 	Y_epoch="$(date --date=@$epoch +%Y|sed 's/^0*//')";
