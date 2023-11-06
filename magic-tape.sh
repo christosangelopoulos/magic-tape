@@ -170,7 +170,7 @@ else if [[ $PREF_SELECTOR == "rofi" ]];then PREF_SELECTOR="rofi -dmenu -l 20 -wi
 				else COLOR="$(echo -e "Yes\nNo"|eval "$PREF_SELECTOR""\"SET UP: 🕓 Do  you prefer multi-colored terminal output? \"")";
 					if [[ "$COLOR" == "" ]];
 					then empty_query;
-					else echo -e "Prefered_selector:$PREF_SELECTOR\nPrefered_browser: $PREF_BROWSER\nBrowser: $BROWSER\nList_Length: $LIST_LENGTH\nTerminal_message_duration: $DIALOG_DELAY\nNotification_duration: $NOTIF_DELAY\nImage_support: $IMAGE_SUPPORT\nColored_messages: $COLOR">$HOME/.config/magic-tape/config.txt;
+					else echo -e "Preferred_selector:$PREF_SELECTOR\nPreferred_browser: $PREF_BROWSER\nBrowser: $BROWSER\nList_Length: $LIST_LENGTH\nTerminal_message_duration: $DIALOG_DELAY\nNotification_duration: $NOTIF_DELAY\nImage_support: $IMAGE_SUPPORT\nColored_messages: $COLOR">$HOME/.config/magic-tape/config.txt;
 						notify-send -t 5000 "SET UP: 😀 Your preferences are now stored!";
 						echo -e "${Yellow}${bold}SET UP: 😀 Your preferences are now stored!${normal}";	sleep 2;
 					fi;
@@ -203,7 +203,7 @@ function like_video ()
 
 function import_subscriptions()
 {
-	echo -e "Your magic-tape subscriptions will be synced with your YouTube ones.Before initializing this function, make sure you are logged in in your YT account, and you have set up your prefered browser.\nProceed? (Y/y)"|fold -w 75 -s;
+	echo -e "Your magic-tape subscriptions will be synced with your YouTube ones.Before initializing this function, make sure you are logged in in your YT account, and you have set up your preferred browser.\nProceed? (Y/y)"|fold -w 75 -s;
 	read -N 1 impsub ;echo -e "\n";
 	if [[ $impsub == "Y" ]] || [[ $impsub == "y" ]];
 	then 	echo -e "${Green}Downloading subscriptions data...${normal}";
@@ -236,35 +236,60 @@ function import_subscriptions()
 
 function print_mpv_video_shortcuts()
 {
-	echo -e " ${Green}    ${Yellow}${bold}MPV VIDEO SHORTCUTS    ${normal}";
-	echo -e " ${GreenInvert}${bold}   SPACE   │ Pause/Play     ${normal}";
-	echo -e " ${Green}${bold}   9   0   │ -/+ Volume     ${normal}";
-	echo -e " ${GreenInvert}${bold}     m     │ Mute           ${normal}";
-	echo -e " ${Green}${bold}     f     │ Full Screen    ${normal}";
-	echo -e " ${GreenInvert}${bold}   ←   →   │ -/+  5 sec     ${normal}";
-	echo -e " ${Green}${bold}   ↑   ↓   │ -/+  1 min     ${normal}";
-	echo -e " ${GreenInvert}${bold}     j     │ Cycle subs     ${normal}";
-	echo -e " ${Green}${bold}   z   Z   │ Sub -/+100 ms  ${normal}";
-	echo -e " ${GreenInvert}${bold}   s   S   │ Screenshot     ${normal}";
-	echo -e " ${Green}${bold}   1   2   │ -/+ Contrast   ${normal}";
-	echo -e " ${GreenInvert}${bold}   3   4   │ -/+ Brightness ${normal}";
-	echo -e " ${Green}${bold}   5   6   │ -/+ Gamma      ${normal}";
-	echo -e " ${GreenInvert}${bold}   7   8   │ -/+ Saturation ${normal}";
-	echo -e " ${Green}${bold}   ,   .   │ -/+ Frame      ${normal}";
-	echo -e " ${GreenInvert}${bold}   q / Q   │ Quit/+position ${normal}";
-
+#	echo -e " ${Green}    ${Yellow}${bold}MPV VIDEO SHORTCUTS    ${normal}";
+#	echo -e " ${GreenInvert}${bold}   SPACE   │ Pause/Play     ${normal}";
+#	echo -e " ${Green}${bold}   9   0   │ -/+ Volume     ${normal}";
+#	echo -e " ${GreenInvert}${bold}     m     │ Mute           ${normal}";
+#	echo -e " ${Green}${bold}     f     │ Full Screen    ${normal}";
+#	echo -e " ${GreenInvert}${bold}   ←   →   │ -/+  5 sec     ${normal}";
+#	echo -e " ${Green}${bold}   ↑   ↓   │ -/+  1 min     ${normal}";
+#	echo -e " ${GreenInvert}${bold}     j     │ Cycle subs     ${normal}";
+#	echo -e " ${Green}${bold}   z   Z   │ Sub -/+100 ms  ${normal}";
+#	echo -e " ${GreenInvert}${bold}   s   S   │ Screenshot     ${normal}";
+#	echo -e " ${Green}${bold}   1   2   │ -/+ Contrast   ${normal}";
+#	echo -e " ${GreenInvert}${bold}   3   4   │ -/+ Brightness ${normal}";
+#	echo -e " ${Green}${bold}   5   6   │ -/+ Gamma      ${normal}";
+#	echo -e " ${GreenInvert}${bold}   7   8   │ -/+ Saturation ${normal}";
+#	echo -e " ${Green}${bold}   ,   .   │ -/+ Frame      ${normal}";
+#	echo -e " ${GreenInvert}${bold}   q / Q   │ Quit/+position ${normal}";
+	echo -e "  ${Black}╭─────┬──────────╮ ╭─────┬─────────────╮";
+	echo -e "  ${Black}│${Magenta}  ␣  ${Black}│${Cyan}    Pause ${Black}│ │${Magenta}  f  ${Black}│${Cyan}  Fullscreen ${Black}│";
+	echo -e "  ${Black}├─────┼──────────┤ ├─────┼─────────────┤";
+	echo -e "  ${Black}│${Magenta} 9 0 ${Black}│${Cyan}   ↑↓ Vol ${Black}│ │${Magenta}  s  ${Black}│${Cyan}  Screenshot ${Black}│";
+	echo -e "  ${Black}├─────┼──────────┤ ├─────┼─────────────┤";
+	echo -e "  ${Black}│${Magenta}  m  ${Black}│${Cyan}     Mute ${Black}│ │${Magenta} 1 2 ${Black}│${Cyan}    Contrast ${Black}│";
+	echo -e "  ${Black}├─────┼──────────┤ ├─────┼─────────────┤";
+	echo -e "  ${Black}│${Magenta} ← → ${Black}│${Cyan} Skip 10\"${Black} │ │${Magenta} 3 4 ${Black}│${Cyan}  Brightness${Black} │";
+	echo -e "  ${Black}├─────┼──────────┤ ├─────┼─────────────┤";
+	echo -e "  ${Black}│${Magenta} ↑ ↓ ${Black}│${Cyan} Skip 60\"${Black} │ │${Magenta} 7 8 ${Black}│${Cyan}  Saturation${Black} │";
+	echo -e "  ${Black}├─────┼──────────┤ ├─────┼─────────────┤";
+	echo -e "  ${Black}│${Magenta} , . ${Black}│${Cyan}    Frame ${Black}│ │${Magenta}  q  ${Black}│${Red}        Quit ${Black}│";
+	echo -e "  ${Black}╰─────┴──────────╯ ╰─────┴─────────────╯${Magenta}";
 }
 
 function print_mpv_audio_shortcuts()
 {
-	echo -e " ${Green}    ${Yellow}${bold}MPV AUDIO SHORTCUTS    ${normal}";
-	echo -e " ${GreenInvert}${bold}   SPACE   │ Pause/Play     ${normal}";
-	echo -e " ${Green}${bold}   9  0    │ -/+ Volume     ${normal}";
-	echo -e " ${GreenInvert}${bold}     m     │ Mute           ${normal}";
-	echo -e " ${Green}${bold}     f     │ Full Screen    ${normal}";
-	echo -e " ${GreenInvert}${bold}   ←   →   │ -/+  5 sec     ${normal}";
-	echo -e " ${Green}${bold}   ↑   ↓   │ -/+  1 min     ${normal}";
-	echo -e " ${GreenInvert}${bold}     q     │ Quit           ${normal}";
+#	echo -e " ${Green}    ${Yellow}${bold}MPV AUDIO SHORTCUTS    ${normal}";
+#	echo -e " ${GreenInvert}${bold}   SPACE   │ Pause/Play     ${normal}";
+#	echo -e " ${Green}${bold}   9  0    │ -/+ Volume     ${normal}";
+#	echo -e " ${GreenInvert}${bold}     m     │ Mute           ${normal}";
+#	echo -e " ${Green}${bold}     f     │ Full Screen    ${normal}";
+#	echo -e " ${GreenInvert}${bold}   ←   →   │ -/+  5 sec     ${normal}";
+#	echo -e " ${Green}${bold}   ↑   ↓   │ -/+  1 min     ${normal}";
+#	echo -e " ${GreenInvert}${bold}     q     │ Quit           ${normal}";
+	echo -e "  ${Black}╭─────┬──────────╮";
+	echo -e "  ${Black}│${Magenta}  ␣  ${Black}│${Cyan}    Pause ${Black}│";
+	echo -e "  ${Black}├─────┼──────────┤";
+	echo -e "  ${Black}│${Magenta} 9 0 ${Black}│${Cyan}   ↑↓ Vol ${Black}│";
+	echo -e "  ${Black}├─────┼──────────┤";
+	echo -e "  ${Black}│${Magenta}  m  ${Black}│${Cyan}     Mute ${Black}│";
+	echo -e "  ${Black}├─────┼──────────┤";
+	echo -e "  ${Black}│${Magenta} ← → ${Black}│${Cyan} Skip 10\"${Black} │";
+	echo -e "  ${Black}├─────┼──────────┤";
+	echo -e "  ${Black}│${Magenta} ↑ ↓ ${Black}│${Cyan} Skip 60\"${Black} │";
+	echo -e "  ${Black}├─────┼──────────┤";
+	echo -e "  ${Black}│${Magenta}  q  ${Black}│${Red}     Quit ${Black}│";
+	echo -e "  ${Black}╰─────┴──────────╯${Magenta}";
 }
 
 function misc_menu ()
@@ -679,6 +704,7 @@ Green="\033[1;32m"
 Red="\033[1;31m"
 Magenta="\033[1;35m"
 Cyan="\033[1;36m"
+Black="\x1b[38;5;60m"
 bold=`tput bold`
 normal=`tput sgr0`
 export IMAGE_SUPPORT UEBERZUG_FIFO Green GreenInvert Yellow Red Magenta Cyan bold normal
@@ -686,8 +712,8 @@ db=""
 if [[ ! -e $HOME/.config/magic-tape/config.txt ]]||[ $(cat $HOME/.config/magic-tape/config.txt|wc -l) -lt 8 ];
 then setup;
 fi;
-PREF_SELECTOR="$(grep 'Prefered_selector' $HOME/.config/magic-tape/config.txt|sed 's/Prefered_selector://')";
-PREF_BROWSER="$(grep 'Prefered_browser' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
+PREF_SELECTOR="$(grep 'Preferred_selector' $HOME/.config/magic-tape/config.txt|sed 's/Preferred_selector://')";
+PREF_BROWSER="$(grep 'Preferred_browser' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
 BROWSER="$(grep 'Browser' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
 LIST_LENGTH="$(grep 'List_Length' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
 DIALOG_DELAY="$(grep 'Terminal_message_duration' $HOME/.config/magic-tape/config.txt|awk '{print $2}')";
