@@ -148,26 +148,26 @@ function setup ()
 PREF_SELECTOR="$(echo -e "rofi\nfzf\ndmenu"|fzf --preview-window=0 --color='gutter:-1' --reverse --tiebreak=begin --border=rounded +i +m --info=hidden --header-first --prompt="SET UP: 🌍 Select program to select actions ")";
 if [[ "$PREF_SELECTOR" == "" ]];then empty_query;
 else if [[ $PREF_SELECTOR == "rofi" ]];then PREF_SELECTOR="rofi -dmenu -l 20 -width 40 -i -p ";elif [[ $PREF_SELECTOR == "fzf" ]];then PREF_SELECTOR="fzf --preview-window=0 --color='gutter:-1' --reverse --tiebreak=begin --border=rounded +m --info=hidden --header-first --prompt=";else PREF_SELECTOR="dmenu -l 20 -i -p ";fi;
-	PREF_BROWSER="$(echo -e "brave\nchrome\nchromium\nedge\nfirefox\nopera\nvivaldi"|eval "$PREF_SELECTOR""\"SET UP: 🌍 Select browser to login YouTube with \"")";
+	PREF_BROWSER="$(echo -e "brave\nchrome\nchromium\nedge\nfirefox\nopera\nvivaldi"|eval "$PREF_SELECTOR"" \"SET UP: 🌍 Select browser to login YouTube with \"")";
 	if [[ "$PREF_BROWSER" == "" ]];
 	then empty_query;
 	else
 	 if [[ $PREF_BROWSER == "brave" ]];then BROWSER=brave-browser-stable;else BROWSER=$PREF_BROWSER;
 	 fi;
-	LIST_LENGTH="$(echo -e "10\n20\n30\n40\n50\n60\n70\n80"|eval "$PREF_SELECTOR""\"SET UP: 📋 Select video list length \"")";
+	LIST_LENGTH="$(echo -e "10\n20\n30\n40\n50\n60\n70\n80"|eval "$PREF_SELECTOR"" \"SET UP: 📋 Select video list length \"")";
 	if [[ "$LIST_LENGTH" == "" ]];
 	then empty_query;
-	else	DIALOG_DELAY="$(echo -e "0\n1\n2\n3\n4\n5\n6"|eval "$PREF_SELECTOR""\"SET UP: 🕓 Select dialog message duration(sec) \"")";
+	else	DIALOG_DELAY="$(echo -e "0\n1\n2\n3\n4\n5\n6"|eval "$PREF_SELECTOR"" \"SET UP: 🕓 Select dialog message duration(sec) \"")";
 		if [[ "$DIALOG_DELAY" == "" ]];
 		then empty_query;
-		else NOTIF_DELAY="$(echo -e "0\n1\n2\n3\n4\n5\n6"|eval "$PREF_SELECTOR""\"SET UP: 🕓 Select notification message duration(sec) \"")";
+		else NOTIF_DELAY="$(echo -e "0\n1\n2\n3\n4\n5\n6"|eval "$PREF_SELECTOR"" \"SET UP: 🕓 Select notification message duration(sec) \"")";
 			if [[ "$NOTIF_DELAY" == "" ]];
 			then empty_query;
 			else NOTIF_DELAY=$(($NOTIF_DELAY * 1000));
-				IMAGE_SUPPORT="$(echo -e "kitty\nuberzug\nchafa\nnone"|eval "$PREF_SELECTOR""\"SET UP: 📷 Select image support \"")";
+				IMAGE_SUPPORT="$(echo -e "kitty\nuberzug\nchafa\nnone"|eval "$PREF_SELECTOR"" \"SET UP: 📷 Select image support \"")";
 				if [[ "$IMAGE_SUPPORT" == "" ]];
 				then empty_query;
-				else COLOR="$(echo -e "Yes\nNo"|eval "$PREF_SELECTOR""\"SET UP: 🕓 Do  you prefer multi-colored terminal output? \"")";
+				else COLOR="$(echo -e "Yes\nNo"|eval "$PREF_SELECTOR"" \"SET UP: 🕓 Do  you prefer multi-colored terminal output? \"")";
 					if [[ "$COLOR" == "" ]];
 					then empty_query;
 					else echo -e "Preferred_selector:$PREF_SELECTOR\nPreferred_browser: $PREF_BROWSER\nBrowser: $BROWSER\nList_Length: $LIST_LENGTH\nTerminal_message_duration: $DIALOG_DELAY\nNotification_duration: $NOTIF_DELAY\nImage_support: $IMAGE_SUPPORT\nColored_messages: $COLOR">$HOME/.config/magic-tape/config.txt;
@@ -186,7 +186,7 @@ fi;
 
 function like_video ()
 {
-	LIKE="$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"❤️ Select video to like \"")";
+	LIKE="$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR"" \"❤️ Select video to like \"")";
 	if [[ -z "$LIKE" ]];
 		then empty_query;
 	else echo -e "❤️ Add\n${Yellow}${bold}"$LIKE"${normal}\nto Liked Videos?(Y/y))";
@@ -334,7 +334,7 @@ if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/.cache/ma
 						else new_subscription;
 						fi;
 					;;
-					"u") clear;U="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"❌ Unsubscribe from channel \"")";
+					"u") clear;U="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|eval "$PREF_SELECTOR"" \"❌ Unsubscribe from channel \"")";
 								if [[ -z "$U" ]];	then empty_query;
 	 						else	echo "$U";
 	 						echo -e "${Red}${bold}Unsubscribe from this channel:\n"${Yellow}$U"${normal}\nProceed?(Y/y))";
@@ -374,7 +374,7 @@ if [[ "$IMAGE_SUPPORT" == "uberzug" ]];then draw_preview 1 1 8 8 $HOME/.cache/ma
 			"l") clear;like_video;
 						clear;
 			;;
-			"L") clear;UNLIKE="$(tac $HOME/.cache/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"❌ Select video to unlike \"")";
+			"L") clear;UNLIKE="$(tac $HOME/.cache/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR"" \"❌ Select video to unlike \"")";
 						if [[ -z "$UNLIKE" ]];	then empty_query;
 						else	echo -e "${Red}${bold}Unlike video\n${Yellow}"$UNLIKE"?${normal}\n(Y/y))";
 						 read -N 1 uv;echo -e "\n";
@@ -635,7 +635,7 @@ function select_action ()
 {
 	clear;
 	clear_image;
-	ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name" 📺\nSubscribe to channel "$channel_name" 📋\nOpen in browser 🌐\nCopy link 🔗\nQuit ❌"|eval "$PREF_SELECTOR""\"Select action: \"")";
+	ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name" 📺\nSubscribe to channel "$channel_name" 📋\nOpen in browser 🌐\nCopy link 🔗\nQuit ❌"|eval "$PREF_SELECTOR"" \"Select action \"")";
 	case $ACTION in
 		"Play ⭐Video 360p") message_audio_video;print_mpv_video_shortcuts;mpv --ytdl-raw-options=format=18 "$play_now";play_now="";TITLE="";
 		;;
@@ -840,7 +840,7 @@ db="$(echo $db|awk '{print $1}')"
 				 clear;
   ;;
   "c") clear;clear_image;
-  			channel_name="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"🔎 Select channel \"")";
+  			channel_name="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|eval "$PREF_SELECTOR"" \"🔎 Select channel \"")";
   			echo -e "${Green}Selected channel:${Yellow}${bold} $channel_name"${normal};
   			if [[ -z "$channel_name" ]];
    		then empty_query;
@@ -849,7 +849,7 @@ db="$(echo $db|awk '{print $1}')"
 					fi;
   ;;
   "h") clear;clear_image;
-  			TITLE="$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"🔎 Select previous video \"")";
+  			TITLE="$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR"" \"🔎 Select previous video \"")";
   			if [[ "$TITLE" == "" ]];
    			then empty_query;
   			else 	TITLE=${TITLE//\*/\\*};
@@ -862,7 +862,7 @@ db="$(echo $db|awk '{print $1}')"
   			clear;
   ;;
   "j") clear;clear_image;
-  		 P="$(tac $HOME/.cache/magic-tape/history/search_history.txt|sed 's/+/ /g'|eval "$PREF_SELECTOR""\"🔎 Select key word/phrase \"")";
+  		 P="$(tac $HOME/.cache/magic-tape/history/search_history.txt|sed 's/+/ /g'|eval "$PREF_SELECTOR"" \"🔎 Select key word/phrase \"")";
   			if [[ -z "$P" ]];
    		then empty_query;
   			else P=${P// /+};
@@ -886,7 +886,7 @@ db="$(echo $db|awk '{print $1}')"
  	 		clear;
   ;;
   "l") clear;clear_image;
-  			TITLE="$(tac $HOME/.cache/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"❤️ Select liked video \"")";
+  			TITLE="$(tac $HOME/.cache/magic-tape/history/liked.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-|eval "$PREF_SELECTOR"" \"❤️ Select liked video \"")";
   			if [[ -z "$TITLE" ]];
    		then empty_query;
   			else TITLE=${TITLE//\*/\\*};
