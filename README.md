@@ -6,14 +6,25 @@ Image support is achieved either with kitty terminal, ueberzug or chafa.
 
 
 With magic-tape, through the __main menu__, the user can
+
   * Browse  videos from __subscriptions__.
+
+  * Browse videos suggested by __YT algorithm__.
+
   * Browse through __trending__ video feed.
+
   * make a video __search__, using keywords or phrases.
+
   * Watch a previously watched video (__watch history__).
+
   * Browse videos from a __subcsribed channel__.
+
   * Watch a __liked__ video.
+
   * Repeat the __previous__ selection.
+
   * Repeat a previous search (__search history__).
+
   * __Watch/download__ video/audio content, in various formats.
 
 
@@ -21,10 +32,15 @@ With magic-tape, through the __main menu__, the user can
 Through the __miscellaneous menu__ the user can
 
   * __Set up Preferences__ (configuration).
+
   * __Like__ / __Unlike__ a video.
+
   * __Synchronize__ the above actions with their YouTube account.
+
   * __Import subscriptions__ from YouTube.
+
   * __Subscribe__ to/ __Unsubscribe__ from a channel.
+
   * __Clear__ their watch/search __history__, __liked__ videos, thumbnail __cache__.
 
 
@@ -41,13 +57,21 @@ pip install yt-dlp
 ```
 
 Other dependencies include:
+
 * [cURL](https://curl.se/)
+
 * [rofi](https://github.com/davatorium/rofi)
+
 * [fzf](https://github.com/junegunn/fzf)
+
 * [mpv](https://github.com/mpv-player/mpv)
+
 * [jq](https://stedolan.github.io/jq/)
+
 * [xclip](https://github.com/astrand/xclip)
+
 * [dmenu](http://tools.suckless.org/dmenu/)
+
 * [imagemagick](https://imagemagick.org/index.php)
 
 Regarding image support, it can either be achived with
@@ -149,13 +173,18 @@ magic-tape.sh
 
 While using the script for the first time, the user will be asked for his preferences:
 * __Prefered action Selector__, can either be `rofi`,`fzf` or `dmenu`.
-* __Prefered web browser__, the cookies of which will be used by magic-tape in order to extract data from YouTube.
-Supported browsers by yt-dlp are brave, chrome, chromium, edge, firefox, opera, vivaldi.
+
+* __Prefered web browser__, the cookies of which will be used by magic-tape in order to extract data from YouTube. Supported browsers by yt-dlp are brave, chrome, chromium, edge, firefox, opera, vivaldi.
+
 * __Prefered video list length__ to get in each request. Longer video lists may be more preferable, but take longer to get.
+
 * __Dialog message delay time__: the time a message in the cli window remains visible, in seconds.
+
 * __Notification message delay time__: the time a notification remains visible, in seconds.
-* __Image Support__:either __kitty__, __ueberzug__ or __none__.
-*Toggle __multi-color__ terminal messages.
+
+* __Image Support__: either __kitty__, __ueberzug__ or __none__.
+
+* Toggle __multi-color__ terminal messages.
 
 The user can always alter these preferences using the __P option__ of the __Miscellaneous Menu__.
 
@@ -214,17 +243,33 @@ Video selection is done with __fzf__:
 |Shift+Left Arrow|Previous Page|
 
 Once a video is selected, the user is prompted to __select action__:
+
 * Play ⭐Video 360p
+
 * Play ⭐⭐Video 720p
+
 * Play ⭐⭐⭐Best Video/Live
+
 * Play ⭐⭐⭐Best Audio
+
 * Download Video 🔽
+
 * Download Audio 🔽
+
 * Like Video ❤️
+
 * Browse Feed of channel that uploaded the video  📺
+
+
 * Subscribe to the channel that uploaded the video 📋
+
+
 * Open in browser 🌐
+
+
 * Copy link 🔗
+
+
 * Quit ❌
 
 ![image7](screenshots/rofi_select_action.png)
