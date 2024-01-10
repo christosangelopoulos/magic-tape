@@ -4,6 +4,27 @@
 #╹ ╹╹ ╹┗━┛╹┗━╸    ╹ ╹ ╹╹  ┗━╸
 #A script written by Christos Angelopoulos in March 2023 under GNU GENERAL PUBLIC LICENSE
 #
+function search_filter ()
+{
+
+ FILT_PROMPT="";
+ FILT_PROMPT="$(echo -e "No Duration Filter\n☕ Duration up to 4 mins\n☕☕ Duration between 4 and 20 mins\n☕☕☕ Duration longer than 20 mins\n📋 Search for playlist"|eval "$PREF_SELECTOR"" \"Select Filter \"")";
+ case $FILT_PROMPT in
+  "No Duration Filter") FILTER="&sp=EgQQARgE";
+  ;;
+  "☕ Duration up to 4 mins") FILTER="&sp=EgQQARgB";
+  ;;
+  "☕☕ Duration between 4 and 20 mins") FILTER="&sp=EgQQARgD";
+  ;;
+  "☕☕☕ Duration longer than 20 mins") FILTER="&sp=EgQQARgC";
+  ;;
+  "📋 Search for playlist") FILTER="&sp=EgQQAxgE";
+  ;;
+  *)FILTER="&sp=EgQQARgE";
+  ;;
+ esac
+}
+
 function new_subscription ()
 {
   C=${C// /+};C=${C//\'/%27};
@@ -792,12 +813,13 @@ db="$(echo $db|awk '{print $1}')"
       then empty_query;
      else P=${P// /+};
       echo "$P">>$HOME/.cache/magic-tape/history/search_history.txt;
+      search_filter;
       big_loop=1;
       ITEM=1;
       ITEM0=1;
-      FEED="/results?search_query=""$P""&sp=CAASAhAB";
+      FEED="/results?search_query=""$P""$FILTER";
       while [ $big_loop -eq 1 ];
-      do fzf_header="$(echo ${FEED^^}|sed 's/&SP=.*$//;s/^.*SEARCH_QUERY=/search: /;s/[\/\?=&+]/ /g') videos: $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
+      do fzf_header="$(echo "$FILT_PROMPT"|sed 's/ .*/ /')""$(echo ${FEED^^}|sed 's/&SP=.*$//;s/^.*SEARCH_QUERY=/search: /;s/[\/\?=&+]/ /g') videos: $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
        get_feed_json;
        get_data;
        small_loop=1;
@@ -864,9 +886,10 @@ db="$(echo $db|awk '{print $1}')"
       big_loop=1;
       ITEM=1;
       ITEM0=$ITEM;
-      FEED="/results?search_query=""$P""&sp=CAASAhAB";
+      search_filter;
+      FEED="/results?search_query=""$P""$FILTER";
       while [ $big_loop -eq 1 ];
-      do fzf_header="$(echo ${FEED^^}|sed 's/&SP=.*$//;s/^.*SEARCH_QUERY=/search: /;s/[\/\?=&+]/ /g') videos: $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
+      do fzf_header="$(echo "$FILT_PROMPT"|sed 's/ .*/ /')""$(echo ${FEED^^}|sed 's/&SP=.*$//;s/^.*SEARCH_QUERY=/search: /;s/[\/\?=&+]/ /g') videos: $ITEM to $(($ITEM + $(($LIST_LENGTH - 1))))";
        get_feed_json;
        get_data;
        small_loop=1;
