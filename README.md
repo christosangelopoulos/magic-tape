@@ -197,7 +197,7 @@ The user user can do that by navigating to the Miscellaneous Menu _(option m)_, 
 ### Main Menu
 Once the program is run, the user is presented with the __Main Menu:__
 
-![image 1](screenshots/1.png)
+![image 1](screenshots/1.png){height=320}
 
 Entering the respective key, the user can :
 
@@ -218,20 +218,20 @@ Entering the respective key, the user can :
 
 * Selecting __channel feed__, Browsing __watch history, search history & liked videos__ is done with __rofi__:
 
-![image 2](screenshots/rofi_c_option.png)
+![image 2](screenshots/rofi_c_option.png){height=320}
 
-![image 3](screenshots/rofi_h_option.png)
+![image 3](screenshots/rofi_h_option.png){height=320}
 
-![image 4](screenshots/rofi_l_option.png)
+![image 4](screenshots/rofi_l_option.png){height=320}
 
-![image 5](screenshots/rofi_j_option.png)
+![image 5](screenshots/rofi_j_option.png){height=320}
 
 
 ### Video selection
 
 Video selection is done with __fzf__:
 
-![image 6](screenshots/fzf1.png)
+![image 6](screenshots/fzf1.png){height=450}
 
 ### Search shortcuts
 
@@ -272,14 +272,14 @@ Once a video is selected, the user is prompted to __select action__:
 
 * Quit ❌
 
-![image7](screenshots/rofi_select_action.png)
+![image7](screenshots/rofi_select_action.png){height=320}
 
 Audio & Video files will be downloaded at  `~/Desktop/`
 
 ### Miscellaneous Menu
 The __m option__ of the Main Menu opens up the __Miscellaneous Menu__:
 
-![image 8](screenshots/2.png)
+![image 8](screenshots/2.png){height=320}
 
 Entering the respective key, the user can :
 
@@ -304,17 +304,17 @@ Initially, the user is asked to enter a keyword / keyphrase to search channels w
 
 Channel selection then is made with __fzf__:
 
-![image 9](screenshots/fzf2.png)
+![image 9](screenshots/fzf2.png){height=320}
 
 * In the __n & u options__ of the Miscellaneous Menu (subcribe/unsubscribe to a channel), after a selection, the user will be asked to sync the changes manually to their YouTube account.
 
 * __Liking/Unliking a video and unsubscribing from a channel options__ are done with __rofi__:
 
-![image 10](screenshots/misc_l.png)
+![image 10](screenshots/misc_l.png){height=320}
 
-![image 11](screenshots/misc_L.png)
+![image 11](screenshots/misc_L.png){height=320}
 
-![image 12](screenshots/misc_u.png)
+![image 12](screenshots/misc_u.png){height=320}
 
 ---
 
@@ -326,5 +326,8 @@ Channel selection then is made with __fzf__:
   * the configuration text file will be created in `~/.config/magic-tape/`
 2. The action selection can be either with `rofi`, or `fzf` (if the user wants to go full TUI).This can be configured during the **P option** of the **misc menu**.
 3. `dmenu` is also added as an action selector. This can be configured during the **P option** of the **misc menu**.
+4. There is now a **duration filter prompt** in the **search** and **search history** option:
+
+![filter.png](screenshots/filter.png)
 
 ---
