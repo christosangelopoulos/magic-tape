@@ -1,4 +1,4 @@
-#! /bin/bash/
+#! /bin/bash
 #make script executable, copy it to the #PATH
 chmod +x magic-tape.sh
 cp magic-tape.sh ~/.local/bin/
