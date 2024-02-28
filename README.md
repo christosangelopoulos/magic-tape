@@ -1,7 +1,9 @@
 # magic-tape
 Magic-tape is an image supporting fuzzy finder command line interface YouTube client.
 
-Image support is achieved either with kitty terminal, ueberzug or chafa.
+Downloading data is achieved with [yt-dlp](https://github.com/yt-dlp/yt-dlp) and  [cURL](https://curl.se/), while selections are achieved mainly with [fzf](https://github.com/junegunn/fzf).
+
+Image support is achieved either with [kitty terminal](https://sw.kovidgoyal.net/kitty/),  [ueberzugpp](https://github.com/jstkdng/ueberzugpp), [ueberzug](https://github.com/seebye/ueberzug) or [chafa](https://github.com/hpjansson/chafa).
 
 
 
@@ -31,7 +33,7 @@ With magic-tape, through the __main menu__, the user can
 
 Through the __miscellaneous menu__ the user can
 
-  * __Set up Preferences__ (configuration).
+  * __Edit Preferences file__ (configuration).
 
   * __Like__ / __Unlike__ a video.
 
@@ -43,6 +45,7 @@ Through the __miscellaneous menu__ the user can
 
   * __Clear__ their watch/search __history__, __liked__ videos, thumbnail __cache__.
 
+---
 
 ## Dependencies
 
@@ -72,8 +75,6 @@ Other dependencies include:
 
 * [dmenu](http://tools.suckless.org/dmenu/)
 
-* [imagemagick](https://imagemagick.org/index.php)
-
 Regarding image support, it can either be achived with
 
 * [kitty terminal](https://sw.kovidgoyal.net/kitty/)
@@ -83,11 +84,15 @@ Regarding image support, it can either be achived with
 sudo apt install kitty
 ```
 
+with
 
+* [ueberzugpp](https://github.com/jstkdng/ueberzugpp) (install instructions in the page)
+
+    Ueberzugpp works great with older hardware, where installing kitty is not an option.
 
 with
 
-* [ueberzug](https://github.com/seebye/ueberzug)
+* [ueberzug](https://github.com/seebye/ueberzug) (Although archived, it is still functional and one can still find it and install it)
 
 
 or with
@@ -119,74 +124,66 @@ To install `dmenu`:
 sudo apt install dmenu
 ```
 
+---
 
 ## Install
 
+Clone the `magic-tape` repo, and then get to the `magic-tape/` directory:
+
 ```
 git clone https://gitlab.com/christosangel/magic-tape.git
-
+```
+```
 cd magic-tape/
+```
+Make `install.sh` executable, then run it:
 
 ```
-
-To run the script from any directory, it has to be made executable, and then copied to `$PATH`,:
-
+chmod +x install.sh
+```
+```
+./install.sh
 ```
 
-chmod +x magic-tape.sh
+### Run
 
-cp magic-tape.sh ~/.local/bin/
-
-```
-
-After that, the user must run this command in order to create the necessary directories:
-
-```
-mkdir -p ~/.cache/magic-tape/history/ ~/.cache/magic-tape/jpg/ ~/.cache/magic-tape/json/ ~/.cache/magic-tape/search/video/
-
-mkdir -p ~/.cache/magic-tape/search/channels/ ~/.cache/magic-tape/subscriptions/jpg/ ~/.config/magic-tape/
-```
-
-
-Copy `png/` directory to `~/.cache/magic-tape/`
-
-```
-cp -r png/ ~/.cache/magic-tape/png/
-```
-
-
-Now, run with `kitty`:
-
-```
-kitty -T magic-tape magic-tape.sh
-```
-
-or any other terminal emulator:
+From any directory, run:
 
 ```
 magic-tape.sh
 ```
 
+---
+
+---
 ## Usage
 
-### Set up
+### Configuring
 
-While using the script for the first time, the user will be asked for his preferences:
-* __Prefered action Selector__, can either be `rofi`,`fzf` or `dmenu`.
+Through the `P Option` in the `Miscellaneous Menu`,  the user can configure many pamaters of this script. The same can be equally well achieved by editing the `~/.config/magic-tape/magic-tape.conf`file, outside the script  :
 
-* __Prefered web browser__, the cookies of which will be used by magic-tape in order to extract data from YouTube. Supported browsers by yt-dlp are brave, chrome, chromium, edge, firefox, opera, vivaldi.
+|Parameter|Explanation|Default Value|Acceptable Values
+|---|---|---|---|
+| PREF_SELECTOR| Preferred selector is the program used to select actions |rofi | dmenu rofi fzf|
+|PREF_EDITOR |Editor used to edit the configuration file|nano -ml|nano, vim, gedit, xed, or any other terminal or graphical text editor|
+|PREF_BROWSER|Preferred browser is the browser the cookies of which are used to login to YouTube |firefox|brave-browser-stable, chrome, chromium, edge, firefox, opera, vivaldi|
+|LINK_BROWSER|The browser to use to open links with|firefox|Any Browser|
+|LIST_LENGTH|The length of the list of videos to choose from|40|10 - 60 or more (although, the smaller the length, the faster the response)
+|TERMINAL_MESSAGE_DURATION|Terminal message duration (sleep command)|2|1 - 5 sec (or more, if you love sleeping)
+|COLORED_MESSAGES|Tui messages in color|yes|yes / no|
+| NOTIFICATION_DURATION| Notification duration|6000|1 - 10000 msec|
+| IMAGE_SUPPORT|Image support, the program used to render image previews in the terminal window.| ueberzugpp|  kitty  ueberzugpp  ueberzug  chafa  none
+|SHOW_MPV_KEYBINDINGS| Show mpv keybindings while playing |yes| yes / no|
+|DOWNLOAD_DIRECTORY|Directory to download audio video into| /Downloads| `$HOME` is the root directory, e.g. if you want to download your files in the Desktop directory, instead of `$HOME/Desktop`, just put `/Desktop`
 
-* __Prefered video list length__ to get in each request. Longer video lists may be more preferable, but take longer to get.
+Also, by editing the `~/.config/magic-tape/magic-tape.conf` file, the user can configure the colors used in the terminal user text.
 
-* __Dialog message delay time__: the time a message in the cli window remains visible, in seconds.
+Finally, by editing the ~/.config/magic-tape/magic-tape.conf file,  the format of the preferred selector program can be also configured. However the user is advised to **avoid such editing, unless they know what they are doing**.
 
-* __Notification message delay time__: the time a notification remains visible, in seconds.
+![image 1](screenshots/configure.png){height=300}
 
-* __Image Support__: either __kitty__, __ueberzug__ or __none__.
+---
 
-* Toggle __multi-color__ terminal messages.
-
-The user can always alter these preferences using the __P option__ of the __Miscellaneous Menu__.
 
 ### Import Subscribed channels
 
@@ -194,16 +191,19 @@ When the script is run for the first time, it would be advisable for the user to
 
 The user user can do that by navigating to the Miscellaneous Menu _(option m)_, then selecting __Import Subscriptions from YouTube__ _(option I)_.
 
+---
+
 ### Main Menu
 Once the program is run, the user is presented with the __Main Menu:__
 
-![image 1](screenshots/1.png){height=320}
+![image 2](screenshots/1.png){height=320}
 
 Entering the respective key, the user can :
 
 |key| Action|
 |--|--|
 |f|Browse their Subscriptions __Feed__.|
+|y|Browse __YT__ algorithm Feed|
 |t|Browse YouTube __Trending__ Feed.
 |s|__Search__ for a key word/phrase|
 |r|__Repeat__ previous selection.|
@@ -214,24 +214,32 @@ Entering the respective key, the user can :
 |m|Open __Miscellaneous Menu__.|
 |q|__Quit__ the program.|
 
-* In order for the __f & t__ option to function, the user must already be logged in to their browser.
+* In order for the `f and  y Options` to function, the user must already be logged in to YT in the browser.
 
-* Selecting __channel feed__, Browsing __watch history, search history & liked videos__ is done with __rofi__:
+* Selecting __channel feed__, Browsing __watch history, search history & liked videos__ is done with `rofi`, `fzf` or `dmenu`:
 
-![image 2](screenshots/rofi_c_option.png){height=320}
+![image 3](screenshots/rofi_c_option.png){width=320}
+![image 4](screenshots/fzf_history.png){width=320}
+![image 5](screenshots/dmenu_liked.png){width=320}
+![image 6](screenshots/rofi_j_option.png){width=320}
 
-![image 3](screenshots/rofi_h_option.png){height=320}
+---
 
-![image 4](screenshots/rofi_l_option.png){height=320}
+### Search and Search History
 
-![image 5](screenshots/rofi_j_option.png){height=320}
+The user can search for a video using a keyword or phrase. Also the user can browse  __Search history__ and repeat a previous search.
 
+ There is now a **duration filter prompt** in the **search** and **search history** option:
+
+![image 7](screenshots/filter.png){width=320} 
+
+---
 
 ### Video selection
 
 Video selection is done with __fzf__:
 
-![image 6](screenshots/fzf1.png){height=450}
+![image 8](screenshots/fzf1.png){height=450}
 
 ### Search shortcuts
 
@@ -260,9 +268,7 @@ Once a video is selected, the user is prompted to __select action__:
 
 * Browse Feed of channel that uploaded the video  📺
 
-
 * Subscribe to the channel that uploaded the video 📋
-
 
 * Open in browser 🌐
 
@@ -272,14 +278,15 @@ Once a video is selected, the user is prompted to __select action__:
 
 * Quit ❌
 
-![image7](screenshots/rofi_select_action.png){height=320}
-
-Audio & Video files will be downloaded at  `~/Desktop/`
+![image 9](screenshots/rofi_select_action.png){height=180}
+![image 10](screenshots/fzf_select_action.png){height=180}
+![image 11](screenshots/dmenu_select_action.png){height=180}
+---
 
 ### Miscellaneous Menu
 The __m option__ of the Main Menu opens up the __Miscellaneous Menu__:
 
-![image 8](screenshots/2.png){height=320}
+![image 12](screenshots/2.png){height=320}
 
 Entering the respective key, the user can :
 
@@ -296,6 +303,8 @@ Entering the respective key, the user can :
 |T|Clear __thumbnail cache.__|
 |q|__Quit__ this menu, __Return__ to Main Menu.
 
+---
+
 ### Subscribing to a new channel
 
 Selecting the __n option__ of the Miscellaneous Menu, the user can subscribe to a new channel.
@@ -304,30 +313,10 @@ Initially, the user is asked to enter a keyword / keyphrase to search channels w
 
 Channel selection then is made with __fzf__:
 
-![image 9](screenshots/fzf2.png){height=320}
+![image 13](screenshots/fzf2.png){height=320}
 
 * In the __n & u options__ of the Miscellaneous Menu (subcribe/unsubscribe to a channel), after a selection, the user will be asked to sync the changes manually to their YouTube account.
 
-* __Liking/Unliking a video and unsubscribing from a channel options__ are done with __rofi__:
 
-![image 10](screenshots/misc_l.png){height=320}
-
-![image 11](screenshots/misc_L.png){height=320}
-
-![image 12](screenshots/misc_u.png){height=320}
-
----
-
-**<u>UPDATES</u>**:
-
-1. The directory structure of the program has been updated. Instead of keeping everything in `~git/magic-tape/`, now various files and directories are kept in various places.This way,
-  * the `magic-tape.sh` is in `~/.local/bin/`
-  * the magic-tape cache files are all in `~/.cache/magic-tape/`
-  * the configuration text file will be created in `~/.config/magic-tape/`
-2. The action selection can be either with `rofi`, or `fzf` (if the user wants to go full TUI).This can be configured during the **P option** of the **misc menu**.
-3. `dmenu` is also added as an action selector. This can be configured during the **P option** of the **misc menu**.
-4. There is now a **duration filter prompt** in the **search** and **search history** option:
-
-![filter.png](screenshots/filter.png)
 
 ---
