@@ -197,8 +197,8 @@ function like_video ()
   if [[ $alv == Y ]] || [[ $alv == y ]];
   then if [[ -z "$(grep "$LIKE" $HOME/.cache/magic-tape/history/liked.txt)" ]];
    then echo "$(grep "$LIKE" $HOME/.cache/magic-tape/history/watch_history.txt|head -1)" >> $HOME/.cache/magic-tape/history/liked.txt;
-    notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/logo1.png "❤️ Video added to Liked Videos.";
-   else notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/logo1.png "❤️ Video already added to Liked Videos.";
+    notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/magic-tape.png "❤️ Video added to Liked Videos.";
+   else notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/magic-tape.png "❤️ Video already added to Liked Videos.";
    fi;
   fi;alv="";
  fi;
@@ -311,7 +311,7 @@ function misc_menu ()
         echo -e "${Red}${bold}Unsubscribe from this channel:\n"${Yellow}$U"${normal}\nProceed?(Y/y))";
          read -N 1 uc;echo -e "\n";
          if [[ $uc == Y ]] || [[ $uc == y ]];
-         then notification_img="$HOME/.cache/magic-tape/png/logo1.png";
+         then notification_img="$HOME/.cache/magic-tape/png/magic-tape.png";
           sed -i "/$U/d" $HOME/.cache/magic-tape/subscriptions/subscriptions.txt;
           echo -e "${Green}${bold}Unsubscribed from $U ]${normal}";
           notify-send -t $NOTIFICATION_DURATION -i "$notification_img" "You have unsubscribed from $U";
@@ -325,21 +325,21 @@ function misc_menu ()
       read -N 1 cwh;echo -e "\n";
       if [[ $cwh == Y ]] || [[ $cwh == y ]];
       then cat /dev/null > $HOME/.cache/magic-tape/history/watch_history.txt;
-       notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/logo1.png "Watch history cleared.";
+       notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/magic-tape.png "Watch history cleared.";
       fi;cwh="";
    ;;
    "S") clear;echo -e "${Green}Clear ${Yellow}${bold}search history?${normal}(Y/y))";
       read -N 1 csh;echo -e "\n";
       if [[ $csh == Y ]] || [[ $csh == y ]];
       then cat /dev/null > $HOME/.cache/magic-tape/history/search_history.txt;
-      notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/logo1.png "Search history cleared.";
+      notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/magic-tape.png "Search history cleared.";
       fi;csh="";
    ;;
    "T") clear;echo -e "${Green}Clear ${Yellow}${bold}thumbnail cache?${normal}(Y/y))";
        read -N 1 ctc;echo -e "\n";
        if [[ $ctc == Y ]] || [[ $ctc == y ]];
        then mv $HOME/.cache/magic-tape/jpg/* $HOME/.local/share/Trash/files/
-       notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/logo1.png "Thumbnail cache cleared.";
+       notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/magic-tape.png "Thumbnail cache cleared.";
        fi;ctc="";
    ;;
    "l") clear;like_video;
@@ -349,7 +349,7 @@ function misc_menu ()
       else echo -e "${Red}${bold}Unlike video\n${Yellow}"$UNLIKE"?${normal}\n(Y/y))";
        read -N 1 uv;echo -e "\n";
        if [[ $uv == Y ]] || [[ $uv == y ]];
-       then notification_img="$HOME/.cache/magic-tape/png/logo1.png";
+       then notification_img="$HOME/.cache/magic-tape/png/magic-tape.png";
         #UNLIKE="$(echo "$UNLIKE"|awk '{print $1}'|sed 's/^.*\///')";
         sed -i "/$UNLIKE/d" $HOME/.cache/magic-tape/history/liked.txt;
         notify-send -t $NOTIFICATION_DURATION -i "$notification_img" "❌ You have unliked $UNLIKE";
@@ -424,7 +424,7 @@ function draw_preview {
  if [[ "$IMAGE_SUPPORT" == "kitty" ]];then kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
  if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]];then ueberzugpp cmd -s $SOCKET -i fzfpreview -a add -x $1 -y $2 --max-width $3 --max-height $4 -f $5;fi;
  if [[ "$IMAGE_SUPPORT" == "ueberzug" ]];then draw_uber $1 $2 $3 $4 $5;fi;
- if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa --format=symbols -c 240 -s  $3 $5;fi;
+ if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa --format=symbols -c full -s  $3 $5;fi;
 }
 
 function get_feed_json ()
@@ -527,10 +527,10 @@ function select_video ()
  if [[ "$TITLE" == "Previous Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/previous.png;\
  elif [[ "$TITLE" == "Next Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/next.png;\
  elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/abort.png;\
-  else draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/jpg/img-"$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg;\
+  else draw_preview 1 1 $FZF_PREVIEW_COLUMNS $FZF_PREVIEW_LINES $HOME/.cache/magic-tape/jpg/img-"$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg;\
   if [ -e $HOME/.cache/magic-tape/subscriptions/jpg/"$channel_jpg" ];\
    then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/.cache/magic-tape/subscriptions/jpg/"$channel_jpg";fi;\
-   else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/.cache/magic-tape/png/logo1.png;fi;\
+   else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/.cache/magic-tape/png/magic-tape.png;fi;\
   fi;\
  fi;\
  ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
@@ -587,7 +587,7 @@ function download_video ()
  echo -e "${Green}Downloading${Yellow}${bold} $play_now${normal}...]";
  notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/download.png "Video Downloading: $TITLE";
  yt-dlp "$play_now";
- notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/logo1.png "Video Downloading of $TITLE is now complete.";
+ notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/magic-tape.png "Video Downloading of $TITLE is now complete.";
  echo -e "${Green}Video Downloading of${Yellow}${bold} $TITLE ${Green}is now complete.${normal}";
  sleep $TERMINAL_MESSAGE_DURATION;
  cd ;
@@ -601,7 +601,7 @@ function download_audio ()
  echo -e "${Green}Downloading audio  of${Yellow}${bold} $play_now...${normal}";
  notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/download.png "Audio Downloading: $TITLE";
  yt-dlp --extract-audio --audio-quality 0 --embed-thumbnail "$play_now";
- notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/logo1.png "Audio Downloading of $TITLE is now complete.";
+ notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/magic-tape.png "Audio Downloading of $TITLE is now complete.";
  echo -e "${Green}Audio Downloading of${Yellow}${bold} $TITLE ${Green}is now complete.${normal}";
  sleep $TERMINAL_MESSAGE_DURATION;
  cd ;
@@ -638,8 +638,8 @@ function select_action ()
   "Like Video ❤️") clear;
    if [[ -z "$(grep "$play_now" $HOME/.cache/magic-tape/history/liked.txt)" ]];
    then echo "$channel_id"" ""$channel_name"" ""$play_now"" ""$TITLE">>$HOME/.cache/magic-tape/history/liked.txt;
-   notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/logo1.png "❤️ Video added to Liked Videos.";
-   else notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/logo1.png "❤️ Video already added to Liked Videos.";
+   notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/magic-tape.png "❤️ Video added to Liked Videos.";
+   else notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/magic-tape.png "❤️ Video already added to Liked Videos.";
    fi;
   ;;
   "Browse Feed of channel"*) clear;db="c"; P="$channel_id";
@@ -878,7 +878,7 @@ db="$(echo $db|awk '{print $1}')"
   ;;
   "m") clear;misc_menu;
   ;;
-  "q") notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/logo1.png "Exited magic-tape";
+  "q") notify-send -t $NOTIFICATION_DURATION -i $HOME/.cache/magic-tape/png/magic-tape.png "Exited magic-tape";
   ;;
   *)clear;echo -e "\n${Yellow}${bold}$db${normal} is an invalid key, please try again.\n";sleep $TERMINAL_MESSAGE_DURATION;
   ;;
