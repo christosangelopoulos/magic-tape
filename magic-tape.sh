@@ -422,7 +422,7 @@ function draw_uber {
 function draw_preview {
  #sample draw_preview 90 3 35 35 /path/image.jpg
  if [[ "$IMAGE_SUPPORT" == "kitty" ]];then kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
- if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]];then ueberzugpp cmd -s $SOCKET -i fzfpreview -a add -x $1 -y $2 --max-width $3 --max-height $4 -f $5;fi;
+ if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]];then ueberzugpp cmd -s $SOCKET -i fzfpreview -a add -x $1 -y $2 --max-width $(($3*2-2)) --max-height $(($4/2)) -f $5;fi;
  if [[ "$IMAGE_SUPPORT" == "ueberzug" ]];then draw_uber $1 $2 $3 $4 $5;fi;
  if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa --format=symbols -c full -s  $3 $5;fi;
 }
@@ -517,7 +517,7 @@ function select_video ()
  -i \
  --exact \
  --preview='
- height=$(($FZF_PREVIEW_COLUMNS /4 + 1));\
+ height=$(($FZF_PREVIEW_COLUMNS /3 + 2));\
  if [[ "$IMAGE_SUPPORT" == "kitty" ]];then clear_image;fi;\
  i=$(echo {}|sed "s/\\t.*$//g");echo $i>$HOME/.cache/magic-tape/search/video/index.txt;\
  if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then ll=0; while [ $ll -le $height ];do echo "";((ll++));done;fi;\
