@@ -383,6 +383,9 @@ clean_upp() {
  SOCKET=/tmp/ueberzugpp-"$UB_PID".socket
 }
 
+function draw_upp () {
+ ueberzugpp cmd -s $SOCKET -i fzfpreview -a add -x $1 -y $2 --max-width $3 --max-height $4 -f $5
+}
 ################# UBERZUG ######################
 declare -r -x UEBERZUG_FIFO="$(mktemp --dry-run )"
 function start_ueberzug {
@@ -422,7 +425,7 @@ function draw_uber {
 function draw_preview {
  #sample draw_preview 90 3 35 35 /path/image.jpg
  if [[ "$IMAGE_SUPPORT" == "kitty" ]];then kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
- if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]];then ueberzugpp cmd -s $SOCKET -i fzfpreview -a add -x $1 -y $2 --max-width $(($3-2)) --max-height $(($4/2 -1)) -f $5;fi;
+ if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]]; then draw_upp $1 $2 "$(($3*5/3))" $4 $5;fi;
  if [[ "$IMAGE_SUPPORT" == "ueberzug" ]];then draw_uber $1 $2 $3 $4 $5;fi;
  if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa --format=symbols -c full -s  $3 $5;fi;
 }
@@ -527,7 +530,7 @@ function select_video ()
  if [[ "$TITLE" == "Previous Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/previous.png;\
  elif [[ "$TITLE" == "Next Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/next.png;\
  elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/abort.png;\
-  else draw_preview 1 1 $FZF_PREVIEW_COLUMNS $FZF_PREVIEW_LINES $HOME/.cache/magic-tape/jpg/img-"$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg;\
+  else draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/jpg/img-"$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg;\
   if [ -e $HOME/.cache/magic-tape/subscriptions/jpg/"$channel_jpg" ];\
    then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/.cache/magic-tape/subscriptions/jpg/"$channel_jpg";fi;\
    else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/.cache/magic-tape/png/magic-tape.png;fi;\
@@ -621,15 +624,15 @@ function message_audio_video ()
 function select_action ()
 {
  clear;
- ACTION="$(echo -e "Play ⭐Video 360p\nPlay ⭐⭐Video 720p\nPlay ⭐⭐⭐Best Video/Live\nPlay ⭐⭐⭐Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name" 📺\nSubscribe to channel "$channel_name" 📋\nOpen in browser 🌐\nCopy link 🔗\nQuit ❌"|eval "$PREF_SELECTOR""\"Select action \"")";
+ ACTION="$(echo -e "Play ⭐ Video 360p\nPlay ⭐ ⭐ Video 720p\nPlay ⭐ ⭐ ⭐ Best Video/Live\nPlay ⭐ ⭐ ⭐ Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name" 📺\nSubscribe to channel "$channel_name" 📋\nOpen in browser 🌐\nCopy link 🔗\nQuit ❌"|eval "$PREF_SELECTOR""\"Select action \"")";
  case $ACTION in
-  "Play ⭐Video 360p") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv --ytdl-raw-options=format=18 "$play_now";play_now="";TITLE="";
+  "Play ⭐ Video 360p") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv --ytdl-raw-options=format=18 "$play_now";play_now="";TITLE="";
   ;;
-  "Play ⭐⭐Video 720p") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv --ytdl-raw-options=format=22 "$play_now";play_now="";TITLE="";
+  "Play ⭐ ⭐ Video 720p") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv --ytdl-raw-options=format=22 "$play_now";play_now="";TITLE="";
   ;;
-  "Play ⭐⭐⭐Best Video/Live") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv "$play_now";play_now="";TITLE="";
+  "Play ⭐ ⭐ ⭐ Best Video/Live") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv "$play_now";play_now="";TITLE="";
   ;;
-  "Play ⭐⭐⭐Best Audio") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_audio_shortcuts;fi;mpv --ytdl-raw-options=format=ba "$play_now";play_now="";TITLE="";
+  "Play ⭐ ⭐ ⭐ Best Audio") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_audio_shortcuts;fi;mpv --ytdl-raw-options=format=ba "$play_now";play_now="";TITLE="";
   ;;
   "Download Video 🔽") clear;download_video;echo -e "\n${Green}Video Download complete.\n${normal}";
   ;;
@@ -683,9 +686,9 @@ function empty_query ()
  sleep $TERMINAL_MESSAGE_DURATION;
 }
 ###############################################################################
-export -f draw_preview draw_uber clear_image start_ueberzug finalise clean_upp
+export -f draw_preview draw_uber clear_image start_ueberzug finalise clean_upp draw_upp
 load_config
-export IMAGE_SUPPORT UEBERZUG_FIFO SOCKET Green GreenInvert Yellow Red Magenta Cyan bold normal
+export IMAGE_SUPPORT UEBERZUG_FIFO SOCKET Green GreenInvert Yellow Red Magenta Cyan bold normal $FZF_PREVIEW_COLUMNS $FZF_PREVIEW_LINES
 #trap exit_upp HUP INT QUIT TERM EXIT ERR ABRT
 db=""
 load_config
