@@ -370,10 +370,11 @@ function exit_upp () {
  PLAY=" "
  db="q"
  CHAN=" "
- killall fzf>/dev/null 2>&1
+# killall fzf>/dev/null 2>&1
  ueberzugpp cmd -s "$SOCKET" -a exit >/dev/null 2>&1
 # sleep 0.5
  #killall ueberzugpp>/dev/null 2>&1
+ killall -9 -g magic-tape.sh>/dev/null 2>&1
 }
 
 clean_upp() {
@@ -425,7 +426,7 @@ function draw_uber {
 function draw_preview {
  #sample draw_preview 90 3 35 35 /path/image.jpg
  if [[ "$IMAGE_SUPPORT" == "kitty" ]];then kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
- if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]]; then draw_upp $1 $2 "$(($3*5/3))" $4 $5;fi;
+ if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]]; then yy="$(($FZF_PREVIEW_LINES*3/7))"&&draw_upp $1 $2 "$(($3*5/3))" "$yy" $5;fi;
  if [[ "$IMAGE_SUPPORT" == "ueberzug" ]];then draw_uber $1 $2 $3 $4 $5;fi;
  if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa --format=symbols -c full -s  $3 $5;fi;
 }
