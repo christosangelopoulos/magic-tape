@@ -378,7 +378,7 @@ function exit_upp () {
 }
 
 clean_upp() {
- ueberzugpp cmd -s "$SOCKET" -a exit
+ ueberzugpp cmd -s "$SOCKET" -a exit>/dev/null 2>&1
  ueberzugpp layer --no-stdin --silent --use-escape-codes --pid-file /tmp/.magic_tape_upp
  UB_PID=$(cat /tmp/.magic_tape_upp)
  SOCKET=/tmp/ueberzugpp-"$UB_PID".socket
@@ -423,10 +423,17 @@ function draw_uber {
         [path]="$5")
 }
 
+#function get_max_dims() {
+# thumb_ratio=$(identify $5|awk '{print$3}')
+# thumb_w="${thumb_ratio%x*}"
+# thumb_h="${thumb_ratio##*x}"
+# if [[ $thumb_w -ge $thumb_h ]];then max_x=$(($3*5/3));max_h=$(($thumb_h*$max_x/$thumb_w));else max_h="$(($FZF_PREVIEW_COLUMNS*3/7))";max_x=$(($max_h*$thumb_h/$thumb_w));fi
+#
+#}
 function draw_preview {
  #sample draw_preview 90 3 35 35 /path/image.jpg
  if [[ "$IMAGE_SUPPORT" == "kitty" ]];then kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
- if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]]; then yy="$(($FZF_PREVIEW_COLUMNS*3/7))"&&draw_upp $1 $2 "$(($3*5/3))" "$yy" $5;fi;
+ if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]];then  thumb_ratio=$(identify $5|awk '{print$3}');thumb_w="${thumb_ratio%x*}";thumb_h="${thumb_ratio##*x}";if [[ $thumb_w -ge $thumb_h ]];then max_x=$(($3*5/3));max_h=$(($thumb_h*$max_x/$thumb_w));else max_h="$(($height))";max_x=$(($max_h*$thumb_h/$thumb_w-1));fi;draw_upp $1 $2 $max_x $max_h $5;fi;
  if [[ "$IMAGE_SUPPORT" == "ueberzug" ]];then draw_uber $1 $2 $3 $4 $5;fi;
  if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa --format=symbols -c full -s  $3 $5;fi;
 }
@@ -512,7 +519,7 @@ function select_video ()
  --height=100% \
  --prompt="Select video: " \
  --header="$fzf_header" \
- --preview-window=left,50% \
+ --preview-window=left,40% \
  --tabstop=1 \
  --no-margin  \
  --bind=right:accept \
@@ -521,7 +528,7 @@ function select_video ()
  -i \
  --exact \
  --preview='
- height=$(($FZF_PREVIEW_COLUMNS /3 + 2));\
+ height=$(($FZF_PREVIEW_COLUMNS /3));\
  if [[ "$IMAGE_SUPPORT" == "kitty" ]];then clear_image;fi;\
  i=$(echo {}|sed "s/\\t.*$//g");echo $i>$HOME/.cache/magic-tape/search/video/index.txt;\
  if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then ll=0; while [ $ll -le $height ];do echo "";((ll++));done;fi;\
