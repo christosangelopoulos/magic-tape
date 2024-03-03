@@ -385,7 +385,7 @@ clean_upp() {
 }
 
 function draw_upp () {
- ueberzugpp cmd -s $SOCKET -i fzfpreview -a add -x $1 -y $2 --max-width $3 --max-height $4 -f $5
+ ueberzugpp cmd -s $SOCKET -i fzfpreview -a add -x "0" -y "0" --max-width $3 --max-height $4 -f $5
 }
 ################# UBERZUG ######################
 declare -r -x UEBERZUG_FIFO="$(mktemp --dry-run )"
