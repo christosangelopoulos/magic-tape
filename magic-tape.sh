@@ -370,11 +370,10 @@ function exit_upp () {
  PLAY=" "
  db="q"
  CHAN=" "
-# killall fzf>/dev/null 2>&1
  ueberzugpp cmd -s "$SOCKET" -a exit >/dev/null 2>&1
-# sleep 0.5
  #killall ueberzugpp>/dev/null 2>&1
- killall -9 -g magic-tape.sh>/dev/null 2>&1
+# killall -9 -g magic-tape.sh>/dev/null 2>&1
+ kill -9 $magic_tape_pid>/dev/null 2>&1
 }
 
 clean_upp() {
@@ -423,13 +422,7 @@ function draw_uber {
         [path]="$5")
 }
 
-#function get_max_dims() {
-# thumb_ratio=$(identify $5|awk '{print$3}')
-# thumb_w="${thumb_ratio%x*}"
-# thumb_h="${thumb_ratio##*x}"
-# if [[ $thumb_w -ge $thumb_h ]];then max_x=$(($3*5/3));max_h=$(($thumb_h*$max_x/$thumb_w));else max_h="$(($FZF_PREVIEW_COLUMNS*3/7))";max_x=$(($max_h*$thumb_h/$thumb_w));fi
-#
-#}
+
 function draw_preview {
  #sample draw_preview 90 3 35 35 /path/image.jpg
  if [[ "$IMAGE_SUPPORT" == "kitty" ]];then kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
@@ -694,6 +687,7 @@ function empty_query ()
  sleep $TERMINAL_MESSAGE_DURATION;
 }
 ###############################################################################
+magic_tape_pid==$(ps -e|grep magic-tape.sh|tail -2|head -1|awk '{print $1}')
 export -f draw_preview draw_uber clear_image start_ueberzug finalise clean_upp draw_upp
 load_config
 export IMAGE_SUPPORT UEBERZUG_FIFO SOCKET Green GreenInvert Yellow Red Magenta Cyan bold normal $FZF_PREVIEW_COLUMNS $FZF_PREVIEW_LINES
@@ -738,7 +732,7 @@ db="$(echo $db|awk '{print $1}')"
        if [[ "$TITLE" != "Abort Selection" ]]&&[[ "$TITLE" != "Next Page" ]]&&[[ "$TITLE" != "Previous Page" ]];then select_action;fi;
       done;
      done;
-     clear;
+     clear;clear_image;
   ;;
   "y") clear;
      big_loop=1;
