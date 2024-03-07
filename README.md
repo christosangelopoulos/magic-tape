@@ -92,12 +92,6 @@ with
 
 with
 
-* [ueberzug](https://github.com/seebye/ueberzug) (Although archived, it is still functional and one can still find it and install it)
-
-
-or with
-
-
 * [chafa](https://github.com/hpjansson/chafa)
 
 
@@ -105,8 +99,39 @@ or with
 sudo apt install chafa
 ```
 
+or with
 
-To install these dependencies, run the following command:
+* [ueberzug](https://github.com/seebye/ueberzug)
+
+
+### How to install Ueberzug
+
+ The [ueberzug](https://github.com/seebye/ueberzug) project has been archived. However, in order to install `ueberzug` one can follow these steps:
+
+- Install dependencies
+
+```
+sudo apt install libx11-dev libxres-dev libxext-dev
+```
+If during the installation process, errors appear due to absence of other depedencies, the user is encouraged to search the error message in the internet in order to locate the misssing dependency. 
+
+- Follow the install instructions found in [this ueberzug fork](https://github.com/gokberkgunes/ueberzug-tabbed):
+
+```
+git clone "https://github.com/gokberkgunes/ueberzug-tabbed.git"
+
+cd ueberzug-tabbed
+
+python -m pip install .
+
+```
+
+**NOTE**: One may need to call above `pip install` commands as `pip install --break-system-packages` to successfully install the packages.
+
+
+---
+
+To install these `magic-tape.sh `dependencies, run the following command:
 
 ```
 sudo apt install curl fzf mpv jq xclip
