@@ -197,7 +197,7 @@ Through the `P Option` in the `Miscellaneous Menu`,  the user can configure many
 |TERMINAL_MESSAGE_DURATION|Terminal message duration (sleep command)|2|1 - 5 sec (or more, if you love sleeping)
 |COLORED_MESSAGES|Tui messages in color|yes|yes / no|
 | NOTIFICATION_DURATION| Notification duration|6000|1 - 10000 msec|
-| IMAGE_SUPPORT|Image support, the program used to render image previews in the terminal window.| ueberzugpp|  kitty  ueberzugpp  ueberzug  chafa  none
+| IMAGE_SUPPORT|Image support, the program used to render image previews in the terminal window.| ueberzug|  kitty  ueberzugpp  ueberzug  chafa  none
 |SHOW_MPV_KEYBINDINGS| Show mpv keybindings while playing |yes| yes / no|
 |DOWNLOAD_DIRECTORY|Directory to download audio video into| /Downloads| `$HOME` is the root directory, e.g. if you want to download your files in the Desktop directory, instead of `$HOME/Desktop`, just put `/Desktop`
 
