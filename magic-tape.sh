@@ -116,16 +116,16 @@ function new_subscription ()
   +m \
   -i \
   --exact \
-  --preview='height=$(($FZF_PREVIEW_COLUMNS/2 +2));\
+  --preview='hght=$(($FZF_PREVIEW_COLUMNS/2 +2));\
   i=$(echo {}|sed "s/\\t.*$//g");\
   echo $i>$HOME/.cache/magic-tape/search/channels/index.txt;\
   TITLE="$(cat $HOME/.cache/magic-tape/search/channels/titles.txt|head -$i|tail +$i)";\
-  if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then ll=0;while [ $ll -le $(($height/2 - 2)) ];do echo "";((ll++));done;fi;\
+  if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then ll=0;while [ $ll -le $(($hght/2 - 2)) ];do echo "";((ll++));done;fi;\
   ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
-  if [[ "$TITLE" == "Previous Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/png/previous.png;\
-  elif [[ "$TITLE" == "Next Page" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/png/next.png;\
-  elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/png/abort.png;\
-  else draw_preview $(($height/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/jpg/"$(cat $HOME/.cache/magic-tape/search/channels/ids.txt|head -$i|tail +$i)".jpg;fi;\
+  if [[ "$TITLE" == "Previous Page" ]];then draw_preview $(($hght/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/png/previous.png;\
+  elif [[ "$TITLE" == "Next Page" ]];then draw_preview $(($hght/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/png/next.png;\
+  elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview $(($hght/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/png/abort.png;\
+  else draw_preview $(($hght/3)) 1 $(($FZF_PREVIEW_COLUMNS/2)) $(($FZF_PREVIEW_COLUMNS/2)) $HOME/.cache/magic-tape/jpg/"$(cat $HOME/.cache/magic-tape/search/channels/ids.txt|head -$i|tail +$i)".jpg;fi;\
   echo -e "\n""$Yellow""$TITLE""$normal"|fold -w $FZF_PREVIEW_COLUMNS -s;\
   ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
    if [[ $TITLE != "Abort Selection" ]]&&[[ $TITLE != "Next Page" ]]&&[[ $TITLE != "Previous Page" ]];\
@@ -232,7 +232,7 @@ function import_subscriptions()
   echo -e "${Green}Downloading thumbnails...${normal}";
   curl -s -K $HOME/.cache/magic-tape/search/channels/thumbnails.txt;
   echo -e "${Green}Thumbnail download complete.${normal}";
-  echo -e "${Green}Your magic-tape subscriptions are now updated.\nA backup copy of your old subscriptions is kept in\n${Yellow}${bold}$HOME/.cache/magic-tape/subscriptions/subscriptions-$(date +%F).bak.txt${normal}\n${Green}Press any key to return to the miscellaneous menu: ${normal}";
+  echo -e "${Green}Your magic-tape subscriptions are now updated.\nA backup copy of your old subscriptions is kept in\n${Yellow}${bold}$HOME/.cache/magic-tape/subscriptions/subscriptions-$(date +%F).bak.txt${normal}\n${Green}Press any key to continue: ${normal}";
   read -N 1  imp2;clear;mv $HOME/.cache/magic-tape/json/$new_subs $HOME/.local/share/Trash/files/;
  fi;
 }
@@ -377,8 +377,7 @@ function exit_upp () {
 }
 
 clean_upp() {
- ueberzugpp cmd -s "$SOCKET" -a exit>/dev/null 2>&1
- ueberzugpp layer --no-stdin --silent --use-escape-codes --pid-file /tmp/.magic_tape_upp
+ ueberzugpp cmd -s "$SOCKET" -a exit>/dev/null 2>&1&&ueberzugpp layer --no-stdin --silent --use-escape-codes --pid-file /tmp/.magic_tape_upp
  UB_PID=$(cat /tmp/.magic_tape_upp)
  SOCKET=/tmp/ueberzugpp-"$UB_PID".socket
 }
@@ -387,13 +386,13 @@ function draw_upp () {
  ueberzugpp cmd -s $SOCKET -i fzfpreview -a add -x "0" -y "0" --max-width $3 --max-height $4 -f $5
 }
 ################# UBERZUG ######################
-declare -r -x UEBERZUG_FIFO="$(mktemp --dry-run )"
+declare -r -x UEBERZUG_FIFO_MAGIC_TAPE="$(mktemp --dry-run )"
 function start_ueberzug {
-    mkfifo "${UEBERZUG_FIFO}"
-    <"${UEBERZUG_FIFO}" \
+    mkfifo "${UEBERZUG_FIFO_MAGIC_TAPE}"
+    <"${UEBERZUG_FIFO_MAGIC_TAPE}" \
         ueberzug layer --parser bash --silent &
     # prevent EOF
-    3>"${UEBERZUG_FIFO}" \
+    3>"${UEBERZUG_FIFO_MAGIC_TAPE}" \
         exec
 }
 
@@ -401,7 +400,7 @@ function finalise {
     3>&- \
         exec
     &>/dev/null \
-        rm "${UEBERZUG_FIFO}"
+        rm "${UEBERZUG_FIFO_MAGIC_TAPE}"
     &>/dev/null \
         kill $(jobs -p)
 }
@@ -414,7 +413,7 @@ function clear_image (){
 
 function draw_uber {
 #sample draw_uber 35 35 90 3 /path/image.jpg
-    >"${UEBERZUG_FIFO}" declare -A -p cmd=( \
+    >"${UEBERZUG_FIFO_MAGIC_TAPE}" declare -A -p cmd=( \
         [action]=add [identifier]="preview" \
         [x]="$1" [y]="$2" \
         [width]="$3" [height]="$4" \
@@ -426,7 +425,7 @@ function draw_uber {
 function draw_preview {
  #sample draw_preview 90 3 35 35 /path/image.jpg
  if [[ "$IMAGE_SUPPORT" == "kitty" ]];then kitty icat  --transfer-mode file --place $3x$4@$1x$2 --scale-up   "$5";fi;
- if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]];then  thumb_ratio=$(identify $5|awk '{print$3}');thumb_w="${thumb_ratio%x*}";thumb_h="${thumb_ratio##*x}";if [[ $thumb_w -ge $thumb_h ]];then max_x=$(($3*5/3));max_h=$(($thumb_h*$max_x/$thumb_w));else max_h="$(($height))";max_x=$(($max_h*$thumb_h/$thumb_w-1));fi;draw_upp $1 $2 $max_x $max_h $5;fi;
+ if [[ "$IMAGE_SUPPORT" == "ueberzugpp" ]];then  thumb_ratio=$(identify $5|awk '{print$3}');thumb_w="${thumb_ratio%x*}";thumb_h="${thumb_ratio##*x}";if [[ $thumb_w -ge $thumb_h ]];then max_x=$(($3*5/3));max_h=$(($thumb_h*$max_x/$thumb_w));else max_h="$(($hght))";max_x=$(($max_h*$thumb_h/$thumb_w-1));fi;draw_upp $1 $2 $max_x $max_h $5;fi;
  if [[ "$IMAGE_SUPPORT" == "ueberzug" ]];then draw_uber $1 $2 $3 $4 $5;fi;
  if [[ "$IMAGE_SUPPORT" == "chafa" ]];then chafa --format=symbols -c full -s  $3 $5;fi;
 }
@@ -521,20 +520,20 @@ function select_video ()
  -i \
  --exact \
  --preview='
- height=$(($FZF_PREVIEW_COLUMNS /3));\
+ hght=$(($FZF_PREVIEW_COLUMNS /3));\
  if [[ "$IMAGE_SUPPORT" == "kitty" ]];then clear_image;fi;\
  i=$(echo {}|sed "s/\\t.*$//g");echo $i>$HOME/.cache/magic-tape/search/video/index.txt;\
- if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then ll=0; while [ $ll -le $height ];do echo "";((ll++));done;fi;\
+ if [[ "$IMAGE_SUPPORT" != "none" ]]&&[[ "$IMAGE_SUPPORT" != "chafa" ]];then ll=0; while [ $ll -le $hght ];do echo "";((ll++));done;fi;\
  TITLE="$(cat $HOME/.cache/magic-tape/search/video/titles.txt|head -$i|tail +$i)";\
  channel_name="$(cat $HOME/.cache/magic-tape/search/video/channel_names.txt|head -$i|tail +$i)";\
  channel_jpg="$(cat $HOME/.cache/magic-tape/search/video/channel_ids.txt|head -$i|tail +$i)"".jpg";\
- if [[ "$TITLE" == "Previous Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/previous.png;\
- elif [[ "$TITLE" == "Next Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/next.png;\
- elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/png/abort.png;\
-  else draw_preview 1 1 $FZF_PREVIEW_COLUMNS $height $HOME/.cache/magic-tape/jpg/img-"$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg;\
+ if [[ "$TITLE" == "Previous Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $hght $HOME/.cache/magic-tape/png/previous.png;\
+ elif [[ "$TITLE" == "Next Page" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $hght $HOME/.cache/magic-tape/png/next.png;\
+ elif [[ "$TITLE" == "Abort Selection" ]];then draw_preview 1 1 $FZF_PREVIEW_COLUMNS $hght $HOME/.cache/magic-tape/png/abort.png;\
+  else draw_preview 1 1 $FZF_PREVIEW_COLUMNS $hght $HOME/.cache/magic-tape/jpg/img-"$(cat $HOME/.cache/magic-tape/search/video/ids.txt|head -$i|tail +$i)".jpg;\
   if [ -e $HOME/.cache/magic-tape/subscriptions/jpg/"$channel_jpg" ];\
-   then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/.cache/magic-tape/subscriptions/jpg/"$channel_jpg";fi;\
-   else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $height 4 4 $HOME/.cache/magic-tape/png/magic-tape.png;fi;\
+   then if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $hght 4 4 $HOME/.cache/magic-tape/subscriptions/jpg/"$channel_jpg";fi;\
+   else if [[ "$IMAGE_SUPPORT" == "kitty" ]];then draw_preview $(($FZF_PREVIEW_COLUMNS - 4 )) $hght 4 4 $HOME/.cache/magic-tape/png/magic-tape.png;fi;\
   fi;\
  fi;\
  ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
@@ -690,7 +689,7 @@ function empty_query ()
 magic_tape_pid==$(ps -e|grep magic-tape.sh|tail -2|head -1|awk '{print $1}')
 export -f draw_preview draw_uber clear_image start_ueberzug finalise clean_upp draw_upp
 load_config
-export IMAGE_SUPPORT UEBERZUG_FIFO SOCKET Green GreenInvert Yellow Red Magenta Cyan bold normal $FZF_PREVIEW_COLUMNS $FZF_PREVIEW_LINES
+export IMAGE_SUPPORT UEBERZUG_FIFO_MAGIC_TAPE SOCKET Green GreenInvert Yellow Red Magenta Cyan bold normal $FZF_PREVIEW_COLUMNS $FZF_PREVIEW_LINES
 #trap exit_upp HUP INT QUIT TERM EXIT ERR ABRT
 db=""
 load_config
@@ -821,14 +820,26 @@ db="$(echo $db|awk '{print $1}')"
      done;
      clear;
   ;;
-  "c") clear;
-     channel_name="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"🔎 Select channel \"")";
-     echo -e "${Green}Selected channel:${Yellow}${bold} $channel_name"${normal};
-     if [[ -z "$channel_name" ]];
-     then empty_query;
-     else P="$(grep "$channel_name" $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|head -1|awk '{print $1}')";
-     channel_feed;
+  "c") clear;channel_search="";
+     if [[ -f $HOME/.cache/magic-tape/subscriptions/subscriptions.txt ]];
+     then channel_search=yes;
+     else echo -e " ${Yellow}There are no subscriptions locally imported from YouTube. Do you wish to import your subscriptions now?(Y/y)";
+      read -N 1 import_subs_prompt ;echo;
+      if [[ $import_subs_prompt == Y ]]||[[ $import_subs_prompt == y ]];
+      then import_subscriptions;channel_search=yes;
+      else channel_search=no;
+      fi;
      fi;
+     if [[ $channel_search == yes ]];
+     then channel_name="$(cat $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|cut -d' ' -f2-|eval "$PREF_SELECTOR""\"🔎 Select channel \"")";
+      echo -e "${Green}Selected channel:${Yellow}${bold} $channel_name"${normal};
+      if [[ -z "$channel_name" ]];
+      then empty_query;
+      else P="$(grep "$channel_name" $HOME/.cache/magic-tape/subscriptions/subscriptions.txt|head -1|awk '{print $1}')";
+       channel_feed;
+      fi;
+     fi;
+
   ;;
   "h") clear;
      TITLE="$(echo -e "ABORT SELECTION\n""$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-)"|eval "$PREF_SELECTOR""\"🔎 Select previous video \"")";
