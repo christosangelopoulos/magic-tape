@@ -103,7 +103,9 @@ or with
 
 * [ueberzug](https://github.com/seebye/ueberzug)
 
+---
 
+---
 ### How to install Ueberzug
 
  The [ueberzug](https://github.com/seebye/ueberzug) project has been archived. However, in order to install `ueberzug` one can follow these steps:
@@ -128,6 +130,7 @@ python -m pip install .
 
 **NOTE**: One may need to call above `pip install` commands as `pip install --break-system-packages` to successfully install the packages.
 
+---
 
 ---
 
@@ -277,13 +280,15 @@ Video selection is done with __fzf__:
 
 Once a video is selected, the user is prompted to __select action__:
 
-* Play ⭐Video 360p
+* Play ⭐ Video 144p
 
-* Play ⭐⭐Video 720p
+* Play ⭐⭐ Video 360p
 
-* Play ⭐⭐⭐Best Video/Live
+* Play ⭐⭐⭐ Video 720p
 
-* Play ⭐⭐⭐Best Audio
+* Play ⭐⭐⭐⭐ Best Video/Live
+
+* Play ⭐⭐⭐⭐ Best Audio
 
 * Download Video 🔽
 
@@ -306,9 +311,11 @@ Once a video is selected, the user is prompted to __select action__:
 ![image 9](screenshots/rofi_select_action.png){height=180}
 ![image 10](screenshots/fzf_select_action.png){height=180}
 ![image 11](screenshots/dmenu_select_action.png){height=180}
+
 ---
 
 ### Miscellaneous Menu
+
 The __m option__ of the Main Menu opens up the __Miscellaneous Menu__:
 
 ![image 12](screenshots/2.png){height=320}
