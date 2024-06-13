@@ -286,7 +286,7 @@ Once a video is selected, the user is prompted to __select action__:
 
 * Play ⭐⭐⭐ Video 720p
 
-* Play ⭐⭐⭐⭐ Best Video/Live
+* Play ⭐⭐⭐⭐ Best Video
 
 * Play ⭐⭐⭐⭐ Best Audio
 
