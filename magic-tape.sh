@@ -626,11 +626,11 @@ function select_action ()
  clear;
  ACTION="$(echo -e "Play ⭐ Video 144p\nPlay ⭐ ⭐ Video 360p\nPlay ⭐ ⭐ ⭐ Video 720p\nPlay ⭐ ⭐ ⭐ ⭐ Best Video\nPlay ⭐ ⭐ ⭐ ⭐ Best Audio\nDownload Video 🔽\nDownload Audio 🔽\nLike Video ❤️\nBrowse Feed of channel "$channel_name" 📺\nSubscribe to channel "$channel_name" 📋\nOpen in browser 🌐\nCopy link 🔗\nQuit ❌"|eval "$PREF_SELECTOR""\"Select action \"")";
  case $ACTION in
-   "Play ⭐ Video 144p") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv --ytdl-raw-options=format=bestvideo[height=144]+bestaudio "$play_now";play_now="";TITLE="";
+   "Play ⭐ Video 144p") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv --ytdl-raw-options=format="bv*[height<=144]+ba/b[height<=360] / wv*+ba/w" "$play_now";play_now="";TITLE="";
   ;;
-  "Play ⭐ ⭐ Video 360p") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv --ytdl-raw-options=format=bestvideo[height=360]+bestaudio "$play_now";play_now="";TITLE="";
+  "Play ⭐ ⭐ Video 360p") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv --ytdl-raw-options=format="bv*[height<=360]+ba/b[height<=480] / wv*+ba/w" "$play_now";play_now="";TITLE="";
   ;;
-  "Play ⭐ ⭐ ⭐ Video 720p") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv --ytdl-raw-options=format=bestvideo[height=720]+bestaudio "$play_now";play_now="";TITLE="";
+  "Play ⭐ ⭐ ⭐ Video 720p") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv --ytdl-raw-options=format="bv*[height<=720]+ba/b[height<=720] / wv*+ba/w" "$play_now";play_now="";TITLE="";
   ;;
   "Play ⭐ ⭐ ⭐ ⭐ Best Video") message_audio_video;if [[ "$SHOW_MPV_KEYBINDINGS" == 'yes' ]];then print_mpv_video_shortcuts;fi;mpv "$play_now";play_now="";TITLE="";
   ;;
