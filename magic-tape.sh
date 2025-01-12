@@ -521,17 +521,31 @@ function get_data ()
   fi;
   ### parse approx date
   timestamp="$(sed -n "${i}p" $HOME/.cache/magic-tape/search/video/timestamps.txt)";
-  if [[ "$timestamp" != "null" ]];then Y_timestamp="$(date --date=@$timestamp +%Y|sed 's/^0*//')";
-   M_timestamp="$(date --date=@$timestamp +%m|sed 's/^0*//')";
-   D_timestamp="$(date --date=@$timestamp +%j|sed 's/^0*//')";
-   if [ "$Y_epoch" -gt "$Y_timestamp" ];then approximate_date="$(($Y_epoch-$Y_timestamp)) years ago";fi;
-   if [ "$Y_epoch" -eq $(($Y_timestamp + 1)) ];then approximate_date="One year ago";fi;
-   if [ "$Y_epoch" -eq "$Y_timestamp" ]&&[ "$M_epoch" -gt "$M_timestamp" ];then approximate_date="$(($M_epoch-$M_timestamp)) months ago";fi;
-   if [ "$Y_epoch" -eq "$Y_timestamp" ]&&[ "$M_epoch" -eq $(($M_timestamp + 1)) ];then approximate_date="One month ago";fi;
-   if [ "$Y_epoch" -eq "$Y_timestamp" ]&&[ "$M_epoch" -eq "$M_timestamp" ]&&[ $D_epoch -eq $D_timestamp ] ;then approximate_date="Today";fi;
-   #yesterday=$(($D_timestamp+1));
-   if [ "$Y_epoch" -eq "$Y_timestamp" ]&&[ "$M_epoch" -eq "$M_timestamp" ]&&[ "$D_epoch" -gt "$D_timestamp" ] ;then approximate_date="$(($D_epoch - $D_timestamp)) days ago";fi;
-   if [ "$Y_epoch" -eq "$Y_timestamp" ]&&[ "$M_epoch" -eq "$M_timestamp" ]&&[ "$D_epoch" -eq $(($D_timestamp + 1)) ] ;then approximate_date="Yesterday";fi;
+  if [[ "$timestamp" != "null" ]];then
+    now=$(date +%s)
+    diff=$((now - $timestamp))
+    days=$((diff / 86400))
+    hours=$(((diff % 86400) / 3600))
+    minutes=$(((diff % 3600) / 60))
+    d=$(date -d @$timestamp '+%Y-%m-%d')
+    if [ $diff -lt 60 ]; then
+      approximate_date="$minutes minute(s) ago"
+    elif [ $diff -lt 3600 ]; then
+      [ $minutes -eq 1 ] && approximate_date="$d (1 minute ago)" || approximate_date="$d ($minutes minutes ago)"
+    elif [ $days -eq 0 ]; then
+      [ $hours -eq 1 ] && approximate_date="$d (1 hour ago)" || approximate_date="$d ($hours hours ago)"
+    elif [ $days -eq 1 ]; then approximate_date="$d (yesterday)"
+    elif [ $days -lt 7 ]; then approximate_date="$d ($days days ago)"
+    elif [ $days -lt 30 ]; then
+      weeks=$((days / 7))
+      [ $weeks -eq 1 ] && approximate_date="$d (1 week ago)" || approximate_date="$d ($weeks weeks ago)"
+    elif [ $days -lt 365 ]; then
+      months=$((days / 30))
+      [ $months -eq 1 ] && approximate_date="1 month ago" || approximate_date="$months months ago"
+    else
+      years=$((days / 365))
+      [ $years -eq 1 ] && approximate_date="1 year ago" || approximate_date="$years years ago"
+    fi
   else approximate_date="$(sed -n "${i}p" $HOME/.cache/magic-tape/search/video/live_status.txt|sed 's/_/ /g;s/"//g')";
   fi;
   echo $approximate_date>>$HOME/.cache/magic-tape/search/video/shared.txt;
@@ -580,9 +594,9 @@ function select_video ()
  ll=1; echo -ne "\x1b[38;5;241m"; while [ $ll -le $FZF_PREVIEW_COLUMNS ];do echo -n -e "─";((ll++));done;echo -n -e "$normal";\
  if [[ $TITLE != "Abort Selection" ]]&&[[ $TITLE != "Previous Page" ]]&&[[ $TITLE != "Next Page" ]];\
  then  LENGTH="$(sed -n "${i}p" $HOME/.cache/magic-tape/search/video/lengths.txt)";\
-  echo -e "\n"$Green"Length: "$Cyan"$LENGTH"$normal"";\
   SHARED="$(sed -n "${i}p" $HOME/.cache/magic-tape/search/video/shared.txt)";\
-  echo -e "$Green""Shared: "$Cyan"$SHARED"$normal""; \
+  if [[ $SHARED == "is upcoming" ]];then echo -e "\n""$Green""Shared: ""$Red""$SHARED""$normal";else echo -e "\n""$Green""Shared: ""$Cyan""$SHARED""$normal";fi;\
+  if [[ $LENGTH != "null" ]];then echo -e "$Green""Length: ""$Cyan""$LENGTH""$normal";fi;\
   VIEWS="$(sed -n "${i}p" $HOME/.cache/magic-tape/search/video/views.txt)";\
   if [[ $VIEWS != "null" ]];then printf "${Green}Views :${Cyan} %'\''d\n" $VIEWS;fi;\
   if [[ $db != "c" ]];\
@@ -982,11 +996,11 @@ db="$(echo $db|awk '{print $1}')"
   "h") clear;
      TITLE="$(echo -e "ABORT SELECTION\n""$(tac $HOME/.cache/magic-tape/history/watch_history.txt|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|cut -d' ' -f2-)"|eval "$PREF_SELECTOR""\"🔎 Select previous video \"")";
      if [[ "$TITLE" == "ABORT SELECTION" ]]||[[ -z "$TITLE" ]];
-      then empty_query;
-     else  TITLE=${TITLE//\*/\\*};
-      channel_id="$(grep "$TITLE" $HOME/.cache/magic-tape/history/watch_history.txt|head -1|awk '{print $1}')";
-      channel_name="$(grep "$TITLE" $HOME/.cache/magic-tape/history/watch_history.txt|head -1|sed 's/https:\/\/www\.youtube\.com.*$//'|cut -d' ' -f2-)";
-      play_now="$(grep "$TITLE" $HOME/.cache/magic-tape/history/watch_history.txt|head -1|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|awk '{print $1}')";
+     then empty_query;
+     else  HISTORY_TITLE="$(echo "$TITLE"|sed 's/[][}{*\]//g')";
+      channel_id="$(sed 's/[][}{*\]//g' $HOME/.cache/magic-tape/history/watch_history.txt|grep "$HISTORY_TITLE" |head -1|awk '{print $1}')";
+      channel_name="$(sed 's/[][}{*\]//g' $HOME/.cache/magic-tape/history/watch_history.txt|grep "$HISTORY_TITLE"|head -1|sed 's/https:\/\/www\.youtube\.com.*$//'|cut -d' ' -f2-)";
+      play_now="$(sed 's/[][}{*\]//g' $HOME/.cache/magic-tape/history/watch_history.txt|grep "$HISTORY_TITLE"|head -1|sed 's/^.*https:\/\/www\.youtube\.com/https:\/\/www\.youtube\.com/g'|awk '{print $1}')";
       notification_img="$HOME/.cache/magic-tape/jpg/img-"${play_now##*=}".jpg";
       select_action;
      fi;
@@ -1038,3 +1052,4 @@ db="$(echo $db|awk '{print $1}')"
   ;;
  esac
 done
+
